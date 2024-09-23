@@ -15,8 +15,10 @@
  - la pulizia non è ottimizzata, non c’è un modo per sapere se c’è più sporco in certi posti
  - come faccio a segnalare il problema? 
  ## Reframe the problem
- - Goals and Wishes: rendere più pulita la città ed efficientare la pulizia
- - Insights: CONTRO può non essere naturale l’uso dell’app, il comune deve agire, dipende troppo dalle segnalazioni PRO servizio per tutti
+ ### Goals and Wishes:
+  rendere più pulita la città ed efficientare la pulizia
+ ### Insights:
+  CONTRO può non essere naturale l’uso dell’app, il comune deve agire, dipende troppo dalle segnalazioni PRO servizio per tutti
 
 ## Take a stand with a point-of-view
 ### Nome:
