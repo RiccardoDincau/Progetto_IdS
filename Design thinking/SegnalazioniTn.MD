@@ -18,7 +18,8 @@
 ## Take a stand with a point-of-view
 ### Nome:
  PuliTn
-L’utente ha bisogno di: comunicazione semplice col comune
+### L’utente ha bisogno di:
+ comunicazione semplice col comune
 ### perché:
  i servizi ora disponibili sono troppo macchinosi
 
