@@ -3,16 +3,16 @@
 ## Design thinking
 
 ### First interview
-città più pulita
-aiuto sulla gestione immondizie
-calendario immondizie
-ottimizzazione raccolta rifiuti
-segnalazione cestini pieni
+ - città più pulita
+ - aiuto sulla gestione immondizie
+ - calendario immondizie
+ - ottimizzazione raccolta rifiuti
+ - segnalazione cestini pieni
 ### Dig deeper
-è difficile trovare i punti di raccolta rifiuti o capire se bisogna mettere il bidone fuori per la raccolta, serve una centralizzazione di queste informazioni
-incentivando le persone a porre attenzione a come differenziano le immondizie possiamo migliorare la “qualità” delle immondizie e risparmiare sui costi dati dalla differenziazione secondaria
-potrebbe essere utile essere avvisati quando i cestini “abituali” sono pieni, in modo da poter  decidere prima di uscire di casa dove andare a buttare la spazzatura, in questo modo si potrebbe evitare di lasciare i rifiuti fuori dai bidoni
-raccogliendo dati dai sensori sui bidoni possiamo capire meglio correlazioni tra la qualità delle immondizie e il contesto (es: aree verdi) e inoltre si potrebbe ottimizzare la raccolta rifiuti
+ - è difficile trovare i punti di raccolta rifiuti o capire se bisogna mettere il bidone fuori per la raccolta, serve una centralizzazione di queste informazioni
+ - incentivando le persone a porre attenzione a come differenziano le immondizie possiamo migliorare la “qualità” delle immondizie e risparmiare sui costi dati dalla differenziazione secondaria
+ - potrebbe essere utile essere avvisati quando i cestini “abituali” sono pieni, in modo da poter  decidere prima di uscire di casa dove andare a buttare la spazzatura, in questo modo si potrebbe evitare di lasciare i rifiuti fuori dai bidoni
+- raccogliendo dati dai sensori sui bidoni possiamo capire meglio correlazioni tra la qualità delle immondizie e il contesto (es: aree verdi) e inoltre si potrebbe ottimizzare la raccolta rifiuti
 
 ## Reframe the problem
 ### Capture findings Goals and Wishes:
