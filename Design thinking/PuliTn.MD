@@ -14,8 +14,7 @@
  - non c’è una mappa dei cestini
  - la pulizia non è ottimizzata, non c’è un modo per sapere se c’è più sporco in certi posti
  - come faccio a segnalare il problema? 
- - Reframe the problem
- - Capture findings
+ ## Reframe the problem
  - Goals and Wishes: rendere più pulita la città ed efficientare la pulizia
  - Insights: CONTRO può non essere naturale l’uso dell’app, il comune deve agire, dipende troppo dalle segnalazioni PRO servizio per tutti
 
@@ -24,7 +23,6 @@
  Trento Smart / Clean City
 ### L’utente ha bisogno di:
  una città più pulita
-### perché: 
 
 ## Ideate: generate solutions
  1) Raccolta immagini (Dal sito, da social, automatizzata dai mezzi pubblici) e analisi di questo: questo serve per  segnalare
