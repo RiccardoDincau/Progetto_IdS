@@ -13,7 +13,7 @@
 ### Goals and Wishes:
  facilitare la comunicazione tra cittadino e comune, agevolando anche il comune
 ### Insights:
- esistono servizi simili, deve essere accessibile, 
+ esistono servizi simili, deve essere accessibile, idea prof: buono dato dal comune ogni tot segnalazioni utili
 
 ## Take a stand with a point-of-view
 ### Nome:
