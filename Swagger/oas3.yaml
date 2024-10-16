@@ -1,0 +1,99 @@
+openapi: 3.0.0
+
+info:
+    title: Treport
+    version: v.0
+
+paths:  
+    
+
+components:
+    schemas:
+        Report:
+            type: object
+            properties:
+                id:
+                    type: integer
+                title: 
+                    type: string
+                content:
+                    type: string
+                user:
+                    type: string
+                votes:
+                    type: integer
+                position:
+                    $ref: "#/components/schemas/Position"
+                kind:
+                    $ref: "#/components/schemas/Kind"
+                category:
+                    $ref: "#/components/schemas/Category"
+                state:
+                    $ref: "#/components/schemas/State"
+                comments:
+                    type: array
+                    items: 
+                        $ref: "#/components/schemas/Comment"
+
+        Comment:
+            type: object
+            properties:
+                id: 
+                    type: integer
+                content:
+                    type: string
+                user:
+                    type: string
+
+        User:
+            type: object
+            properties:
+                id:
+                    type: integer
+                name:
+                    type: string
+                email:
+                    type: string
+                user_level:
+                    $ref: "#/components/schemas/User_level"  
+                reports:
+                    type: array
+                    items: 
+                        type: string
+                notifications:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/Notification"
+                
+
+        Notification:
+            type: object
+            properties:
+                id:
+                    type: integer
+                title:
+                    type: string
+                content:
+                    type: string
+                report:
+                    type: string
+
+
+        Kind: 
+            type: string
+            enum: [report, suggestion, complaint]
+
+        Category:
+            type: string
+            enum: [lights, roads, trash]
+
+        State:
+            type: string
+            enum: [active, work in progress, archived]
+
+        User_level:
+            type: string
+            enum: [citizen, admin, not_logged]
+            
+        Position:
+            type: string
