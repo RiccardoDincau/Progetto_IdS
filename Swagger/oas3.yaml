@@ -5,7 +5,165 @@ info:
     version: v.0
 
 paths:  
-    
+    /users:
+        get:
+            description: Get a user list. (/users?user_level={user_level}).
+            parameters:
+              - in: query
+                name: user_level
+                description: Get all user of the given user_level.
+                schema:    
+                    $ref: "#/components/schemas/User_level"
+            responses:
+              "200":
+                description: Correctly sent users list.
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items: 
+                                $ref: "#/components/schemas/User" 
+        post:
+            description: Add new user
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            $ref: "#/components/schemas/User"
+                required: true
+
+            responses:
+              "201":
+                description: New user added
+                headers:
+                    "Location":
+                        description: Link to the newly created user
+                        schema:
+                            type: string
+    /users/{id}:
+        get:
+            description: Get a user by id
+            responses:
+              "200":
+                description: User sent correctly.
+        delete:
+            description: Delete a user.
+            responses:
+                "204":
+                    description: User deleted.
+
+    /reports:
+        get:
+            description: Get a list of reports. (/reports?state={state}&kind={kind}&category={category}&position={position})
+            parameters:
+                -   in: query
+                    name: state
+                    description: Filters the reports based on a state
+                    schema:
+                        $ref: "#/components/schemas/State"
+                -   in: query
+                    name: kind
+                    description: Filters the reports based on a kind
+                    schema: 
+                        $ref: "#/components/schemas/Kind"
+                -   in: query
+                    name: category
+                    description: Filters the reports based on a category
+                    schema: 
+                        $ref: "#/components/schemas/Category"
+                -   in: query
+                    name: position
+                    description: Returns all the reports within 1 kilometer from the given position 
+                    schema: 
+                        $ref: "#/components/schemas/Position"
+            responses: 
+                "200":
+                    description: Correctly sent a list of reports
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items: 
+                                    $ref: "#/components/schemas/Report"
+        post:
+            description: Add a new report.
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/Report"
+                required: true
+            responses:
+                "201":
+                    description: Added a new report
+                    headers:
+                        "Location":
+                            description: Link to the newly created report.
+                            schema:
+                                type: string
+    /reports/{id}:
+        get:
+            description: Get a report by the id.
+            responses:
+                "200":
+                    description: Correctly sent the report.
+        delete:
+            description: Delete a report
+            responses:
+                "204":
+                    description: Report deleted.
+
+    /reports/{id}/comments:
+        get:
+            description: Get a list of all the comments of a report. (/reports/{id}/comments?user={user})
+            parameters:                
+                -   in: query
+                    name: user
+                    description: Get all comments about a report of a given user.
+                    schema:
+                        type: integer
+
+            responses:
+                "200":
+                    description: Comments list sent
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items: 
+                                    $ref: "#/components/schemas/Comment"
+        post:
+            description: Add new comment to a report
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            $ref: "#/components/schemas/Comment"
+                required: true
+
+            responses:
+              "201":
+                description: New user comment added
+                headers:
+                    "Location":
+                        description: Link to the newly created comment
+                        schema:
+                            type: string
+    /reports/{id}/comments/{id}:
+        get:
+            description: Get a specific comment of a given report
+            responses:
+                "200":
+                    description: Comment sent correctly
+        
+        delete:
+            description: Delete a comment of a given report
+            responses:
+                "204":
+                    description: Comment deleted
+
 
 components:
     schemas:
