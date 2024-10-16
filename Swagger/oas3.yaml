@@ -114,7 +114,56 @@ paths:
                 "204":
                     description: Report deleted.
 
-    
+    /reports/{id}/comments:
+        get:
+            description: Get a list of all the comments of a report. (/reports/{id}/comments?user={user})
+            parameters:                
+                -   in: query
+                    name: user
+                    description: Get all comments about a report of a given user.
+                    schema:
+                        type: integer
+
+            responses:
+                "200":
+                    description: Comments list sent
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items: 
+                                    $ref: "#/components/schemas/Comment"
+        post:
+            description: Add new comment to a report
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            $ref: "#/components/schemas/Comment"
+                required: true
+
+            responses:
+              "201":
+                description: New user comment added
+                headers:
+                    "Location":
+                        description: Link to the newly created comment
+                        schema:
+                            type: string
+    /reports/{id}/comments/{id}:
+        get:
+            description: Get a specific comment of a given report
+            responses:
+                "200":
+                    description: Comment sent correctly
+        
+        delete:
+            description: Delete a comment of a given report
+            responses:
+                "204":
+                    description: Comment deleted
+
 
 components:
     schemas:
