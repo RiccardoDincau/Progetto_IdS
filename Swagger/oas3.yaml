@@ -164,6 +164,56 @@ paths:
                 "204":
                     description: Comment deleted
 
+    
+    /notifications:
+        get:
+            description: Get a list of notifications. (/notification?user={user})
+            parameters:
+                -   in: query
+                    name: user
+                    description: Filter the notification by a given user
+                    schema:
+                        type: integer
+            responses:
+                "200":
+                    description: Notification list sent.
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                $ref: "#/components/schemas/Notification"
+        post:
+            description: Create new notification
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            $ref: "#/components/schemas/Notification"
+ 
+            responses:
+                "201":
+                    description: New notification added
+                    headers:
+                        "Location":
+                            description: Link to the newly created notification
+                            schema:
+                                type: string
+
+    /notifications/{id}:
+        get:
+            description: Get a notification with a given id.
+            responses:
+                "200":
+                    description: Notification sent correctly.
+        
+        delete:
+            description: Delete a notification with a given id.
+            responses:
+                "204":
+                    description: Notification deleted
+
+
 
 components:
     schemas:
@@ -218,11 +268,6 @@ components:
                     type: array
                     items: 
                         type: string
-                notifications:
-                    type: array
-                    items:
-                        $ref: "#/components/schemas/Notification"
-                
 
         Notification:
             type: object
@@ -235,6 +280,10 @@ components:
                     type: string
                 report:
                     type: string
+                user:
+                    type: array
+                    items: 
+                        type: string
 
 
         Kind: 
