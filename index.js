@@ -1,7 +1,14 @@
 const app = require("./app/app.js");
+const mongoose = require("mongoose");
 
-const port = 8080;
+const PORT = process.env.PORT;
+const DB = process.env.DB;
 
-app.listen(port, () => {
-    console.log("Server listening on port:", port);
+// console.log(PORT, DB);
+
+mongoose.connect(DB).then( () => {
+    console.log("Connected to database");
+    app.listen(PORT, () => {
+        console.log("Server listening on port:", PORT);
+    });
 });

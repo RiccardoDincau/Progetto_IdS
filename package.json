@@ -2,5 +2,12 @@
   "dependencies": {
     "express": "^4.21.1",
     "mongoose": "^8.7.3"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node -r dotenv/config index.js"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.5"
   }
 }
