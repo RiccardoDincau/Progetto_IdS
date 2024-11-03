@@ -58,7 +58,7 @@ router.post("", async (req, res) => {
     });
 
     if(report == null) {
-        res.status(400).json({ error: 'report does not exist' });
+        res.status(400).json({ error: 'Report does not exist' });
         return;
     };
 

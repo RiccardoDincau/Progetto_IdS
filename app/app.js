@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 
 const notifications = require("./notifications.js");
+const reports = require("./reports.js");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -19,5 +20,6 @@ app.get("", (req, res) => {
 });
 
 app.use("/api/notifications", notifications);
+app.use("/api/reports", reports);
 
 module.exports = app;
