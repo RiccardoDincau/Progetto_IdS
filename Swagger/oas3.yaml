@@ -128,7 +128,7 @@ paths:
                 required: true
             responses:
                 "200":
-                    description: Coorectly updated the report.
+                    description: Corectly updated the report.
                 "404":
                     description: Report was not found. (Id may be wrong or report may not exist).
         delete:
