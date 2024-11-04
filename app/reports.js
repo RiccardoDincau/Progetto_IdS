@@ -19,6 +19,15 @@ function displayedReport(mongooseReport) {
     };
 }
 
+function displayedComment(mongooseReport, mongooseComment){
+    return {
+        _id: mongooseReport._id,
+        _id: mongooseComment._id,
+        content: mongooseComment.content,
+        user: mongooseComment.user
+    }
+}
+
 router.get("", async (req, res) => {
     let possibleQueries = ["state", "kind", "category", "position"];
     
@@ -128,6 +137,27 @@ router.delete("/:id", async (req, res) => {
     res.status(204).send();
 });
 
+router.get("/:id/comments/:id", async (req, res) => {
+    const params = Object.values(req.params);
+    const reportID = params[0];
+    const commentID = params[1];
 
+    let report = await Report.findById(reportID).exec().catch(() => {
+        console.log("Error in Report quering (Id may be wrong)"); 
+    });
+
+    let comment = await report.comments.id(commentID).exec().catch( () => {
+        console.log("Error in Comment quering (Id may be wrong)");
+    });
+
+    if(!comment){
+        res.status(404).send();
+        console.log("Comment not found");
+        return;
+    }
+
+    res.status(200).json(displayedComment(report, comment));
+
+})
 
 module.exports = router;
