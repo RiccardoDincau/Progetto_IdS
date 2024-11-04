@@ -102,17 +102,42 @@ paths:
                             description: Link to the newly created report.
                             schema:
                                 type: string
+                "400":
+                    description: Error in report saving (User may not exist or some attributes are missing).
     /reports/{id}:
         get:
             description: Get a report by the id.
+            
             responses:
                 "200":
                     description: Correctly sent the report.
+                "404": 
+                    description: Report was not found. (Id may be wrong or the report may not exist).
+        put:
+            description: Update the given report. (Only votes and state can be updated).
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                votea: 
+                                    type: integer
+                                state:
+                                    $ref: "#/components/schemas/State"
+                required: true
+            responses:
+                "200":
+                    description: Coorectly updated the report.
+                "404":
+                    description: Report was not found. (Id may be wrong or report may not exist).
         delete:
             description: Delete a report
             responses:
                 "204":
                     description: Report deleted.
+                "404":
+                    description: Report was not found and could not be deleted(Id may be wrong)
 
     /reports/{id}/comments:
         get:
