@@ -101,7 +101,7 @@ router.delete("/:id", async (req, res) => {
         return;
     }
 
-    await Notification.deleteOne();
+    await Notification.deleteOne({_id: notification._id});
     console.log('Notification removed');
     res.status(204).send();
 });
