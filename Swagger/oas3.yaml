@@ -121,7 +121,7 @@ paths:
                         schema:
                             type: object
                             properties:
-                                votea: 
+                                votes: 
                                     type: integer
                                 state:
                                     $ref: "#/components/schemas/State"
