@@ -95,6 +95,23 @@ router.get("/:id", async (req, res) => {
     res.status(200).json(displayedReport(report));
 });
 
+router.put("/:id", async (req, res) => {
+    let {votes, state} = req.body;
+    
+    let report = await Report.findByIdAndUpdate(req.params.id, {votes, state}).exec().catch((err) => {
+        console.log("Error in Report quering (Id may be wrong)");
+    });
+
+    if (!report) {
+        res.status(404).send();
+        console.log("Report not found");
+        return;
+    }
+
+    res.status(200).json(displayedReport(report));
+});
+
+
 router.delete("/:id", async (req, res) => {
     let report = await Report.findById(req.params.id).exec().catch(() => {
         console.log("Error in Report quering (Id may be wrong)"); 
