@@ -4,6 +4,7 @@ const app = express();
 
 const notifications = require("./notifications.js");
 const reports = require("./reports.js");
+const users = require("./users.js");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -21,5 +22,6 @@ app.get("", (req, res) => {
 
 app.use("/api/notifications", notifications);
 app.use("/api/reports", reports);
+app.use("/api/users", users);
 
 module.exports = app;

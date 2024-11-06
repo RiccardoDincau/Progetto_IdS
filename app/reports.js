@@ -51,7 +51,6 @@ router.post("", async (req, res) => {
         "position", "kind", "category", "state", "comments"];
 
     let reportAttributes = {};
-
     let userUrl = req.body["user"];
     let userID = userUrl.substring(userUrl.lastIndexOf('/') + 1);
 
@@ -96,7 +95,7 @@ router.get("/:id", async (req, res) => {
     });
 
     if (!report) {
-        res.status(404).send();
+        res.status(404).send("Report not found");
         console.log("Report not found");
         return;
     }
