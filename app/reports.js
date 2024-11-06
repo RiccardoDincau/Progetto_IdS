@@ -111,12 +111,15 @@ router.put("/:id", async (req, res) => {
         console.log("Error in Report quering (Id may be wrong)");
     });
 
+    
     if (!report) {
         res.status(404).send();
         console.log("Report not found");
         return;
     }
-
+    
+    report = await Report.findById(req.params.id);
+    
     res.status(200).json(displayedReport(report));
 });
 
