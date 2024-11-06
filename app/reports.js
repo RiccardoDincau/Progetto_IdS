@@ -137,16 +137,13 @@ router.delete("/:id", async (req, res) => {
     res.status(204).send();
 });
 
-router.get("/:id/comments/:id", async (req, res) => {
-    const params = Object.values(req.params);
-    const reportID = params[0];
-    const commentID = params[1];
+router.get("/:reportID/comments/:commentID", async (req, res) => {
 
-    let report = await Report.findById(reportID).exec().catch(() => {
+    let report = await Report.findById(req.params.reportID).exec().catch(() => {
         console.log("Error in Report quering (Id may be wrong)"); 
     });
 
-    let comment = await report.comments.id(commentID).exec().catch( () => {
+    let comment = await report.comments.id(req.params.commentID).exec().catch( () => {
         console.log("Error in Comment quering (Id may be wrong)");
     });
 
