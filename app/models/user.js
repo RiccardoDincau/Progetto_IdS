@@ -1,6 +1,9 @@
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
-module.exports = mongoose.model('User', new Schema ({
-	_id: Schema.Types.ObjectId,
-}));
+module.exports = mongoose.model(
+    "User",
+    new Schema({
+        _id: Schema.Types.ObjectId,
+    })
+);

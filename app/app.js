@@ -8,11 +8,10 @@ const reports = require("./reports.js");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use((req,res,next) => {
-    console.log(req.method + ' ' + req.url)
-    next()
+app.use((req, res, next) => {
+    console.log(req.method + " " + req.url);
+    next();
 });
-
 
 app.get("", (req, res) => {
     console.log("New request to the landing page");
