@@ -3,6 +3,7 @@ const router = express.Router();
 
 const Report = require("./models/report.js");
 const User = require("./models/user.js");
+const { user_level } = require("./models/enums.js");
 
 function displayedReport(mongooseReport) {
     return {
@@ -25,6 +26,15 @@ function displayedComment(mongooseReport, mongooseComment) {
         _id: mongooseComment._id,
         content: mongooseComment.content,
         user: mongooseComment.user,
+    };
+}
+function editUser(mongooseUser, newReportID) {
+    return {
+        _id: mongooseUser._id,
+        name: mongooseUser.name,
+        user_level: mongooseUser.user_level,
+        email: mongooseUser.email,
+        reports: mongooseUser.reports.concat([newReportID]),
     };
 }
 
@@ -56,7 +66,6 @@ router.post("", async (req, res) => {
         "state",
         "comments",
     ];
-
 
     let userUrl = req.body["user"];
     let userID = userUrl.substring(userUrl.lastIndexOf("/") + 1);
@@ -98,6 +107,11 @@ router.post("", async (req, res) => {
     if (report == null) return;
     let reportId = report.id;
 
+    //Modification of the user by adding the report's ID in the corrispondent field
+    let newUser = await User.findById(userID).exec();
+    newUser = editUser(newUser, reportId);
+    user = await User.findByIdAndUpdate(userID, newUser).exec();
+
     res.location(req.path + reportId)
         .status(201)
         .send();
@@ -111,7 +125,7 @@ router.get("/:id", async (req, res) => {
         });
 
     if (!report) {
-        res.status(404).send();
+        res.status(404).send("Report not found");
         console.log("Report not found");
         return;
     }
@@ -157,11 +171,7 @@ router.delete("/:id", async (req, res) => {
     res.status(204).send();
 });
 
-router.get("/:id/comments/:id", async (req, res) => {
-    const params = Object.values(req.params);
-    const reportID = params[0];
-    const commentID = params[1];
-
+router.get("/:reportID/comments/:commentID", async (req, res) => {
     let report = await Report.findById(reportID)
         .exec()
         .catch(() => {
@@ -182,6 +192,31 @@ router.get("/:id/comments/:id", async (req, res) => {
     }
 
     res.status(200).json(displayedComment(report, comment));
+});
+
+router.delete("/:reportID/comments/:commentID", async (req, res) => {
+    let report = await Report.findById(req.params.reportID)
+        .exec()
+        .catch(() => {
+            console.log("Error in Report quering (Id may be wrong)");
+        });
+
+    let comment = await report.comments
+        .id(req.params.commentID)
+        .exec()
+        .catch(() => {
+            console.log("Error in Comment quering (Id may be wrong)");
+        });
+
+    if (!comment) {
+        res.status(404).send();
+        console.log("Comment not found");
+        return;
+    }
+
+    await Comment.deleteOne({ _id: comment._id });
+    console.log("Comment removed");
+    res.status(204).send();
 });
 
 module.exports = router;
