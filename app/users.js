@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 module.exports = router;
 
+
 const User = require("./models/user.js");
 
 function displayedUsers(mongooseUser) {
@@ -48,19 +49,21 @@ router.post("", async (req, res) => {
     //req.body is an object (like a dictionary) which contains the parameters passed 
     let body=req.body;
 
-    for (el in requiredAttributes){
+    for (let el of requiredAttributes){
         if (!body[el]){
-            console.log("Missing attributes");
+            console.log("Missing attribute: ", el);
+            res.status(400).send("Missing attribute: ", el);
             return;
         }
     }
     let user = new User(body);
-    user.reports={};
-
     user = await user.save().catch( (err) => {
+        console.log(err);
         console.log("Error occured while saving ...");
         res.status(400).send("Error occured while saving ...");
-    })
+        return null;
+    });
+    
     if (!user){
         return;
     }

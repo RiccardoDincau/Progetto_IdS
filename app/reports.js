@@ -3,6 +3,7 @@ const router = express.Router();
 
 const Report = require("./models/report.js");
 const User = require("./models/user.js");
+const { user_level } = require('./models/enums.js');
 
 function displayedReport(mongooseReport) {
     return {
@@ -28,6 +29,18 @@ function displayedComment(mongooseReport, mongooseComment){
     }
 }
 
+function editUser (mongooseUser, newReportID){
+    return {
+        _id: mongooseUser._id,
+        name: mongooseUser.name, 
+        user_level: mongooseUser.user_level,
+        email: mongooseUser.email,
+        reports: mongooseUser.reports.concat([newReportID])
+    }
+}
+
+
+
 router.get("", async (req, res) => {
     let possibleQueries = ["state", "kind", "category", "position"];
     
@@ -46,9 +59,9 @@ router.get("", async (req, res) => {
 });
 
 router.post("", async (req, res) => {
-    // Serve comments?????
-    let requiredAttributes = ["title", "content", "votes", 
-        "position", "kind", "category", "state", "comments"];
+    //Ho provveduto ad assegnare ai commenti, ai voti e allo stato dei valori di default (rispettivamente [], 0 e "active")
+    let requiredAttributes = ["title", "content",
+        "position", "kind", "category", "user"];
 
     let reportAttributes = {};
     let userUrl = req.body["user"];
@@ -85,6 +98,11 @@ router.post("", async (req, res) => {
     });
     if (report == null) return;
     let reportId = report.id;
+
+    //Modification of the user by adding the report's ID in the corrispondent field
+    let newUser = await User.findById(userID).exec();
+    newUser = editUser (newUser, reportId);
+    user = await User.findByIdAndUpdate(userID, newUser).exec();
 
     res.location(req.path + reportId).status(201).send();
 });
