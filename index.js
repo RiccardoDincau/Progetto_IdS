@@ -6,7 +6,7 @@ const DB = process.env.DB;
 
 // console.log(PORT, DB);
 
-mongoose.connect(DB).then( () => {
+mongoose.connect(DB).then(() => {
     console.log("Connected to database");
     app.listen(PORT, () => {
         console.log("Server listening on port:", PORT);
