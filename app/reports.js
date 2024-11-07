@@ -160,4 +160,25 @@ router.get("/:reportID/comments/:commentID", async (req, res) => {
 
 })
 
+router.delete("/:reportID/comments/:commentID", async (req, res) => {
+
+    let report = await Report.findById(req.params.reportID).exec().catch(() => {
+        console.log("Error in Report quering (Id may be wrong)"); 
+    });
+
+    let comment = await report.comments.id(req.params.commentID).exec().catch( () => {
+        console.log("Error in Comment quering (Id may be wrong)");
+    });
+
+    if(!comment){
+        res.status(404).send();
+        console.log("Comment not found");
+        return;
+    }
+
+    await Comment.deleteOne({_id: comment._id});
+    console.log('Comment removed');
+    res.status(204).send();
+})
+
 module.exports = router;
