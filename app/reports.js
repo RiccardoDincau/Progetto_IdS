@@ -22,7 +22,7 @@ function displayedReport(mongooseReport) {
 
 function displayedComment(mongooseReport, mongooseComment){
     return {
-        _id: mongooseReport._id,
+        _id: "/report/"+mongooseReport._id,
         _id: mongooseComment._id,
         content: mongooseComment.content,
         user: mongooseComment.user
@@ -156,6 +156,21 @@ router.delete("/:id", async (req, res) => {
     console.log('Report removed');
     res.status(204).send();
 });
+
+router.get("/:id/comments", async (req, res) => {
+    let comments;
+
+    let report = await Report.findById(req.params.id).exec().catch(() => {
+        console.log("Error in Report quering (Id may be wrong)"); 
+    });
+
+    comments = await report.comments.find({}).exec();
+
+    comments = comments.map(displayedComment);
+
+    res.status(200).json(comments);
+
+})
 
 router.get("/:reportID/comments/:commentID", async (req, res) => {
 
