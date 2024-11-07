@@ -22,7 +22,7 @@ paths:
                         schema:
                             type: array
                             items: 
-                                $ref: "#/components/schemas/User" 
+                                $ref: "#/components/schemas/User_GET" 
         post:
             description: Add new user
             requestBody:
@@ -30,7 +30,7 @@ paths:
                     application/json:
                         schema:
                             type: object
-                            $ref: "#/components/schemas/User"
+                            $ref: "#/components/schemas/User_POST"
                 required: true
 
             responses:
@@ -85,14 +85,14 @@ paths:
                             schema:
                                 type: array
                                 items: 
-                                    $ref: "#/components/schemas/Report"
+                                    $ref: "#/components/schemas/Report_GET"
         post:
             description: Add a new report.
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: "#/components/schemas/Report"
+                            $ref: "#/components/schemas/Report_POST"
                 required: true
             responses:
                 "201":
@@ -157,7 +157,7 @@ paths:
                             schema:
                                 type: array
                                 items: 
-                                    $ref: "#/components/schemas/Comment"
+                                    $ref: "#/components/schemas/Comment_GET"
         post:
             description: Add new comment to a report
             requestBody:
@@ -165,7 +165,7 @@ paths:
                     application/json:
                         schema:
                             type: object
-                            $ref: "#/components/schemas/Comment"
+                            $ref: "#/components/schemas/Comment_POST"
                 required: true
 
             responses:
@@ -206,7 +206,7 @@ paths:
                         application/json:
                             schema:
                                 type: array
-                                $ref: "#/components/schemas/Notification"
+                                $ref: "#/components/schemas/Notification_GET"
         post:
             description: Create new notification
             requestBody:
@@ -214,7 +214,7 @@ paths:
                     application/json:
                         schema:
                             type: object
-                            $ref: "#/components/schemas/Notification"
+                            $ref: "#/components/schemas/Notification_POST"
  
             responses:
                 "201":
@@ -242,7 +242,7 @@ paths:
 
 components:
     schemas:
-        Report:
+        Report_GET:
             type: object
             properties:
                 id:
@@ -266,9 +266,27 @@ components:
                 comments:
                     type: array
                     items: 
-                        $ref: "#/components/schemas/Comment"
+                        $ref: "#/components/schemas/Comment_GET"
+        
+        Report_POST:
+            type: object
+            properties:
+                title: 
+                    type: string
+                content:
+                    type: string
+                user:
+                    type: string
+                position:
+                    $ref: "#/components/schemas/Position"
+                kind:
+                    $ref: "#/components/schemas/Kind"
+                category:
+                    $ref: "#/components/schemas/Category"
+                state:
+                    $ref: "#/components/schemas/State"
 
-        Comment:
+        Comment_GET:
             type: object
             properties:
                 id: 
@@ -278,7 +296,15 @@ components:
                 user:
                     type: string
 
-        User:
+        Comment_POST:
+            type: object
+            properties:
+                content:
+                    type: string
+                user:
+                    type: string
+
+        User_GET:
             type: object
             properties:
                 id:
@@ -294,7 +320,17 @@ components:
                     items: 
                         type: string
 
-        Notification:
+        User_POST:
+            type: object
+            properties:
+                name:
+                    type: string
+                email:
+                    type: string
+                user_level:
+                    $ref: "#/components/schemas/User_level"  
+
+        Notification_GET:
             type: object
             properties:
                 id:
@@ -310,6 +346,19 @@ components:
                     items: 
                         type: string
 
+        Notification_POST:
+            type: object
+            properties:
+                title:
+                    type: string
+                content:
+                    type: string
+                report:
+                    type: string
+                user:
+                    type: array
+                    items: 
+                        type: string
 
         Kind: 
             type: string
