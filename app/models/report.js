@@ -7,10 +7,10 @@ module.exports = mongoose.model('Report', new Schema ({
 	title: String,
 	content: String,
 	user: { type: Schema.Types.ObjectId, ref: 'User' },
-	votes: Number,
+	votes: {type: Number, default: 0},
 	position: String,
 	kind, 
 	category, 
 	state,
-	comments: [ {type: Schema.Types.ObjectId, ref: "Comment"} ]
+	comments: [ {type: Schema.Types.ObjectId, ref: "Comment", default: []} ]
 }));
