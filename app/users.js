@@ -70,3 +70,22 @@ router.post("", async (req, res) => {
         .status(201)
         .send();
 });
+
+//DELETE methods
+router.delete("/:id", async (req, res) => {
+    let userID = req.params.id;
+
+    User.findByIdAndDelete(userID).exec()
+    .then((doc) => {
+        if (!doc){
+            res.status(404).send("User not found");
+            return;
+        }
+        res.status(200).send(`Deleted user: ${doc._id}`);
+        return;
+    })
+    .catch((err) => {
+        console.log(err);
+        res.status(400).send("ID not accepted");
+    })
+})
