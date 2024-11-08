@@ -30,13 +30,14 @@ function displayedComment(mongooseReport, mongooseComment) {
         user: mongooseComment.user,
     };
 }
+
 function editUser(mongooseUser, newReportID) {
     return {
         _id: mongooseUser._id,
         name: mongooseUser.name,
         user_level: mongooseUser.user_level,
         email: mongooseUser.email,
-        reports: mongooseUser.reports.concat(["/report/"+newReportID]),
+        reports: mongooseUser.reports.concat([newReportID]),
     };
 }
 
@@ -46,6 +47,28 @@ router.get("", async (req, res) => {
     let sentQueries = {};
     for (let q of possibleQueries) {
         if (req.query[q]) sentQueries[q] = req.query[q];
+    }
+
+    //Check if the values are included in their corrispondent domain
+    if (req.query["state"]) {
+        if (!Enums.state["enum"].includes(req.query["state"])) {
+            res.status(400).send("State is not valid");
+            return;
+        }
+    }
+
+    if (req.query["kind"]) {
+        if (!Enums.kind["enum"].includes(req.query["kind"])) {
+            res.status(400).send("Kind is not valid");
+            return;
+        }
+    }
+
+    if (req.query["category"]) {
+        if (!Enums.category["enum"].includes(req.query["category"])) {
+            res.status(400).send("Category is not valid");
+            return;
+        }
     }
 
     console.log("Queries requested: ", sentQueries);
@@ -61,12 +84,10 @@ router.post("", async (req, res) => {
     let requiredAttributes = [
         "title",
         "content",
-        "votes",
         "position",
         "kind",
         "category",
         "state",
-        "comments",
     ];
 
     let userUrl = req.body["user"];
@@ -275,12 +296,14 @@ router.post("/report/:id/comment", async (req, res) => {
         return null;
     });
 
-    if(comment == null) return;
+    if (comment == null) return;
     // TODO
     // da aggiungere il commento nello user
 
     let commentID = comment.id;
-    res.location(req.path + commentID).status(201).send();
+    res.location(req.path + commentID)
+        .status(201)
+        .send();
 });
 
 router.delete("/report/:reportID/comments/:commentID", async (req, res) => {
