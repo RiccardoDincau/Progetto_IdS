@@ -24,7 +24,7 @@ paths:
                             items: 
                                 $ref: "#/components/schemas/User_GET" 
         post:
-            description: Add new user
+            description: Add new user.
             requestBody:
                 content:
                     application/json:
@@ -34,24 +34,30 @@ paths:
                 required: true
 
             responses:
-              "201":
-                description: New user added
-                headers:
-                    "Location":
-                        description: Link to the newly created user
-                        schema:
-                            type: string
+                "201":
+                    description: New user added.
+                    headers:
+                        "Location":
+                            description: Link to the newly created user.
+                            schema:
+                                type: string
+                "400":
+                    description: Id may be wrong, attribute may be missing, email may be already used.
     /users/{id}:
         get:
-            description: Get a user by id
+            description: Get a user by id.
             responses:
-              "200":
-                description: User sent correctly. (Attribute reports is of the type [ "/reports/:id" ]).
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            $ref: "#/components/schemas/User_GET"
+                "200":
+                    description: User sent correctly. (Attribute reports is of the type [ "/reports/:id" ]).
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                $ref: "#/components/schemas/User_GET"
+                "400":
+                    description: Id may not be correctly formatted.
+                "404":
+                    description: User was not found.
         delete:
             description: Delete a user.
             responses:
@@ -96,6 +102,8 @@ paths:
                                 type: array
                                 items: 
                                     $ref: "#/components/schemas/Report_GET"
+                "400":
+                    description: Queries values may be wrong.
         post:
             description: Add a new report.
             requestBody:
