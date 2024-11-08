@@ -30,7 +30,9 @@ router.get("", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-    let usersFound = await User.findById(req.params.id).exec();
+    let usersFound = await User.findById(req.params.id).exec().catch( (err) => {
+        res.status(400).send("ID is not properly formatted")
+    });
 
     if (!usersFound) {
         res.status(404).send("User not found");
@@ -47,7 +49,6 @@ router.post("", async (req, res) => {
 
     //req.body is an object (like a dictionary) which contains the parameters passed
     let body = req.body;
-
     for (let el of requiredAttributes) {
         if (!body[el]) {
             console.log("Missing attribute: ", el);
@@ -55,6 +56,15 @@ router.post("", async (req, res) => {
             return;
         }
     }
+
+    //Check if the email is already used by a user
+    let email = body["email"];
+    email = await User.findOne({"email" : email}).exec();
+    if (email){
+        res.status(400).send("Email already registered");
+        return;
+    }
+
     let user = new User(body);
     user = await user.save().catch((err) => {
         console.log(err);
@@ -75,17 +85,19 @@ router.post("", async (req, res) => {
 router.delete("/:id", async (req, res) => {
     let userID = req.params.id;
 
-    User.findByIdAndDelete(userID).exec()
-    .then((doc) => {
-        if (!doc){
-            res.status(404).send("User not found");
+    User.findByIdAndDelete(userID)
+        .exec()
+        .then((doc) => {
+            if (!doc) {
+                res.status(404).send("User not found");
+                return;
+            }
+            res.status(200).send(`Deleted user: ${doc._id}`);
             return;
-        }
-        res.status(200).send(`Deleted user: ${doc._id}`);
-        return;
-    })
-    .catch((err) => {
-        console.log(err);
-        res.status(400).send("ID not accepted");
-    })
-})
+        })
+
+        .catch((err) => {
+            console.log(err);
+            res.status(400).send("ID not accepted");
+        });
+});
