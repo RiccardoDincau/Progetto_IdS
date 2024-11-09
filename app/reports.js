@@ -45,6 +45,26 @@ router.get("", async (req, res) => {
     let possibleQueries = ["state", "kind", "category", "position"];
 
     let sentQueries = {};
+
+    let userUrl = req.query["user"];
+
+    if (userUrl) {
+        let userID = userUrl.substring(userUrl.lastIndexOf("/") + 1);
+
+        let user = null;
+        user = await User.findById(userID)
+            .exec()
+            .catch((err) => {
+                console.log("Error in user quering.\n", err);
+            });
+
+        if (user == null) {
+            res.status(400).json({ error: "User does not exist" });
+            return;
+        }
+        sentQueries.user = userID;
+    }
+
     for (let q of possibleQueries) {
         if (req.query[q]) sentQueries[q] = req.query[q];
     }
