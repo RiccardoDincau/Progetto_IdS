@@ -200,11 +200,11 @@ router.delete("/:id", async (req, res) => {
     let report = await Report.findById(req.params.id)
         .exec()
         .catch(() => {
-            console.log("Error in Report quering (Id may be wrong)");
+            console.log("Error in Report quering (ID may be wrong)");
         });
 
     if (!report) {
-        res.status(404).send();
+        res.status(404).send("Report not found. (ID may be wrong");
         console.log("Report not found");
         return;
     }
