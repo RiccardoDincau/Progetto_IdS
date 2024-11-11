@@ -203,7 +203,7 @@ router.put("/:id", tokenChecker, async (req, res) => {
     res.status(200).json(displayedReport(report));
 });
 
-router.delete("/:id", tockenChecker, async (req, res) => {
+router.delete("/:id", tokenChecker, async (req, res) => {
     if (req.loggedUser.user_level != "admin") {
         res.status(403).send(
             "Unauthorized action, this user can not delete a report"

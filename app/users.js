@@ -4,6 +4,7 @@ module.exports = router;
 
 const User = require("./models/user.js");
 const Enums = require("./models/enums.js");
+const tokenChecker = require("./tokenChecker.js");
 
 function displayedUsers(mongooseUser) {
     return {
