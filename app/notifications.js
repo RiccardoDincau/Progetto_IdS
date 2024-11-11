@@ -4,6 +4,7 @@ const router = express.Router();
 const Notification = require("./models/notification.js");
 const User = require("./models/user.js");
 const Report = require("./models/report.js");
+const tokenChecker = require("./tokenChecker.js");
 
 function displayedNotification(mongooseNotification) {
     return {
@@ -97,7 +98,7 @@ router.get("/:id", async (req, res) => {
     res.status(200).json(displayedNotification(notification));
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", tokenChecker, async (req, res) => {
     let notification = await Notification.findById(req.params.id)
         .exec()
         .catch(() => {

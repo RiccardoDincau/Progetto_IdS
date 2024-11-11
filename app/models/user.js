@@ -7,6 +7,7 @@ module.exports = mongoose.model(
     new Schema({
         name: String,
         email: String,
+        password: String,
         user_level,
         reports: [{ type: Schema.Types.ObjectId, ref: "Report" }],
     })

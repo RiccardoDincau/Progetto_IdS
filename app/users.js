@@ -47,16 +47,16 @@ router.get("", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-    let interrupt=false;
+    let interrupt = false;
     let usersFound = await User.findById(req.params.id)
         .exec()
         .catch((err) => {
             res.status(400).send("ID is not properly formatted");
-            interrupt=true;
+            interrupt = true;
             return;
         });
-    
-    if (interrupt){
+
+    if (interrupt) {
         return;
     }
     if (!usersFound) {
@@ -70,7 +70,7 @@ router.get("/:id", async (req, res) => {
 
 //POST methods
 router.post("", async (req, res) => {
-    let requiredAttributes = ["name", "email", "user_level"];
+    let requiredAttributes = ["name", "email", "user_level", "password"];
 
     //req.body is an object (like a dictionary) which contains the parameters passed
     let body = req.body;
@@ -107,7 +107,13 @@ router.post("", async (req, res) => {
 });
 
 //DELETE methods
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", tokenChecker, async (req, res) => {
+    if (req.loggedUser.user_level != "admin") {
+        res.status(403).send(
+            "Unauthorized action, this user can not delete user."
+        );
+        return;
+    }
     let userID = req.params.id;
 
     User.findByIdAndDelete(userID)

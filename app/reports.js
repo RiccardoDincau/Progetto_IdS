@@ -4,8 +4,7 @@ const router = express.Router();
 const Report = require("./models/report.js");
 const User = require("./models/user.js");
 const Comment = require("./models/comment.js");
-const { user_level } = require("./models/enums.js");
-const user = require("./models/user.js");
+const tokenChecker = require("./tokenChecker.js");
 
 function displayedReport(mongooseReport) {
     return {
@@ -100,7 +99,7 @@ router.get("", async (req, res) => {
     res.status(200).json(reports);
 });
 
-router.post("", async (req, res) => {
+router.post("", tokenChecker, async (req, res) => {
     let requiredAttributes = [
         "title",
         "content",
@@ -176,10 +175,18 @@ router.get("/:id", async (req, res) => {
     res.status(200).json(displayedReport(report));
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", tokenChecker, async (req, res) => {
     let { votes, state } = req.body;
 
-    let report = await Report.findByIdAndUpdate(req.params.id, { votes, state })
+    let report = await Report.findById(req.params.id).exec();
+    if (report.state != state && req.loggedUser.user_level != "admin") {
+        res.status(403).send(
+            "Unauthorized action, this user can not change state of the report"
+        );
+        return;
+    }
+
+    report = await Report.findByIdAndUpdate(req.params.id, { votes, state })
         .exec()
         .catch((err) => {
             console.log("Error in Report quering (Id may be wrong)");
@@ -196,7 +203,14 @@ router.put("/:id", async (req, res) => {
     res.status(200).json(displayedReport(report));
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", tockenChecker, async (req, res) => {
+    if (req.loggedUser.user_level != "admin") {
+        res.status(403).send(
+            "Unauthorized action, this user can not delete a report"
+        );
+        return;
+    }
+
     let report = await Report.findById(req.params.id)
         .exec()
         .catch(() => {
@@ -276,7 +290,7 @@ router.get("/:reportID/comments/:commentID", async (req, res) => {
     res.status(200).json(displayedComment(report, comment));
 });
 
-router.post("/report/:id/comment", async (req, res) => {
+router.post("/report/:id/comment", tokenChecker, async (req, res) => {
     let requiredAttributes = ["content"];
 
     let userUrl = req.body["user"];
@@ -326,29 +340,35 @@ router.post("/report/:id/comment", async (req, res) => {
         .send();
 });
 
-router.delete("/report/:reportID/comments/:commentID", async (req, res) => {
-    let report = await Report.findById(req.params.reportID)
-        .exec()
-        .catch(() => {
-            console.log("Error in Report quering (Id may be wrong)");
-        });
+router.delete(
+    "/report/:reportID/comments/:commentID",
+    tokenChecker,
+    async (req, res) => {
+        // must be the user whom wrote the comment or an admin
 
-    let comment = await report.comments
-        .id(req.params.commentID)
-        .exec()
-        .catch(() => {
-            console.log("Error in Comment quering (Id may be wrong)");
-        });
+        let report = await Report.findById(req.params.reportID)
+            .exec()
+            .catch(() => {
+                console.log("Error in Report quering (Id may be wrong)");
+            });
 
-    if (!comment) {
-        res.status(404).send();
-        console.log("Comment not found");
-        return;
+        let comment = await report.comments
+            .id(req.params.commentID)
+            .exec()
+            .catch(() => {
+                console.log("Error in Comment quering (Id may be wrong)");
+            });
+
+        if (!comment) {
+            res.status(404).send();
+            console.log("Comment not found");
+            return;
+        }
+
+        await Comment.deleteOne({ _id: comment._id });
+        console.log("Comment removed");
+        res.status(204).send();
     }
-
-    await Comment.deleteOne({ _id: comment._id });
-    console.log("Comment removed");
-    res.status(204).send();
-});
+);
 
 module.exports = router;
