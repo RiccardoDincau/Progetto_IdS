@@ -18,6 +18,7 @@ function displayedUsers(mongooseUser) {
 //GET methods
 router.get("", async (req, res) => {
     let possibleQueries = ["user_level"];
+    let interrupt = false;
 
     //Check to filter only the available query strings
     let finalQueries = {};
@@ -36,9 +37,13 @@ router.get("", async (req, res) => {
     let usersFound = await User.find(finalQueries).catch((err) => {
         console.log("The parameter inserted is not accepted");
         res.status(400).send("The parameter inserted is not accepted");
-        return null;
+        interrupt = true;
     });
-    if (!usersFound) return;
+
+    if (!usersFound) {
+        if (!interrupt) res.status(404).send("User not found");
+        return;
+    }
 
     usersFound = usersFound.map(displayedUsers);
     //Returns the same list passed with a format used by mongoose, but with a json format
@@ -47,18 +52,20 @@ router.get("", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-    let interrupt=false;
+    let interrupt = false;
+
+    //Search of the users given the id by the request
     let usersFound = await User.findById(req.params.id)
         .exec()
         .catch((err) => {
             res.status(400).send("ID is not properly formatted");
-            interrupt=true;
+            interrupt = true;
             return;
         });
-    
-    if (interrupt){
-        return;
-    }
+
+    if (interrupt) return;
+
+    //Handling of the case in which there's no found user
     if (!usersFound) {
         res.status(404).send("User not found");
         console.log("User not found");
@@ -90,6 +97,7 @@ router.post("", async (req, res) => {
         return;
     }
 
+    //Add the user in the database
     let user = new User(body);
     user = await user.save().catch((err) => {
         console.log(err);
@@ -110,17 +118,16 @@ router.post("", async (req, res) => {
 router.delete("/:id", async (req, res) => {
     let userID = req.params.id;
 
+    //Searching and deletion of the user based on the id
     User.findByIdAndDelete(userID)
         .exec()
         .then((doc) => {
             if (!doc) {
                 res.status(404).send("User not found");
-                return;
             }
             res.status(200).send(`Deleted user: ${doc._id}`);
             return;
         })
-
         .catch((err) => {
             console.log(err);
             res.status(400).send("ID not accepted");

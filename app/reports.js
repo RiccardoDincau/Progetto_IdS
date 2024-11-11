@@ -58,7 +58,7 @@ router.get("", async (req, res) => {
                 console.log("Error in user quering.\n", err);
             });
 
-        if (user == null) {
+        if (user) {
             res.status(400).json({ error: "User does not exist" });
             return;
         }
