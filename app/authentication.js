@@ -5,6 +5,15 @@ const jwt = require("jsonwebtoken");
 const User = require("./models/user.js");
 
 router.post("", async function (req, res) {
+    if (!req.body.email) {
+        res.status(400).json({
+            success: false,
+            message: "Email not provided",
+        });
+        console.log("Email not provided");
+        return;
+    }
+
     let user = await User.findOne({ email: req.body.email })
         .exec()
         .catch(() => {
@@ -13,10 +22,12 @@ router.post("", async function (req, res) {
 
     if (!user) {
         res.status(404).json({ success: false, message: "User not found" });
+        return;
     }
 
     if (user.password != req.body.password) {
         res.status(400).json({ success: false, message: "Wrong password" });
+        return;
     }
 
     var payload = {
@@ -33,7 +44,6 @@ router.post("", async function (req, res) {
         email: user.email,
         id: "/users/" + user._id,
         user_level: user.user_level,
-        self: "/users/" + user._id,
     });
 });
 
