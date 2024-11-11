@@ -362,7 +362,9 @@ components:
                     type: string
                 user_level:
                     $ref: "#/components/schemas/User_level"  
-
+                password:
+                    type: string
+                    
         Notification_GET:
             type: object
             properties:
