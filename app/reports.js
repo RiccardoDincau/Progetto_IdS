@@ -276,7 +276,7 @@ router.get("/:reportID/comments/:commentID", async (req, res) => {
     res.status(200).json(displayedComment(report, comment));
 });
 
-router.post("/report/:id/comment", async (req, res) => {
+router.post("/:id/comments", async (req, res) => {
     let requiredAttributes = ["content"];
 
     let userUrl = req.body["user"];
@@ -326,7 +326,7 @@ router.post("/report/:id/comment", async (req, res) => {
         .send();
 });
 
-router.delete("/report/:reportID/comments/:commentID", async (req, res) => {
+router.delete("/:reportID/comments/:commentID", async (req, res) => {
     let report = await Report.findById(req.params.reportID)
         .exec()
         .catch(() => {
