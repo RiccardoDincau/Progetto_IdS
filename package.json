@@ -6,7 +6,8 @@
   },
   "scripts": {
     "start": "node index.js",
-    "dev": "node -r dotenv/config index.js"
+    "dev": "node -r dotenv/config index.js",
+    "setup": "node -r dotenv/config scripts/testSetup.js"
   },
   "devDependencies": {
     "dotenv": "^16.4.5"
