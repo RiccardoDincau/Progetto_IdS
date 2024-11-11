@@ -18,15 +18,26 @@ function displayedNotification(mongooseNotification) {
 
 router.get("", async (req, res) => {
     let notifications;
-
+    let interrupt = false;
+    //Scenario in which a query has been added
     if (req.query.user) {
-        notifications = await Notification.find({
-            user: req.query.user,
-        }).exec();
-    } else {
-        notifications = await Notification.find({}).exec();
-    }
+        let user = req.query.user;
+        notifications = await Notification.find(user)
+            .exec()
+            .catch((err) => {
+                //Check of the parameter format
+                res.status(400).send("User has an incorret format");
+                interrupt = true;
+                return null;
+            });
+        //Exits if an error has been occurred
+        if (interrupt) return;
+    } else notifications = await Notification.find({}).exec();
 
+    if (!notifications) {
+        res.status(404).send("Notification not found");
+        return;
+    }
     notifications = notifications.map(displayedNotification);
 
     res.status(200).json(notifications);
@@ -38,6 +49,7 @@ router.post("", async (req, res) => {
     let content = body.content;
     let userUrl = body.user;
     let reportUrl = body.report;
+    let interrupt = false;
 
     let userID = userUrl.substring(userUrl.lastIndexOf("/") + 1);
     let reportID = reportUrl.substring(reportUrl.lastIndexOf("/") + 1);
@@ -47,22 +59,25 @@ router.post("", async (req, res) => {
         .exec()
         .catch((err) => {
             console.log("Error in user quering.\n", err);
+            interrupt = true;
         });
 
-    if (user == null) {
-        res.status(400).json({ error: "User does not exist" });
+    if (!user) {
+        if (!interrupt) res.status(400).json({ error: "User does not exist" });
         return;
     }
 
+    interrupt = false;
     let report = null;
     report = await Report.findById(reportID)
         .exec()
         .catch((err) => {
-            console.log("Error in report quering.\n", err);
+            res.status(400).send("Error in report quering");
+            interrupt = true;
         });
 
-    if (report == null) {
-        res.status(400).json({ error: "Report does not exist" });
+    if (!report) {
+        if (!interrupt) res.status(404).send("Report not found");
         return;
     }
 
@@ -83,15 +98,17 @@ router.post("", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
+    let interrupt = false;
     let notification = await Notification.findById(req.params.id)
         .exec()
         .catch(() => {
             console.log("Error in Notification quering (Id may be wrong)");
+            res.status(400);
+            interrupt = true;
         });
 
     if (!notification) {
-        res.status(404).send();
-        console.log("Notification not found");
+        if (!interrupt) res.status(404).send("Notification not found");
         return;
     }
 
@@ -99,21 +116,22 @@ router.get("/:id", async (req, res) => {
 });
 
 router.delete("/:id", tokenChecker, async (req, res) => {
-    let notification = await Notification.findById(req.params.id)
+    let notificationID = req.params.id;
+
+    //Searching and deletion of the notification based on the id
+    User.findByIdAndDelete(notificationID)
         .exec()
-        .catch(() => {
-            console.log("Error in Notification quering (Id may be wrong)");
+        .then((doc) => {
+            if (!doc) {
+                res.status(404).send("User not found");
+            }
+            res.status(200).send(`Deleted user: ${doc._id}`);
+            return;
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(400).send("ID not accepted");
         });
-
-    if (!notification) {
-        res.status(404).send();
-        console.log("Notification not found");
-        return;
-    }
-
-    await Notification.deleteOne({ _id: notification._id });
-    console.log("Notification removed");
-    res.status(204).send();
 });
 
 module.exports = router;

@@ -57,7 +57,7 @@ router.get("", async (req, res) => {
                 console.log("Error in user quering.\n", err);
             });
 
-        if (user == null) {
+        if (user) {
             res.status(400).json({ error: "User does not exist" });
             return;
         }
@@ -283,14 +283,14 @@ router.get("/:id/comments", async (req, res) => {
 });
 
 router.get("/:reportID/comments/:commentID", async (req, res) => {
-    let report = await Report.findById(reportID)
+    let report = await Report.findById(req.params.reportID)
         .exec()
         .catch(() => {
             console.log("Error in Report quering (Id may be wrong)");
         });
 
     let comment = await report.comments
-        .id(commentID)
+        .id(req.params.commentID)
         .exec()
         .catch(() => {
             console.log("Error in Comment quering (Id may be wrong)");
