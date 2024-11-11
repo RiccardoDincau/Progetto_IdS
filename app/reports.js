@@ -178,8 +178,23 @@ router.get("/:id", async (req, res) => {
 router.put("/:id", tokenChecker, async (req, res) => {
     let { votes, state } = req.body;
 
-    let report = await Report.findById(req.params.id).exec();
-    if (report.state != state && req.loggedUser.user_level != "admin") {
+    let report = await Report.findById(req.params.id)
+        .exec()
+        .catch((err) => {
+            console.log("Error in Report quering (Id may be wrong)");
+        });
+
+    if (!report) {
+        res.status(404).send("Report not found");
+        console.log("Report not found");
+        return;
+    }
+
+    if (
+        state &&
+        report.state != state &&
+        req.loggedUser.user_level != "admin"
+    ) {
         res.status(403).send(
             "Unauthorized action, this user can not change state of the report"
         );
@@ -218,7 +233,7 @@ router.delete("/:id", tokenChecker, async (req, res) => {
         });
 
     if (!report) {
-        res.status(404).send("Report not found. (ID may be wrong");
+        res.status(404).send("Report not found. (ID may be wrong)");
         console.log("Report not found");
         return;
     }
