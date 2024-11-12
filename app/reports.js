@@ -141,7 +141,7 @@ router.post("", async (req, res) => {
     let report = new Report(reportAttributes);
 
     report = await report.save().catch((err) => {
-        console.log("Error in report saving...");
+        console.log("Error in report saving...\n");
         res.status(400).send(
             "Error in report saving, probably an invalid enum was given"
         );
@@ -164,12 +164,12 @@ router.get("/:id", async (req, res) => {
     let report = await Report.findById(req.params.id)
         .exec()
         .catch((err) => {
-            console.log("Error in Report quering (Id may be wrong)");
+            console.log("Error in Report quering (Id may be wrong)\n");
         });
 
     if (!report) {
         res.status(404).send("Report not found");
-        console.log("Report not found");
+        console.log("Report not found\n");
         return;
     }
 
@@ -182,12 +182,12 @@ router.put("/:id", async (req, res) => {
     let report = await Report.findByIdAndUpdate(req.params.id, { votes, state })
         .exec()
         .catch((err) => {
-            console.log("Error in Report quering (Id may be wrong)");
+            console.log("Error in Report quering (Id may be wrong)\n");
         });
 
     if (!report) {
         res.status(404).send();
-        console.log("Report not found");
+        console.log("Report not found\n");
         return;
     }
 
@@ -200,154 +200,17 @@ router.delete("/:id", async (req, res) => {
     let report = await Report.findById(req.params.id)
         .exec()
         .catch(() => {
-            console.log("Error in Report quering (ID may be wrong)");
+            console.log("Error in Report quering (ID may be wrong)\n");
         });
 
     if (!report) {
         res.status(404).send("Report not found. (ID may be wrong");
-        console.log("Report not found");
+        console.log("Report not found\n");
         return;
     }
 
     await Report.deleteOne({ _id: report._id });
     console.log("Report removed");
-    res.status(204).send();
-});
-
-router.get("/:id/comments", async (req, res) => {
-    let comments;
-
-    let report = await Report.findById(req.params.id)
-        .exec()
-        .catch(() => {
-            // find the report by the given id
-            console.log("Error in Report quering (Id may be wrong)");
-        });
-
-    let sentQueries = {};
-    if (req.query.user) {
-        // req.query.user is in the format /user/:id
-        sentQueries["user"] = req.query.user;
-
-        let userUrl = req.query.user;
-        let userID = userUrl.substring(userUrl.lastIndexOf("/") + 1); // extract the id from the /user/:id string
-
-        let user = null;
-        user = await User.findById(userID)
-            .exec()
-            .catch((err) => {
-                // find a user by his id
-                console.log("Error in user quering.\n", err);
-            });
-
-        if (user == null) {
-            res.status(400).send("User does not exist\n");
-            return;
-        }
-    }
-
-    comments = await report.comments.find({ sentQueries }).exec(); // return an array of comments (mongoose format)
-
-    comments = comments.map(displayedComment); // displayComment on every element of the array comments
-
-    res.status(200).json(comments); // return the array (json format)
-});
-
-router.get("/:reportID/comments/:commentID", async (req, res) => {
-    let report = await Report.findById(req.params.reportID)
-        .exec()
-        .catch(() => {
-            console.log("Error in Report quering (Id may be wrong)");
-        });
-
-    let comment = await report.comments
-        .id(req.params.commentID)
-        .exec()
-        .catch(() => {
-            console.log("Error in Comment quering (Id may be wrong)");
-        });
-
-    if (!comment) {
-        res.status(404).send();
-        console.log("Comment not found");
-        return;
-    }
-
-    res.status(200).json(displayedComment(report, comment));
-});
-
-router.post("/:id/comments", async (req, res) => {
-    let requiredAttributes = ["content"];
-
-    let userUrl = req.body["user"];
-    let userID = userUrl.substring(userUrl.lastIndexOf("/") + 1);
-
-    let user = null;
-    user = await User.findById(userID)
-        .exec()
-        .catch((err) => {
-            console.log("Error in user quering.\n", err);
-        });
-
-    if (user == null) {
-        res.status(400).json({ error: "User does not exist" });
-        return;
-    }
-
-    let commentAttributes = {};
-    commentAttributes["user"] = userUrl;
-    for (let attr of requiredAttributes) {
-        if (req.body[attr] == undefined) {
-            console.log("Missing attribute: ", attr);
-            res.status(400).send("Missing attribute: " + attr);
-            return;
-        }
-
-        reportAttributes[attr] = req.body[attr];
-    }
-
-    let comment = new Comment(commentAttributes);
-
-    comment = await comment.save().catch((err) => {
-        console.log("Error in comment saving...");
-        res.status(404).send(
-            "Error in comment saving, probably an invalid enum was given"
-        );
-        return null;
-    });
-
-    if (comment == null) return;
-    // TODO
-    // da aggiungere il commento nello user
-
-    let commentID = comment.id;
-    res.location(req.path + commentID)
-        .status(201)
-        .send();
-});
-
-router.delete("/:reportID/comments/:commentID", async (req, res) => {
-    let report = await Report.findById(req.params.reportID)
-        .exec()
-        .catch(() => {
-            console.log("Error in Report quering (Id may be wrong)");
-        });
-
-    let comment = await report.comments
-        .id(req.params.commentID)
-        .exec()
-        .catch(() => {
-            console.log("Error in Comment quering (Id may be wrong)");
-        });
-
-    if (!comment) {
-        res.status(404).send();
-        console.log("Comment not found");
-        return;
-    }
-
-    await Comment.deleteOne({ _id: comment._id });
-    console.log("Comment removed");
     res.status(204).send();
 });
 
