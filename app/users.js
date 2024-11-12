@@ -124,19 +124,20 @@ router.delete("/:id", tokenChecker, async (req, res) => {
         return;
     }
     let userID = req.params.id;
+    let interrupt = false;
 
     //Searching and deletion of the user based on the id
-    User.findByIdAndDelete(userID)
+    let user = await User.findById(userID)
         .exec()
-        .then((doc) => {
-            if (!doc) {
-                res.status(404).send("User not found");
-            }
-            res.status(200).send(`Deleted user: ${doc._id}`);
-            return;
-        })
-        .catch((err) => {
-            console.log(err);
+        .catch(() => {
             res.status(400).send("ID not accepted");
+            interrupt = true;
         });
+    if (interrupt) return;
+    if (!user) {
+        res.status(404).send("User not found");
+        return;
+    }
+    User.deleteOne({ _id: user._id });
+    res.status(201).send("Deletion completed");
 });
