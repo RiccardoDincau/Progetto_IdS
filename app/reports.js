@@ -4,8 +4,7 @@ const router = express.Router();
 const Report = require("./models/report.js");
 const User = require("./models/user.js");
 const Comment = require("./models/comment.js");
-const { user_level } = require("./models/enums.js");
-const user = require("./models/user.js");
+const tokenChecker = require("./tokenChecker.js");
 
 function displayedReport(mongooseReport) {
     return {
@@ -100,7 +99,7 @@ router.get("", async (req, res) => {
     res.status(200).json(reports);
 });
 
-router.post("", async (req, res) => {
+router.post("", tokenChecker, async (req, res) => {
     let requiredAttributes = [
         "title",
         "content",
@@ -176,10 +175,33 @@ router.get("/:id", async (req, res) => {
     res.status(200).json(displayedReport(report));
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", tokenChecker, async (req, res) => {
     let { votes, state } = req.body;
 
     let report = await Report.findByIdAndUpdate(req.params.id, { votes, state })
+        .exec()
+        .catch((err) => {
+            console.log("Error in Report quering (Id may be wrong)\n");
+        });
+
+    if (!report) {
+        res.status(404).send();
+        console.log("Report not found");
+        return;
+    }
+
+    if (
+        state &&
+        report.state != state &&
+        req.loggedUser.user_level != "admin"
+    ) {
+        res.status(403).send(
+            "Unauthorized action, this user can not change state of the report"
+        );
+        return;
+    }
+
+    report = await Report.findByIdAndUpdate(req.params.id, { votes, state })
         .exec()
         .catch((err) => {
             console.log("Error in Report quering (Id may be wrong)\n");
@@ -196,7 +218,14 @@ router.put("/:id", async (req, res) => {
     res.status(200).json(displayedReport(report));
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", tokenChecker, async (req, res) => {
+    if (req.loggedUser.user_level != "admin") {
+        res.status(403).send(
+            "Unauthorized action, this user can not delete a report"
+        );
+        return;
+    }
+
     let report = await Report.findById(req.params.id)
         .exec()
         .catch(() => {

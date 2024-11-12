@@ -4,6 +4,7 @@ module.exports = router;
 
 const User = require("./models/user.js");
 const Enums = require("./models/enums.js");
+const tokenChecker = require("./tokenChecker.js");
 
 function displayedUsers(mongooseUser) {
     return {
@@ -77,7 +78,7 @@ router.get("/:id", async (req, res) => {
 
 //POST methods
 router.post("", async (req, res) => {
-    let requiredAttributes = ["name", "email", "user_level"];
+    let requiredAttributes = ["name", "email", "user_level", "password"];
 
     //req.body is an object (like a dictionary) which contains the parameters passed
     let body = req.body;
@@ -115,21 +116,28 @@ router.post("", async (req, res) => {
 });
 
 //DELETE methods
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", tokenChecker, async (req, res) => {
+    if (req.loggedUser.user_level != "admin") {
+        res.status(403).send(
+            "Unauthorized action, this user can not delete user."
+        );
+        return;
+    }
     let userID = req.params.id;
+    let interrupt = false;
 
     //Searching and deletion of the user based on the id
-    User.findByIdAndDelete(userID)
+    let user = await User.findById(userID)
         .exec()
-        .then((doc) => {
-            if (!doc) {
-                res.status(404).send("User not found");
-            }
-            res.status(200).send(`Deleted user: ${doc._id}`);
-            return;
-        })
-        .catch((err) => {
-            console.log(err);
+        .catch(() => {
             res.status(400).send("ID not accepted");
+            interrupt = true;
         });
+    if (interrupt) return;
+    if (!user) {
+        res.status(404).send("User not found");
+        return;
+    }
+    User.deleteOne({ _id: user._id });
+    res.status(201).send("Deletion completed");
 });
