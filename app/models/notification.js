@@ -7,6 +7,5 @@ module.exports = mongoose.model(
         title: String,
         content: String,
         report: { type: Schema.Types.ObjectId, ref: "Report" },
-        user: [{ type: Schema.Types.ObjectId, ref: "User" }],
     })
 );
