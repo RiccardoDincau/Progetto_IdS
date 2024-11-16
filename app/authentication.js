@@ -1,32 +1,27 @@
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
+const errResp = require("./errors/errorResponse.js");
 
 const User = require("./models/user.js");
 
 router.post("", async function (req, res) {
     if (!req.body.email) {
-        res.status(400).json({
-            success: false,
-            message: "Email not provided",
-        });
-        console.log("Email not provided");
+        errResp.missingAttribute(res, email);
         return;
     }
 
     let user = await User.findOne({ email: req.body.email })
         .exec()
-        .catch(() => {
-            console.log("User not found, email may be wrong.");
-        });
+        .catch(() => errResp.emailNotValid(res));
 
     if (!user) {
-        res.status(404).json({ success: false, message: "User not found" });
+        errResp.userNotFound(res);
         return;
     }
 
     if (user.password != req.body.password) {
-        res.status(400).json({ success: false, message: "Wrong password" });
+        errResp.authenticationFailed(res, "Wrong password");
         return;
     }
 

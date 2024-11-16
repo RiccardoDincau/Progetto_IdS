@@ -88,6 +88,10 @@ class ErrorResponse {
             additionalInfo
         );
     }
+
+    static emailNotValid(res, additionalInfo) {
+        this.baseErrorResponse(res, 400, "Email is malformed", additionalInfo);
+    }
 }
 
 module.exports = ErrorResponse;
