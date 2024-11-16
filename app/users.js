@@ -13,6 +13,7 @@ function displayedUsers(mongooseUser) {
         email: mongooseUser.email,
         user_level: mongooseUser.user_level,
         reports: mongooseUser.reports,
+        notifications: mongooseUser.notifications
     };
 }
 
@@ -92,7 +93,7 @@ router.post("", async (req, res) => {
 
     //Check if the email is already used by a user
     let email = body["email"];
-    email = await User.findOne({ email: email }).exec();
+    email = await User.findOne(email).exec();
     if (email) {
         res.status(400).send("Email already registered");
         return;
@@ -100,6 +101,7 @@ router.post("", async (req, res) => {
 
     //Add the user in the database
     let user = new User(body);
+    user.notifications=[];
     user = await user.save().catch((err) => {
         console.log(err);
         console.log("Error occured while saving ...");

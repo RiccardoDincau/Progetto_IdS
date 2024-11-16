@@ -4,6 +4,7 @@ const router = express.Router();
 const Notification = require("./models/notification.js");
 const User = require("./models/user.js");
 const Report = require("./models/report.js");
+const Comment = require("./models/comment.js");
 const tokenChecker = require("./tokenChecker.js");
 
 function displayedNotification(mongooseNotification) {
@@ -16,85 +17,54 @@ function displayedNotification(mongooseNotification) {
     };
 }
 
-router.get("", async (req, res) => {
-    let notifications;
-    let interrupt = false;
-    //Scenario in which a query has been added
-    if (req.query.user) {
-        let user = req.query.user;
-        notifications = await Notification.find(user)
-            .exec()
-            .catch((err) => {
-                //Check of the parameter format
-                res.status(400).send("User has an incorret format");
-                interrupt = true;
-                return null;
-            });
-        //Exits if an error has been occurred
-        if (interrupt) return;
-    } else notifications = await Notification.find({}).exec();
+function newUserDelete(oldUser, notifications) {
+    return {
+        _id: oldUser._id,
+        name: oldUser.name,
+        email: oldUser.email,
+        user_level: oldUser.user_level,
+        reports: oldUser.reports,
+        notifications: notifications
+    };
+}
+function newUserAdd(oldUser, newNotifications){
+    return {
+        _id: mongooseUser._id,
+        name: mongooseUser.name,
+        email: mongooseUser.email,
+        user_level: mongooseUser.user_level,
+        reports: mongooseUser.reports,
+        notifications: newNotifications
+    };
+}
 
-    if (!notifications) {
+
+
+//GET methods
+router.get("", async (req, res) => {
+    //Queries that are accepted by the API
+    let possibleQueries = ["report"];
+    let body = req.body;
+
+    //Extracting only the query strings that are accepted by the API
+    let acceptedQueries = {};
+    for (let el of possibleQueries) {
+        if (body[el]) acceptedQueries[el] = body[el];
+    }
+
+    let notification = await Notification.find(acceptedQueries)
+        .exec()
+        .catch((err) => {
+            res.status(400).send("Id format mey be wrong");
+        });
+
+    if (!notification) {
         res.status(404).send("Notification not found");
         return;
     }
-    notifications = notifications.map(displayedNotification);
+    notification = notification.map(displayedNotification);
 
-    res.status(200).json(notifications);
-});
-
-router.post("", async (req, res) => {
-    let body = req.body;
-    let title = body.title;
-    let content = body.content;
-    let userUrl = body.user;
-    let reportUrl = body.report;
-    let interrupt = false;
-
-    let userID = userUrl.substring(userUrl.lastIndexOf("/") + 1);
-    let reportID = reportUrl.substring(reportUrl.lastIndexOf("/") + 1);
-
-    let user = null;
-    user = await User.findById(userID)
-        .exec()
-        .catch((err) => {
-            console.log("Error in user quering.\n", err);
-            interrupt = true;
-        });
-
-    if (!user) {
-        if (!interrupt) res.status(400).json({ error: "User does not exist" });
-        return;
-    }
-
-    interrupt = false;
-    let report = null;
-    report = await Report.findById(reportID)
-        .exec()
-        .catch((err) => {
-            res.status(400).send("Error in report quering");
-            interrupt = true;
-        });
-
-    if (!report) {
-        if (!interrupt) res.status(404).send("Report not found");
-        return;
-    }
-
-    let notification = new Notification({
-        title,
-        content,
-        user: userID,
-        report: reportID,
-    });
-
-    notification = await notification.save();
-
-    let notificationId = notification.id;
-
-    res.location(req.path + notificationId)
-        .status(201)
-        .send();
+    res.status(200).json(notification);
 });
 
 router.get("/:id", async (req, res) => {
@@ -115,23 +85,76 @@ router.get("/:id", async (req, res) => {
     res.status(200).json(displayedNotification(notification));
 });
 
+//POST methods
+router.post("", async (req, res) => {
+    let body = req.body;
+    let title = body.title;
+    let content = body.content;
+    let reportUrl = body.report;
+    let interrupt = false;
+
+    let reportID = reportUrl.substring(reportUrl.lastIndexOf("/") + 1);
+
+    let report = await Report.findById(reportID)
+        .exec()
+        .catch((err) => {
+            res.status(400).send("Error in report quering");
+            interrupt = true;
+        });
+
+    if (!report) {
+        if (!interrupt) res.status(404).send("Report not found");
+        return;
+    }
+
+    let notification = new Notification({
+        title,
+        content,
+        report: reportID,
+    });
+
+    notification = await notification.save();
+
+    let notificationId = notification.id;
+    let comments = await Comments.find({report : reportID}).exec();
+
+    let usersNewNotification=[];
+    for (let el of comments){
+        usersNewNotification.push(el.user);
+    }
+
+    for (let el of usersNewNotification){
+        let user = await User.findById(el).exec();
+        let notifications = user.notification;
+        notifications.push(notificationId);
+        User.findByIdAndUpdate(user.id, newUserAdd(user, notifications)).exec();
+    }
+
+    res.location(req.path + notificationId)
+        .status(201)
+        .send();
+});
+
+//DELETE methods
 router.delete("/:id", tokenChecker, async (req, res) => {
     let notificationID = req.params.id;
+    let userId=req.loggedUser.id;
 
-    //Searching and deletion of the notification based on the id
-    User.findByIdAndDelete(notificationID)
-        .exec()
-        .then((doc) => {
-            if (!doc) {
-                res.status(404).send("User not found");
-            }
-            res.status(200).send(`Deleted user: ${doc._id}`);
-            return;
-        })
-        .catch((err) => {
-            console.log(err);
-            res.status(400).send("ID not accepted");
-        });
+    //Search of the user whereby was sent the request
+    let user=await User.findById(userId).exec();
+
+    let userNotification = user.notifications;
+    let index = userNotification.indexOf(notificationID);
+
+    //TODO: change the error response
+    if (index==-1)
+        res.status(404).send("Notification not found");
+
+    userNotification.splice(index, 1);
+
+    User.findByIdAndUpdate(userId, newUserDelete(user, userNotification)).exec();
+
+    res.status(200).send();
 });
 
 module.exports = router;

@@ -38,7 +38,7 @@ function editUser(mongooseUser, newReportID) {
         name: mongooseUser.name,
         user_level: mongooseUser.user_level,
         email: mongooseUser.email,
-        reports: mongooseUser.reports.concat([newReportID]),
+        reports: mongooseUser.reports.push(newReportID),
     };
 }
 
