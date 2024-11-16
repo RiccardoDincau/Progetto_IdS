@@ -93,6 +93,14 @@ class ErrorResponse {
         );
     }
 
+    static tokenNotProvided(res, additionalInfo) {
+        this.authenticationFailed(res, "Token not provided", additionalInfo);
+    }
+
+    static invalidToken(res, additionalInfo) {
+        this.authenticationFailed(res, "Invalid token", additionalInfo);
+    }
+
     static emailNotValid(res, additionalInfo) {
         this.baseErrorResponse(res, 400, "Email is malformed", additionalInfo);
     }
