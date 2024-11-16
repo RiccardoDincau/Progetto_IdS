@@ -51,11 +51,30 @@ router.get("/:id/comments", async (req, res) => {
             return;
         }
     }
-
+    // TODO
     // comments = await report.comments.find({ sentQueries }).exec(); // return an array of comments (mongoose format)
-    let comments = report.comments;
 
-    comments = comments.map(displayedComment); // displayComment on every element of the array comments
+    let comment_ids = report.comments || []; // array of comment id
+    console.log(comment_ids);
+    let comments = []; // this will be the array of mongoose comments
+    let comment; // this will be the single comment that will be added to the array "comments"
+    for(let comment_id of comment_ids){
+        comment = await Comment.findById(comment_id).exec().catch((err) => {
+            console.log("Comment not found", err);
+            return;
+        });
+        if(comment){
+            comments.push(comment);
+        }
+    }
+
+    if (comments.length === 0) {
+        res.status(200).json([]);
+        return;
+    }
+    comments = comments.map((mongooseComment) => {
+        displayedComment(report, mongooseComment);
+    }); // displayComment on every element of the array comments
 
     res.status(200).json(comments); // return the array (json format)
 });
@@ -128,6 +147,27 @@ router.post("/:id/comments", async (req, res) => { // separare comments da repor
     // da aggiungere il commento nello user
 
     let commentID = comment.id;
+
+    let report = await Report.findById(req.params.id).exec().catch((err) => {
+        console.log("Report not found", err);
+        res.status(400).json({ error: "Report does not exist" });
+        return;
+    });
+
+    report.comments.push(commentID);
+
+    report.save().catch((err) => {
+        console.log("Error saving report", err);
+        res.status(500).json({ error: "Failed to update report with comment" });
+        return;
+    });
+
+    comment.save().catch((err) => {
+        console.log("Error saving comment", err);
+        res.status(500).json({ error: "Failed to saving comment" });
+        return;
+    });
+
     res.location(req.path + commentID)
         .status(201)
         .send();

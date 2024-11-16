@@ -90,7 +90,10 @@ mongoose
 
         console.log("Setup completed!");
         return;
+    }).catch(() => {
+        console.error("Database connection error:", err);
     });
+    
 
 function make_user(name, email, password, user_level) {
     return { name, email, password, user_level };
