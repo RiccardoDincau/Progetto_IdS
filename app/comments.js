@@ -6,6 +6,7 @@ const User = require("./models/user.js");
 const Comment = require("./models/comment.js");
 const errResp = require("./errors/errorResponse.js");
 const { user_level } = require("./models/enums.js");
+const tokenChecker = require("./tokenChecker.js");
 const user = require("./models/user.js");
 
 function displayedComment(mongooseReport, mongooseComment) {
@@ -80,11 +81,11 @@ router.get("/:reportID/comments/:commentID", async (req, res) => {
     res.status(200).json(displayedComment(report, comment));
 });
 
-router.post("/:id/comments", async (req, res) => {
+router.post("/:id/comments", tokenChecker, async (req, res) => {
     // separare comments da report
     let requiredAttributes = ["content"];
 
-    let userUrl = req.body["user"];
+    let userUrl = req.loggedUser.id;
     let userID = userUrl.substring(userUrl.lastIndexOf("/") + 1);
 
     let user = null;
