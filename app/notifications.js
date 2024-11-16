@@ -30,11 +30,11 @@ function newUserDelete(oldUser, notifications) {
 }
 function newUserAdd(oldUser, newNotifications) {
     return {
-        _id: mongooseUser._id,
-        name: mongooseUser.name,
-        email: mongooseUser.email,
-        user_level: mongooseUser.user_level,
-        reports: mongooseUser.reports,
+        _id: oldUser._id,
+        name: oldUser.name,
+        email: oldUser.email,
+        user_level: oldUser.user_level,
+        reports: oldUser.reports,
         notifications: newNotifications,
     };
 }
@@ -51,6 +51,7 @@ router.get("", async (req, res) => {
         if (body[el]) acceptedQueries[el] = body[el];
     }
 
+    //Finding the notifications that fulfill the requirements
     let notification = await Notification.find(acceptedQueries).exec();
 
     if (!notification) {
@@ -77,21 +78,23 @@ router.get("/:id", async (req, res) => {
 
 //POST methods
 router.post("", async (req, res) => {
+    //TODO: effettuare questo procedimento quando viene modificato un report
     let body = req.body;
     let title = body.title;
     let content = body.content;
-    let reportUrl = body.report;
+    let reportID = body.report;
+    let interrupt=false;
 
-    let reportID = reportUrl.substring(reportUrl.lastIndexOf("/") + 1);
-
+    //Checking if the report actually exists and if it's properly formatted
     let report = await Report.findById(reportID)
         .exec()
-        .catch(() =>
-            errResp.idNotValid(res, { message: "Report id is not valid" })
+        .catch(() =>{
+            errResp.idNotValid(res, { message: "Report id is not valid" });
+            interrupt=true;
+        }
         );
-
     if (!report) {
-        errResp.reportNotFound(res);
+        if (!interrupt) errResp.reportNotFound(res);
         return;
     }
 
@@ -101,9 +104,12 @@ router.post("", async (req, res) => {
         report: reportID,
     });
 
+    //The notification is created
     notification = await notification.save();
 
     let notificationId = notification.id;
+
+    //Gather all the users that commented the report that the notification is referring to
     let comments = await Comment.find({ report: reportID }).exec();
 
     let usersNewNotification = [];
@@ -113,8 +119,10 @@ router.post("", async (req, res) => {
 
     for (let el of usersNewNotification) {
         let user = await User.findById(el).exec();
-        let notifications = user.notification;
+        let notifications = user.notifications;
         notifications.push(notificationId);
+
+        //Updating the user with the new notification added in the list
         User.findByIdAndUpdate(user.id, newUserAdd(user, notifications)).exec();
     }
 
@@ -128,20 +136,21 @@ router.delete("/:id", tokenChecker, async (req, res) => {
     let notificationID = req.params.id;
     let userId = req.loggedUser.id;
 
-    //Search of the user whereby was sent the request
+    //Search of the user to whom was sent the request
     let user = await User.findById(userId).exec();
 
     let userNotification = user.notifications;
     let index = userNotification.indexOf(notificationID);
 
-    //TODO: change the error response
     if (index == -1) {
         errResp.notificationNotFound(res);
         return;
     }
 
+    //The element associated to "index" is removed from the list
     userNotification.splice(index, 1);
 
+    //The user is updated with the deleted notification
     User.findByIdAndUpdate(
         userId,
         newUserDelete(user, userNotification)

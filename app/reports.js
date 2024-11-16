@@ -23,14 +23,6 @@ function displayedReport(mongooseReport) {
     };
 }
 
-function displayedComment(mongooseReport, mongooseComment) {
-    return {
-        _id: "/report/" + mongooseReport._id,
-        _id: mongooseComment._id,
-        content: mongooseComment.content,
-        user: mongooseComment.user,
-    };
-}
 
 function editUser(mongooseUser, newReportID) {
     return {

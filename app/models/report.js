@@ -14,6 +14,5 @@ module.exports = mongoose.model(
         kind,
         category,
         state,
-        // comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }], // da togliere definitivamente e spostare tutto in comment
     })
 );

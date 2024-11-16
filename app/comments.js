@@ -51,24 +51,8 @@ router.get("/:id/comments", async (req, res) => {
             return;
         }
     }
-    // TODO
-    // comments = await report.comments.find({ sentQueries }).exec(); // return an array of comments (mongoose format)
 
-    // let comment_ids = report.comments || []; // array of comment id
-    // console.log(comment_ids);
-    // let comments = []; // this will be the array of mongoose comments
-    // let comment; // this will be the single comment that will be added to the array "comments"
-    // for(let comment_id of comment_ids){
-    //     comment = await Comment.findById(comment_id).exec().catch((err) => {
-    //         console.log("Comment not found", err);
-    //         return;
-    //     });
-    //     if(comment){
-    //         comments.push(comment);
-    //     }
-    // }
-
-    let comments = await Comment.find({...sentQueries, report: req.params.id}).catch((err) => { // ... is the spread operator
+    let comments = await Comment.find({ ...sentQueries, report: req.params.id }).catch((err) => { // ... is the spread operator
         errResp.baseErrorResponse(res); // TODO mettere un errore per le query malformate (?)
         return;
     });
@@ -77,7 +61,7 @@ router.get("/:id/comments", async (req, res) => {
         res.status(200).json([]);
         return;
     }
-    comments = comments.map((mongooseComment) => 
+    comments = comments.map((mongooseComment) =>
         displayedComment(report, mongooseComment)
     ); // displayComment on every element of the array comments
 
@@ -85,22 +69,31 @@ router.get("/:id/comments", async (req, res) => {
 });
 
 router.get("/:reportID/comments/:commentID", async (req, res) => {
+    let interrupt = false;
+
+    //Check if the id is properly formatted and referenced to a report
     let report = await Report.findById(req.params.reportID)
         .exec()
         .catch(() => {
             errResp.idNotValid(res, { message: "Report id not valid" });
-            return;
+            interrupt = true;
         });
 
+    if (!report) {
+        if (!interrupt) errResp.reportNotFound(res);
+        return;
+    }
+
+    //Check if the id is properly formatted and referenced to a comment
     let comment = await Comment.findById(req.params.commentID)
         .exec()
         .catch(() => {
             errResp.idNotValid(res, { message: "Comment id not valid" });
-            return;
+            interrupt = true;
         });
 
     if (!comment) {
-        errResp.commentNotFound(res);
+        if (!interrupt) errResp.commentNotFound(res);
         return;
     }
 
@@ -108,35 +101,40 @@ router.get("/:reportID/comments/:commentID", async (req, res) => {
 });
 
 router.post("/:id/comments", tokenChecker, async (req, res) => {
-    // separare comments da report
     let requiredAttributes = ["content"];
-
+    let interrupt = false;
     let userUrl = req.loggedUser.id;
     let userID = userUrl.substring(userUrl.lastIndexOf("/") + 1);
 
-    let user = null;
-    user = await User.findById(userID)
+    //Check if the user id is properly formatted and exists
+    let user = await User.findById(userID)
         .exec()
         .catch((err) => {
             errResp.idNotValid(res, { message: "User id is not valid" });
-            return;
+            interrupt = true;
         });
-
-    if (user == null) {
-        errResp.userNotFound(res);
+    if (!user) {
+        if (!interrupt) errResp.userNotFound(res);
         return;
     }
 
-    let report = await Report.findById(req.params.id)
+    let reportUrl = req.params.id;
+    //Check if the report id is properly formatted and exists
+    let report = await Report.findById(reportUrl)
         .exec()
         .catch((err) => {
             errResp.reportNotFound(res);
-            return;
-    });
+            report = true;
+        });
+    if (!report) {
+        if (!interrupt) errResp.reportNotFound(res);
+        return;
+    }
 
+    //The necessary attributes are taken out by the sent body
     let commentAttributes = {};
-    commentAttributes["user"] = userUrl;
-    commentAttributes["report"] = req.params.id;
+    commentAttributes["user"] = userID;
+    commentAttributes["report"] = reportUrl.substring(reportUrl.lastIndexOf("/") + 1);
     for (let attr of requiredAttributes) {
         if (req.body[attr] == undefined) {
             errResp.missingAttribute(res, attr);
@@ -149,7 +147,7 @@ router.post("/:id/comments", tokenChecker, async (req, res) => {
     let comment = new Comment(commentAttributes);
 
     comment = await comment.save()
-        .catch(() =>{ 
+        .catch(() => {
             errResp.commentMalformed(res);
             return;
         });
@@ -175,7 +173,7 @@ router.delete("/:reportID/comments/:commentID", async (req, res) => {
 
     let comment = await Comment.findById(req.params.commentID)
         .exec()
-        .catch(() =>{
+        .catch(() => {
             errResp.idNotValid(res, { message: "Comment id is not valid" });
             return;
         });
