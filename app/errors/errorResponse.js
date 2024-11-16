@@ -43,6 +43,10 @@ class ErrorResponse {
         );
     }
 
+    static commentMalformed(res, additionalInfo) {
+        this.baseErrorResponse(res, 400, "Comment malformed", additionalInfo);
+    }
+
     static idNotValid(res, additionalInfo) {
         this.baseErrorResponse(res, 400, "ID is not valid", additionalInfo);
     }

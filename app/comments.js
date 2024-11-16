@@ -4,6 +4,7 @@ const router = express.Router();
 const Report = require("./models/report.js");
 const User = require("./models/user.js");
 const Comment = require("./models/comment.js");
+const errResp = require("./errors/errorResponse.js");
 const { user_level } = require("./models/enums.js");
 const user = require("./models/user.js");
 
@@ -17,18 +18,16 @@ function displayedComment(mongooseReport, mongooseComment) {
 }
 
 router.get("/:id/comments", async (req, res) => {
-
     let report = await Report.findById(req.params.id)
         .exec()
         .catch(() => {
-            // find the report by the given id
-            console.log("Error in Report quering (Id may be wrong)\n");
+            errResp.idNotValid(res);
         });
 
-        if (!report) {
-            res.status(404).send("Report not found");
-            return;
-        }
+    if (!report) {
+        errResp.reportNotFound(res);
+        return;
+    }
 
     let sentQueries = {};
     if (req.query.user) {
@@ -42,12 +41,11 @@ router.get("/:id/comments", async (req, res) => {
         user = await User.findById(userID)
             .exec()
             .catch((err) => {
-                // find a user by his id
-                console.log("Error in user quering.\n", err);
+                errResp.idNotValid(res, { message: "User id is not valid" });
             });
 
         if (user == null) {
-            res.status(400).send("User does not exist");
+            errResp.userNotFound(res);
             return;
         }
     }
@@ -64,26 +62,26 @@ router.get("/:reportID/comments/:commentID", async (req, res) => {
     let report = await Report.findById(req.params.reportID)
         .exec()
         .catch(() => {
-            console.log("Error in Report quering (Id may be wrong)\n");
+            errResp.idNotValid(res, { message: "Report id not valid" });
         });
 
     let comment = await report.comments
         .id(req.params.commentID)
         .exec()
         .catch(() => {
-            console.log("Error in Comment quering (Id may be wrong)\n");
+            errResp.idNotValid(res, { message: "Comment id not valid" });
         });
 
     if (!comment) {
-        res.status(404).send();
-        console.log("Comment not found\n");
+        errResp.commentNotFound(res);
         return;
     }
 
     res.status(200).json(displayedComment(report, comment));
 });
 
-router.post("/:id/comments", async (req, res) => { // separare comments da report
+router.post("/:id/comments", async (req, res) => {
+    // separare comments da report
     let requiredAttributes = ["content"];
 
     let userUrl = req.body["user"];
@@ -93,11 +91,11 @@ router.post("/:id/comments", async (req, res) => { // separare comments da repor
     user = await User.findById(userID)
         .exec()
         .catch((err) => {
-            console.log("Error in user quering.\n", err);
+            errResp.idNotValid(res, { message: "User id is not valid" });
         });
 
     if (user == null) {
-        res.status(400).json({ error: "User does not exist" });
+        errResp.userNotFound(res);
         return;
     }
 
@@ -105,8 +103,7 @@ router.post("/:id/comments", async (req, res) => { // separare comments da repor
     commentAttributes["user"] = userUrl;
     for (let attr of requiredAttributes) {
         if (req.body[attr] == undefined) {
-            console.log("Missing attribute: ", attr);
-            res.status(400).send("Missing attribute: " + attr);
+            errResp.missingAttribute(res, attr);
             return;
         }
 
@@ -115,13 +112,7 @@ router.post("/:id/comments", async (req, res) => { // separare comments da repor
 
     let comment = new Comment(commentAttributes);
 
-    comment = await comment.save().catch((err) => {
-        console.log("Error in comment saving...");
-        res.status(404).send(
-            "Error in comment saving, probably an invalid enum was given"
-        );
-        return null;
-    });
+    comment = await comment.save().catch(() => errResp.commentMalformed(res));
 
     if (comment == null) return;
     // TODO
@@ -136,20 +127,24 @@ router.post("/:id/comments", async (req, res) => { // separare comments da repor
 router.delete("/:reportID/comments/:commentID", async (req, res) => {
     let report = await Report.findById(req.params.reportID)
         .exec()
-        .catch(() => {
-            console.log("Error in Report quering (Id may be wrong)");
-        });
+        .catch(() =>
+            errResp.idNotValid(res, { message: "Report id is not valid" })
+        );
 
     let comment = await report.comments
         .id(req.params.commentID)
         .exec()
-        .catch(() => {
-            console.log("Error in Comment quering (Id may be wrong)");
-        });
+        .catch(() =>
+            errResp.idNotValid(res, { message: "Comment id is not valid" })
+        );
 
     if (!comment) {
-        res.status(404).send();
-        console.log("Comment not found");
+        errResp.commentNotFound(res);
+        return;
+    }
+
+    if (!report) {
+        errResp.reportNotFound(res);
         return;
     }
 
