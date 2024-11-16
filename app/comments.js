@@ -11,9 +11,9 @@ const user = require("./models/user.js");
 
 function displayedComment(mongooseReport, mongooseComment) {
     return {
-        _id: "/report/" + mongooseReport._id,
         _id: mongooseComment._id,
         content: mongooseComment.content,
+        report: "/report/" + mongooseReport._id,
         user: mongooseComment.user,
     };
 }
@@ -23,6 +23,7 @@ router.get("/:id/comments", async (req, res) => {
         .exec()
         .catch(() => {
             errResp.idNotValid(res);
+            return;
         });
 
     if (!report) {
@@ -50,13 +51,37 @@ router.get("/:id/comments", async (req, res) => {
             return;
         }
     }
-
+    // TODO
     // comments = await report.comments.find({ sentQueries }).exec(); // return an array of comments (mongoose format)
-    let comments = report.comments;
 
-    comments = comments.map(displayedComment); // displayComment on every element of the array comments
+    // let comment_ids = report.comments || []; // array of comment id
+    // console.log(comment_ids);
+    // let comments = []; // this will be the array of mongoose comments
+    // let comment; // this will be the single comment that will be added to the array "comments"
+    // for(let comment_id of comment_ids){
+    //     comment = await Comment.findById(comment_id).exec().catch((err) => {
+    //         console.log("Comment not found", err);
+    //         return;
+    //     });
+    //     if(comment){
+    //         comments.push(comment);
+    //     }
+    // }
 
-    res.status(200).json(comments); // return the array (json format)
+    let comments = await Comment.find({...sentQueries, report: req.params.id}).catch((err) => { // ... is the spread operator
+        errResp.baseErrorResponse(res); // TODO mettere un errore per le query malformate (?)
+        return;
+    });
+
+    if (comments.length === 0) {
+        res.status(200).json([]);
+        return;
+    }
+    comments = comments.map((mongooseComment) => 
+        displayedComment(report, mongooseComment)
+    ); // displayComment on every element of the array comments
+
+    res.status(200).json(comments); // return the comments (json format)
 });
 
 router.get("/:reportID/comments/:commentID", async (req, res) => {
@@ -64,13 +89,14 @@ router.get("/:reportID/comments/:commentID", async (req, res) => {
         .exec()
         .catch(() => {
             errResp.idNotValid(res, { message: "Report id not valid" });
+            return;
         });
 
-    let comment = await report.comments
-        .id(req.params.commentID)
+    let comment = await Comment.findById(req.params.commentID)
         .exec()
         .catch(() => {
             errResp.idNotValid(res, { message: "Comment id not valid" });
+            return;
         });
 
     if (!comment) {
@@ -93,6 +119,7 @@ router.post("/:id/comments", tokenChecker, async (req, res) => {
         .exec()
         .catch((err) => {
             errResp.idNotValid(res, { message: "User id is not valid" });
+            return;
         });
 
     if (user == null) {
@@ -100,8 +127,16 @@ router.post("/:id/comments", tokenChecker, async (req, res) => {
         return;
     }
 
+    let report = await Report.findById(req.params.id)
+        .exec()
+        .catch((err) => {
+            errResp.reportNotFound(res);
+            return;
+    });
+
     let commentAttributes = {};
     commentAttributes["user"] = userUrl;
+    commentAttributes["report"] = req.params.id;
     for (let attr of requiredAttributes) {
         if (req.body[attr] == undefined) {
             errResp.missingAttribute(res, attr);
@@ -113,13 +148,18 @@ router.post("/:id/comments", tokenChecker, async (req, res) => {
 
     let comment = new Comment(commentAttributes);
 
-    comment = await comment.save().catch(() => errResp.commentMalformed(res));
+    comment = await comment.save()
+        .catch(() =>{ 
+            errResp.commentMalformed(res);
+            return;
+        });
 
     if (comment == null) return;
     // TODO
     // da aggiungere il commento nello user
 
     let commentID = comment.id;
+
     res.location(req.path + commentID)
         .status(201)
         .send();
@@ -128,16 +168,17 @@ router.post("/:id/comments", tokenChecker, async (req, res) => {
 router.delete("/:reportID/comments/:commentID", async (req, res) => {
     let report = await Report.findById(req.params.reportID)
         .exec()
-        .catch(() =>
-            errResp.idNotValid(res, { message: "Report id is not valid" })
-        );
+        .catch(() => {
+            errResp.idNotValid(res, { message: "Report id is not valid" });
+            return;
+        });
 
-    let comment = await report.comments
-        .id(req.params.commentID)
+    let comment = await Comment.findById(req.params.commentID)
         .exec()
-        .catch(() =>
-            errResp.idNotValid(res, { message: "Comment id is not valid" })
-        );
+        .catch(() =>{
+            errResp.idNotValid(res, { message: "Comment id is not valid" });
+            return;
+        });
 
     if (!comment) {
         errResp.commentNotFound(res);
