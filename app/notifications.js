@@ -137,6 +137,7 @@ router.delete("/:id", tokenChecker, async (req, res) => {
     //TODO: change the error response
     if (index == -1) {
         errResp.notificationNotFound(res);
+        return;
     }
 
     userNotification.splice(index, 1);

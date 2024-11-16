@@ -5,6 +5,7 @@ module.exports = router;
 const User = require("./models/user.js");
 const Enums = require("./models/enums.js");
 const tokenChecker = require("./tokenChecker.js");
+const errResp = require("./errors/errorResponse.js");
 
 function displayedUsers(mongooseUser) {
     return {
@@ -13,7 +14,7 @@ function displayedUsers(mongooseUser) {
         email: mongooseUser.email,
         user_level: mongooseUser.user_level,
         reports: mongooseUser.reports,
-        notifications: mongooseUser.notifications
+        notifications: mongooseUser.notifications,
     };
 }
 
@@ -31,19 +32,15 @@ router.get("", async (req, res) => {
     //Check if the value is included in its enum domain
     if (req.query["user_level"]) {
         if (!Enums.user_level["enum"].includes(req.query["user_level"])) {
-            res.status(400).send("User level is not valid");
+            errResp.user_levelNotValid(res);
             return;
         }
     }
 
-    let usersFound = await User.find(finalQueries).catch((err) => {
-        console.log("The parameter inserted is not accepted");
-        res.status(400).send("The parameter inserted is not accepted");
-        interrupt = true;
-    });
+    let usersFound = await User.find(finalQueries);
 
     if (!usersFound) {
-        if (!interrupt) res.status(404).send("User not found");
+        errResp.userNotFound(res);
         return;
     }
 
@@ -54,27 +51,18 @@ router.get("", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-    let interrupt = false;
-
     //Search of the users given the id by the request
-    let usersFound = await User.findById(req.params.id)
+    let user = await User.findById(req.params.id)
         .exec()
-        .catch((err) => {
-            res.status(400).send("ID is not properly formatted");
-            interrupt = true;
-            return;
-        });
-
-    if (interrupt) return;
+        .catch(() => errResp.idNotValid(res));
 
     //Handling of the case in which there's no found user
-    if (!usersFound) {
-        res.status(404).send("User not found");
-        console.log("User not found");
+    if (!user) {
+        errResp.userNotFound(res);
         return;
     }
 
-    res.status(200).json(displayedUsers(usersFound));
+    res.status(200).json(displayedUsers(user));
 });
 
 //POST methods
@@ -85,8 +73,7 @@ router.post("", async (req, res) => {
     let body = req.body;
     for (let el of requiredAttributes) {
         if (!body[el]) {
-            console.log("Missing attribute: ", el);
-            res.status(400).send("Missing attribute: " + el);
+            errResp.missingAttribute(res, el);
             return;
         }
     }
@@ -95,21 +82,17 @@ router.post("", async (req, res) => {
     let email = body["email"];
     email = await User.findOne(email).exec();
     if (email) {
-        res.status(400).send("Email already registered");
+        errResp.emailAlredyRegistered(res);
         return;
     }
 
     //Add the user in the database
     let user = new User(body);
-    user.notifications=[];
-    user = await user.save().catch((err) => {
-        console.log(err);
-        console.log("Error occured while saving ...");
-        res.status(400).send("Error occured while saving ...");
-        return null;
-    });
+    user.notifications = [];
+    user = await user.save().catch(() => errResp.userMalformed(res));
 
     if (!user) {
+        errResp.userNotFound(res);
         return;
     }
     res.location(req.path + user.id)
@@ -120,9 +103,7 @@ router.post("", async (req, res) => {
 //DELETE methods
 router.delete("/:id", tokenChecker, async (req, res) => {
     if (req.loggedUser.user_level != "admin") {
-        res.status(403).send(
-            "Unauthorized action, this user can not delete user."
-        );
+        errResp.unauthorizedAction(res, "Thi user can not delete a user");
         return;
     }
     let userID = req.params.id;
@@ -131,13 +112,10 @@ router.delete("/:id", tokenChecker, async (req, res) => {
     //Searching and deletion of the user based on the id
     let user = await User.findById(userID)
         .exec()
-        .catch(() => {
-            res.status(400).send("ID not accepted");
-            interrupt = true;
-        });
-    if (interrupt) return;
+        .catch(() => errResp.idNotValid(res));
+
     if (!user) {
-        res.status(404).send("User not found");
+        errResp.userNotFound(res);
         return;
     }
     User.deleteOne({ _id: user._id });

@@ -12,6 +12,9 @@ class ErrorResponse {
         this.baseErrorResponse(res, 404, "User was not found", additionalInfo);
     }
 
+    static userMalformed(res, additionalInfo) {
+        this.baseErrorResponse(res, 400, "User malformed", additionalInfo);
+    }
     static reportNotFound(res, additionalInfo) {
         this.baseErrorResponse(
             res,
@@ -59,6 +62,10 @@ class ErrorResponse {
         this.baseErrorResponse(res, 400, "Kind is not valid", additionalInfo);
     }
 
+    static user_levelNotValid(res, additionalInfo) {
+        this.baseErrorResponse(res, 400, "User level is not valid", additionalInfo);
+    }
+
     static categoryNotValid(res, additionalInfo) {
         this.baseErrorResponse(
             res,
@@ -103,6 +110,9 @@ class ErrorResponse {
 
     static emailNotValid(res, additionalInfo) {
         this.baseErrorResponse(res, 400, "Email is malformed", additionalInfo);
+    }
+    static emailAlredyRegistered(res, additionalInfo) {
+        this.baseErrorResponse(res, 400, "Email is alredy registered");
     }
 }
 
