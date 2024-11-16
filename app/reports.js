@@ -3,8 +3,10 @@ const router = express.Router();
 
 const Report = require("./models/report.js");
 const User = require("./models/user.js");
-const Comment = require("./models/comment.js");
+const Enums = require("./models/enums.js");
 const tokenChecker = require("./tokenChecker.js");
+
+const errResp = require("./errors/errorResponse.js");
 
 function displayedReport(mongooseReport) {
     return {
@@ -36,7 +38,7 @@ function editUser(mongooseUser, newReportID) {
         name: mongooseUser.name,
         user_level: mongooseUser.user_level,
         email: mongooseUser.email,
-        reports: mongooseUser.reports.concat([newReportID]),
+        reports: mongooseUser.reports.push(newReportID),
     };
 }
 
@@ -53,12 +55,12 @@ router.get("", async (req, res) => {
         let user = null;
         user = await User.findById(userID)
             .exec()
-            .catch((err) => {
-                console.log("Error in user quering.\n", err);
+            .catch(() => {
+                errResp.idNotValid(res);
             });
 
-        if (user) {
-            res.status(400).json({ error: "User does not exist" });
+        if (!user) {
+            errResp.userNotFound(res);
             return;
         }
         sentQueries.user = userID;
@@ -71,21 +73,21 @@ router.get("", async (req, res) => {
     //Check if the values are included in their corrispondent domain
     if (req.query["state"]) {
         if (!Enums.state["enum"].includes(req.query["state"])) {
-            res.status(400).send("State is not valid");
+            errResp.stateNotValid(res);
             return;
         }
     }
 
     if (req.query["kind"]) {
         if (!Enums.kind["enum"].includes(req.query["kind"])) {
-            res.status(400).send("Kind is not valid");
+            errResp.kindNotValid(res);
             return;
         }
     }
 
     if (req.query["category"]) {
         if (!Enums.category["enum"].includes(req.query["category"])) {
-            res.status(400).send("Category is not valid");
+            errResp.categoryNotValid(res);
             return;
         }
     }
@@ -115,12 +117,10 @@ router.post("", tokenChecker, async (req, res) => {
     let user = null;
     user = await User.findById(userID)
         .exec()
-        .catch((err) => {
-            console.log("Error in user quering.\n", err);
-        });
+        .catch(() => errResp.idNotValid(res));
 
-    if (user == null) {
-        res.status(400).json({ error: "User does not exist" });
+    if (!user) {
+        errResp.userNotFound(res);
         return;
     }
 
@@ -129,8 +129,7 @@ router.post("", tokenChecker, async (req, res) => {
 
     for (let attr of requiredAttributes) {
         if (req.body[attr] == undefined) {
-            console.log("Missing attribute:", attr);
-            res.status(400).send("Missing attribute: " + attr);
+            errResp.missingAttribute(res, attr);
             return;
         }
 
@@ -139,14 +138,12 @@ router.post("", tokenChecker, async (req, res) => {
 
     let report = new Report(reportAttributes);
 
-    report = await report.save().catch((err) => {
-        console.log("Error in report saving...\n");
-        res.status(400).send(
-            "Error in report saving, probably an invalid enum was given"
-        );
-        return null;
-    });
-    if (report == null) return;
+    report = await report.save().catch(
+        errResp.reportMalformed(res, {
+            message: "An invalid enum was probably given",
+        })
+    );
+    if (!report) return;
     let reportId = report.id;
 
     //Modification of the user by adding the report's ID in the corrispondent field
@@ -162,13 +159,10 @@ router.post("", tokenChecker, async (req, res) => {
 router.get("/:id", async (req, res) => {
     let report = await Report.findById(req.params.id)
         .exec()
-        .catch((err) => {
-            console.log("Error in Report quering (Id may be wrong)\n");
-        });
+        .catch(() => errResp.idNotValid(res));
 
     if (!report) {
-        res.status(404).send("Report not found");
-        console.log("Report not found\n");
+        errResp.reportNotFound(res);
         return;
     }
 
@@ -180,13 +174,10 @@ router.put("/:id", tokenChecker, async (req, res) => {
 
     let report = await Report.findByIdAndUpdate(req.params.id, { votes, state })
         .exec()
-        .catch((err) => {
-            console.log("Error in Report quering (Id may be wrong)\n");
-        });
+        .catch(() => errResp.idNotValid(res));
 
     if (!report) {
-        res.status(404).send();
-        console.log("Report not found");
+        errResp.reportNotFound(res);
         return;
     }
 
@@ -195,21 +186,19 @@ router.put("/:id", tokenChecker, async (req, res) => {
         report.state != state &&
         req.loggedUser.user_level != "admin"
     ) {
-        res.status(403).send(
-            "Unauthorized action, this user can not change state of the report"
+        errResp.unauthorizedAction(
+            res,
+            "This user can not change the state of the report"
         );
         return;
     }
 
     report = await Report.findByIdAndUpdate(req.params.id, { votes, state })
         .exec()
-        .catch((err) => {
-            console.log("Error in Report quering (Id may be wrong)\n");
-        });
+        .catch(() => errResp.idNotValid(res));
 
     if (!report) {
-        res.status(404).send();
-        console.log("Report not found\n");
+        errResp.reportNotFound(res);
         return;
     }
 
@@ -220,21 +209,16 @@ router.put("/:id", tokenChecker, async (req, res) => {
 
 router.delete("/:id", tokenChecker, async (req, res) => {
     if (req.loggedUser.user_level != "admin") {
-        res.status(403).send(
-            "Unauthorized action, this user can not delete a report"
-        );
+        errResp.unauthorizedAction(res, "This user can not delete a report");
         return;
     }
 
     let report = await Report.findById(req.params.id)
         .exec()
-        .catch(() => {
-            console.log("Error in Report quering (ID may be wrong)\n");
-        });
+        .catch(() => errResp.idNotValid(res));
 
     if (!report) {
-        res.status(404).send("Report not found. (ID may be wrong");
-        console.log("Report not found\n");
+        errResp.reportNotFound(res);
         return;
     }
 
