@@ -103,7 +103,7 @@ router.post("", tokenChecker, async (req, res) => {
         "state",
     ];
 
-    let userUrl = req.body["user"];
+    let userUrl = req.loggedUser.id;
     let userID = userUrl.substring(userUrl.lastIndexOf("/") + 1);
 
     let user = null;
