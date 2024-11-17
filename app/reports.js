@@ -4,6 +4,8 @@ const router = express.Router();
 const Report = require("./models/report.js");
 const User = require("./models/user.js");
 const Enums = require("./models/enums.js");
+const Notification = require("./models/notification.js");
+const Comment = require("./models/comment.js");
 const tokenChecker = require("./tokenChecker.js");
 
 const errResp = require("./errors/errorResponse.js");
@@ -23,16 +25,51 @@ function displayedReport(mongooseReport) {
     };
 }
 
-
-function editUser(mongooseUser, newReportID) {
+function newUserAdd(oldUser, newNotifications) {
     return {
-        _id: mongooseUser._id,
-        name: mongooseUser.name,
-        user_level: mongooseUser.user_level,
-        email: mongooseUser.email,
-        reports: mongooseUser.reports.push(newReportID),
+        _id: oldUser._id,
+        name: oldUser.name,
+        email: oldUser.email,
+        user_level: oldUser.user_level,
+        reports: oldUser.reports,
+        notifications: newNotifications,
     };
 }
+
+function notificationTitleAndContent(mongooseReport){
+    let title = "";
+    let content = "";
+    let reportID = mongooseReport.id;
+    let state = mongooseReport.state;
+    switch (state) {
+        case "active":
+            console.log("Changed to active");
+            title = "Report switched to active!";
+            content = "The report "+reportID+" has been switched to active state.";
+            break;
+
+        case "work_in_progress":
+            console.log("Changed to work in progress");
+            title = "Report switched to work in progress!";
+            content = "The report "+reportID+" has been switched to work in progress state.";
+            break;
+
+        case "archived":
+            console.log("Changed to archived");
+            title = "Report switched to archived!";
+            content = "The report "+reportID+" has been switched to archived state.";
+            break;
+    
+        default:
+            break;
+    }
+    return new Notification({
+        title: title,
+        content: content,
+        report: reportID,
+    });
+}
+
 
 router.get("", async (req, res) => {
     let possibleQueries = ["state", "kind", "category", "position"];
@@ -140,8 +177,8 @@ router.post("", tokenChecker, async (req, res) => {
 
     //Modification of the user by adding the report's ID in the corrispondent field
     let newUser = await User.findById(userID).exec();
-    newUser = editUser(newUser, reportId);
-    user = await User.findByIdAndUpdate(userID, newUser).exec();
+    let usrReport = newUser.reports;
+    user = await User.findByIdAndUpdate(userID, {reports : usrReport.push(reportId)}).exec();
 
     res.location(req.path + reportId)
         .status(201)
@@ -163,6 +200,12 @@ router.get("/:id", async (req, res) => {
 
 router.put("/:id", tokenChecker, async (req, res) => {
     let { votes, state } = req.body;
+
+    let previousReport = await Report.findById(req.params.id)
+        .exec()
+        .catch(() => errResp.idNotValid(res));
+
+    let previousState = previousReport.state;
 
     let report = await Report.findByIdAndUpdate(req.params.id, { votes, state })
         .exec()
@@ -195,6 +238,30 @@ router.put("/:id", tokenChecker, async (req, res) => {
     }
 
     report = await Report.findById(req.params.id);
+
+    //Here starts the notification sending
+    if(report.state != previousState){
+        console.log("Notifica inviata");
+        // inserire l'invio della notifica
+        let notification = notificationTitleAndContent(report);
+
+        notification = await notification.save();
+
+        let comments = await Comment.find({ report: report.id }).exec();
+
+        let usersNewNotification = [];
+        for (let el of comments) {
+            usersNewNotification.push(el.user);
+        }
+
+        for (let el of usersNewNotification) {
+            let user = await User.findById(el).exec();
+            let notifications = user.notifications;
+            notifications.push(notification.id);
+            
+            await User.findByIdAndUpdate(user.id, newUserAdd(user, notifications)).exec();
+        }
+    }
 
     res.status(200).json(displayedReport(report));
 });

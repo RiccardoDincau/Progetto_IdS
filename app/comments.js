@@ -45,8 +45,8 @@ router.get("/:id/comments", async (req, res) => {
             .catch((err) => {
                 errResp.idNotValid(res, { message: "User id is not valid" });
             });
-
-        if (user == null) {
+        console.log(user);
+        if (user == undefined) {
             errResp.userNotFound(res);
             return;
         }

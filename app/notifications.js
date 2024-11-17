@@ -76,61 +76,6 @@ router.get("/:id", async (req, res) => {
     res.status(200).json(displayedNotification(notification));
 });
 
-//POST methods
-router.post("", async (req, res) => {
-    //TODO: effettuare questo procedimento quando viene modificato un report
-    let body = req.body;
-    let title = body.title;
-    let content = body.content;
-    let reportID = body.report;
-    let interrupt=false;
-
-    //Checking if the report actually exists and if it's properly formatted
-    let report = await Report.findById(reportID)
-        .exec()
-        .catch(() =>{
-            errResp.idNotValid(res, { message: "Report id is not valid" });
-            interrupt=true;
-        }
-        );
-    if (!report) {
-        if (!interrupt) errResp.reportNotFound(res);
-        return;
-    }
-
-    let notification = new Notification({
-        title,
-        content,
-        report: reportID,
-    });
-
-    //The notification is created
-    notification = await notification.save();
-
-    let notificationId = notification.id;
-
-    //Gather all the users that commented the report that the notification is referring to
-    let comments = await Comment.find({ report: reportID }).exec();
-
-    let usersNewNotification = [];
-    for (let el of comments) {
-        usersNewNotification.push(el.user);
-    }
-
-    for (let el of usersNewNotification) {
-        let user = await User.findById(el).exec();
-        let notifications = user.notifications;
-        notifications.push(notificationId);
-
-        //Updating the user with the new notification added in the list
-        User.findByIdAndUpdate(user.id, newUserAdd(user, notifications)).exec();
-    }
-
-    res.location(req.path + notificationId)
-        .status(201)
-        .send();
-});
-
 //DELETE methods
 router.delete("/:id", tokenChecker, async (req, res) => {
     let notificationID = req.params.id;
