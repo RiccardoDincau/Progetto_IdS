@@ -82,8 +82,8 @@ body {
 
 .vote-container:hover>* {
     fill: #2DB432;
-    margin-bottom: 10px;
-    margin-top: 0px;
+    margin-bottom: 5px;
+    margin-top: 5px;
     cursor: pointer;
 }
 
