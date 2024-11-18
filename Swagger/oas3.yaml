@@ -235,23 +235,6 @@ paths:
                             schema:
                                 type: array
                                 $ref: "#/components/schemas/Notification_GET"
-        post:
-            description: Create new notification.
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            $ref: "#/components/schemas/Notification_POST"
- 
-            responses:
-                "201":
-                    description: New notification added
-                    headers:
-                        "Location":
-                            description: Link to the newly created notification
-                            schema:
-                                type: string
 
     /notifications/{id}:
         get:
