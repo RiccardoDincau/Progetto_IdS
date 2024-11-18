@@ -36,7 +36,7 @@ function newUserAdd(oldUser, newNotifications) {
     };
 }
 
-function notificationTitleAndContent(mongooseReport){
+function notificationTitleAndContent(mongooseReport) {
     let title = "";
     let content = "";
     let reportID = mongooseReport.id;
@@ -45,21 +45,30 @@ function notificationTitleAndContent(mongooseReport){
         case "active":
             console.log("Changed to active");
             title = "Report switched to active!";
-            content = "The report "+reportID+" has been switched to active state.";
+            content =
+                "The report " +
+                reportID +
+                " has been switched to active state.";
             break;
 
         case "work_in_progress":
             console.log("Changed to work in progress");
             title = "Report switched to work in progress!";
-            content = "The report "+reportID+" has been switched to work in progress state.";
+            content =
+                "The report " +
+                reportID +
+                " has been switched to work in progress state.";
             break;
 
         case "archived":
             console.log("Changed to archived");
             title = "Report switched to archived!";
-            content = "The report "+reportID+" has been switched to archived state.";
+            content =
+                "The report " +
+                reportID +
+                " has been switched to archived state.";
             break;
-    
+
         default:
             break;
     }
@@ -69,7 +78,6 @@ function notificationTitleAndContent(mongooseReport){
         report: reportID,
     });
 }
-
 
 router.get("", async (req, res) => {
     let possibleQueries = ["state", "kind", "category", "position"];
@@ -155,6 +163,7 @@ router.post("", tokenChecker, async (req, res) => {
 
     let reportAttributes = {};
     reportAttributes["user"] = userID;
+    reportAttributes["votes"] = 0;
 
     for (let attr of requiredAttributes) {
         if (req.body[attr] == undefined) {
@@ -178,7 +187,9 @@ router.post("", tokenChecker, async (req, res) => {
     //Modification of the user by adding the report's ID in the corrispondent field
     let newUser = await User.findById(userID).exec();
     let usrReport = newUser.reports;
-    user = await User.findByIdAndUpdate(userID, {reports : usrReport.push(reportId)}).exec();
+    user = await User.findByIdAndUpdate(userID, {
+        reports: usrReport.push(reportId),
+    }).exec();
 
     res.location(req.path + reportId)
         .status(201)
@@ -205,7 +216,24 @@ router.put("/:id", tokenChecker, async (req, res) => {
         .exec()
         .catch(() => errResp.idNotValid(res));
 
+    if (!previousReport) {
+        errResp.reportNotFound(res);
+        return;
+    }
+
     let previousState = previousReport.state;
+
+    if (
+        state &&
+        previousState != state &&
+        req.loggedUser.user_level != "admin"
+    ) {
+        errResp.unauthorizedAction(
+            res,
+            "This user can not change the state of the report"
+        );
+        return;
+    }
 
     let report = await Report.findByIdAndUpdate(req.params.id, { votes, state })
         .exec()
@@ -216,31 +244,10 @@ router.put("/:id", tokenChecker, async (req, res) => {
         return;
     }
 
-    if (
-        state &&
-        report.state != state &&
-        req.loggedUser.user_level != "admin"
-    ) {
-        errResp.unauthorizedAction(
-            res,
-            "This user can not change the state of the report"
-        );
-        return;
-    }
-
-    report = await Report.findByIdAndUpdate(req.params.id, { votes, state })
-        .exec()
-        .catch(() => errResp.idNotValid(res));
-
-    if (!report) {
-        errResp.reportNotFound(res);
-        return;
-    }
-
-    report = await Report.findById(req.params.id);
+    report = await Report.findById(req.params.id); 
 
     //Here starts the notification sending
-    if(report.state != previousState){
+    if (report.state != previousState) {
         console.log("Notifica inviata");
         // inserire l'invio della notifica
         let notification = notificationTitleAndContent(report);
@@ -249,17 +256,15 @@ router.put("/:id", tokenChecker, async (req, res) => {
 
         let comments = await Comment.find({ report: report.id }).exec();
 
-        let usersNewNotification = [];
         for (let el of comments) {
-            usersNewNotification.push(el.user);
-        }
+            let userID = el.user;
 
-        for (let el of usersNewNotification) {
-            let user = await User.findById(el).exec();
+            let user = await User.findById(userID).exec();
+
             let notifications = user.notifications;
             notifications.push(notification.id);
-            
-            await User.findByIdAndUpdate(user.id, newUserAdd(user, notifications)).exec();
+
+            await User.findByIdAndUpdate(user.id, { notifications }).exec();
         }
     }
 
