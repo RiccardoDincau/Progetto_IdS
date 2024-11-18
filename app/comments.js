@@ -69,18 +69,16 @@ router.get("/:id/comments", async (req, res) => {
 });
 
 router.get("/:reportID/comments/:commentID", async (req, res) => {
-    let interrupt = false;
 
     //Check if the id is properly formatted and referenced to a report
     let report = await Report.findById(req.params.reportID)
         .exec()
         .catch(() => {
             errResp.idNotValid(res, { message: "Report id not valid" });
-            interrupt = true;
         });
 
     if (!report) {
-        if (!interrupt) errResp.reportNotFound(res);
+        errResp.reportNotFound(res);
         return;
     }
 
@@ -89,11 +87,10 @@ router.get("/:reportID/comments/:commentID", async (req, res) => {
         .exec()
         .catch(() => {
             errResp.idNotValid(res, { message: "Comment id not valid" });
-            interrupt = true;
         });
 
     if (!comment) {
-        if (!interrupt) errResp.commentNotFound(res);
+        errResp.commentNotFound(res);
         return;
     }
 
@@ -102,7 +99,6 @@ router.get("/:reportID/comments/:commentID", async (req, res) => {
 
 router.post("/:id/comments", tokenChecker, async (req, res) => {
     let requiredAttributes = ["content"];
-    let interrupt = false;
     let userUrl = req.loggedUser.id;
     let userID = userUrl.substring(userUrl.lastIndexOf("/") + 1);
 
@@ -111,10 +107,9 @@ router.post("/:id/comments", tokenChecker, async (req, res) => {
         .exec()
         .catch((err) => {
             errResp.idNotValid(res, { message: "User id is not valid" });
-            interrupt = true;
         });
     if (!user) {
-        if (!interrupt) errResp.userNotFound(res);
+        errResp.userNotFound(res);
         return;
     }
 
@@ -127,7 +122,7 @@ router.post("/:id/comments", tokenChecker, async (req, res) => {
             report = true;
         });
     if (!report) {
-        if (!interrupt) errResp.reportNotFound(res);
+        errResp.reportNotFound(res);
         return;
     }
 

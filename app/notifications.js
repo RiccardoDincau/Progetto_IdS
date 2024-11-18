@@ -62,7 +62,18 @@ router.get("/:userID/notifications", tokenChecker, async (req, res) => {
     res.status(200).json(userNotifications);
 });
 
-router.get("/:userID/notifications/:notID", tokenChecker, async (req, res) => {
+router.get("/:userID/notifications/:notID", tokenChecker, async (req, res) => {  
+    let user = await User.findById(req.params.userID)
+        .exec()
+        .catch(() => {
+            errResp.idNotValid(res);
+        });
+
+    if(!user){
+        errResp.userNotFound(res);
+        return;
+    }   
+
     if (
         req.loggedUser.user_level != "admin" &&
         req.params.userID != req.loggedUser.id
@@ -71,6 +82,7 @@ router.get("/:userID/notifications/:notID", tokenChecker, async (req, res) => {
             res,
             "Cannot access another user notification."
         );
+        return;
     }
 
     let notification = await Notification.findById(req.params.notID)
@@ -104,7 +116,16 @@ router.delete(
         let userId = req.params.userID;
 
         //Search of the user to whom was sent the request
-        let user = await User.findById(userId).exec();
+        let user = await User.findById(req.params.userID)
+            .exec()
+            .catch(() => {
+                errResp.idNotValid(res);
+            });
+
+        if(!user){
+            errResp.userNotFound(res);
+            return;
+        }
 
         let userNotification = user.notifications;
         let index = userNotification.indexOf(notificationID);
@@ -123,7 +144,7 @@ router.delete(
             newUserDelete(user, userNotification)
         ).exec();
 
-        res.status(201).send();
+        res.status(204).send();
     }
 );
 

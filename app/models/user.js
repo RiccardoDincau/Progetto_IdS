@@ -1,6 +1,5 @@
 var mongoose = require("mongoose");
 const { user_level } = require("./enums");
-const notification = require("./notification");
 var Schema = mongoose.Schema;
 
 module.exports = mongoose.model(
