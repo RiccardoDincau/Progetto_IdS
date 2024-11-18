@@ -106,6 +106,7 @@ paths:
                                     $ref: "#/components/schemas/Report_GET"
                 "400":
                     description: Queries values may be wrong.
+
         post:
             description: Add a new report.
             requestBody:
@@ -124,6 +125,7 @@ paths:
                                 type: string
                 "400":
                     description: Error in report saving (User may not exist or some attributes are missing).
+    
     /reports/{id}:
         get:
             description: Get a report by the id.
@@ -237,6 +239,10 @@ paths:
                             schema:
                                 type: array
                                 $ref: "#/components/schemas/Notification_GET"
+                "400":
+                    description: User id's format is incorrect.
+                "404": 
+                    description: Notification not found.
 
     /notifications/{id}:
         get:
@@ -248,12 +254,20 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/Notification_GET"
+                "400":
+                    description: Error in notification quering.
+                "404":
+                    description: Notification not found.
         
         delete:
             description: Delete a notification with a given id.
             responses:
                 "204":
-                    description: Notification deleted.
+                    description: Notification deleted
+                "400":
+                    description: ID not accepted
+                "404":
+                    description: Notification not found
 
     /authentication:
         post:
@@ -370,7 +384,9 @@ components:
                     type: string
                 user_level:
                     $ref: "#/components/schemas/User_level"  
-
+                password:
+                    type: string
+                    
         Notification_GET:
             type: object
             properties:
