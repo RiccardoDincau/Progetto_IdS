@@ -276,6 +276,10 @@ paths:
                             description: JWT token for the authentication.
                             schema:
                                 type: string
+                "400":
+                    description: Missing attribute, email is malformed., authentication failed.
+                "404": 
+                    description: User not found.
 
 
 components:
