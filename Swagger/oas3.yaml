@@ -222,40 +222,39 @@ paths:
                     description: Comment deleted.
 
     
-    /notifications:
+    /users/{id}/notifications:
         get:
-            description: Get a list of notifications. (/notification?user={user})
-            parameters:
-                -   in: query
-                    name: user
-                    description: Filter the notification by a given user. (Query value must be of the type [ "/users/:id" ])
-                    schema:
-                        type: integer
+            description: Get the notifications of a given user.
+
             responses:
                 "200":
-                    description: Notification list sent. (Attribute users is of the type [ "/users/:id" ], attribute report is of the type "/reports/:id")
+                    description: Notification list sent. (Attribute report is of the type "/reports/:id")
                     content:
                         application/json:
                             schema:
                                 type: array
                                 $ref: "#/components/schemas/Notification_GET"
                 "400":
-                    description: User id's format is incorrect.
+                    description: User id is not valid.
+                "403":
+                    description: Can not get the notifications of another users.
                 "404": 
-                    description: Notification not found.
+                    description: User not found.
 
-    /notifications/{id}:
+    /users/{id}/notifications/{id}:
         get:
-            description: Get a notification with a given id.
+            description: Get a notification with a given id of a user.
             responses:
                 "200":
-                    description: Notification sent correctly. (Attribute users is of the type [ "/users/:id" ], attribute report is of the type "/reports/:id")
+                    description: Notification sent correctly. (Attribute report is of the type "/reports/:id")
                     content:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/Notification_GET"
                 "400":
-                    description: Error in notification quering.
+                    description: User o notification id sono sbagliati.
+                "403":
+                    description: Can not get the notifications of another users.
                 "404":
                     description: Notification not found.
         
@@ -266,6 +265,8 @@ paths:
                     description: Notification deleted
                 "400":
                     description: ID not accepted
+                "403":
+                    description: Can not get the notifications of another users.
                 "404":
                     description: Notification not found
 
@@ -398,10 +399,6 @@ components:
                     type: string
                 report:
                     type: string
-                users:
-                    type: array
-                    items: 
-                        type: string
 
         Kind: 
             type: string
