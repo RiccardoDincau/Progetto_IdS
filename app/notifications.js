@@ -4,7 +4,6 @@ const router = express.Router();
 const Notification = require("./models/notification.js");
 const User = require("./models/user.js");
 const Report = require("./models/report.js");
-const Comment = require("./models/comment.js");
 const tokenChecker = require("./tokenChecker.js");
 const errResp = require("./errors/errorResponse.js");
 
@@ -28,43 +27,53 @@ function newUserDelete(oldUser, notifications) {
         notifications: notifications,
     };
 }
-function newUserAdd(oldUser, newNotifications) {
-    return {
-        _id: oldUser._id,
-        name: oldUser.name,
-        email: oldUser.email,
-        user_level: oldUser.user_level,
-        reports: oldUser.reports,
-        notifications: newNotifications,
-    };
-}
 
 //GET methods
-router.get("", async (req, res) => {
-    //Queries that are accepted by the API
-    let possibleQueries = ["report"];
-    let body = req.body;
-
-    //Extracting only the query strings that are accepted by the API
-    let acceptedQueries = {};
-    for (let el of possibleQueries) {
-        if (body[el]) acceptedQueries[el] = body[el];
+router.get("/:userID/notifications", tokenChecker, async (req, res) => {
+    if (
+        req.loggedUser.user_level != "admin" &&
+        req.params.userID != req.loggedUser.id
+    ) {
+        errResp.unauthorizedAction(
+            res,
+            "Cannot access another user notifications."
+        );
     }
 
-    //Finding the notifications that fulfill the requirements
-    let notification = await Notification.find(acceptedQueries).exec();
+    let user = await User.findById(req.params.userID)
+        .exec()
+        .catch(() => {
+            errResp.idNotValid(res);
+        });
 
-    if (!notification) {
-        errResp.notificationNotFound(res);
+    if (!user) {
+        errResp.userNotFound(res);
         return;
     }
-    notification = notification.map(displayedNotification);
 
-    res.status(200).json(notification);
+    let userNotifications = [];
+    for (let notID of user.notifications) {
+        let newNot = await Notification.findById(notID).exec();
+        userNotifications.push(newNot);
+    }
+
+    userNotifications = userNotifications.map(displayedNotification);
+
+    res.status(200).json(userNotifications);
 });
 
-router.get("/:id", async (req, res) => {
-    let notification = await Notification.findById(req.params.id)
+router.get("/:userID/notifications/:notID", tokenChecker, async (req, res) => {
+    if (
+        req.loggedUser.user_level != "admin" &&
+        req.params.userID != req.loggedUser.id
+    ) {
+        errResp.unauthorizedAction(
+            res,
+            "Cannot access another user notification."
+        );
+    }
+
+    let notification = await Notification.findById(req.params.notID)
         .exec()
         .catch(() => errResp.idNotValid(res));
 
@@ -77,31 +86,45 @@ router.get("/:id", async (req, res) => {
 });
 
 //DELETE methods
-router.delete("/:id", tokenChecker, async (req, res) => {
-    let notificationID = req.params.id;
-    let userId = req.loggedUser.id;
+router.delete(
+    "/:userID/notifications/:notID",
+    tokenChecker,
+    async (req, res) => {
+        if (
+            req.loggedUser.user_level != "admin" &&
+            req.params.userID != req.loggedUser.id
+        ) {
+            errResp.unauthorizedAction(
+                res,
+                "Cannot access another user notifications."
+            );
+        }
 
-    //Search of the user to whom was sent the request
-    let user = await User.findById(userId).exec();
+        let notificationID = req.params.notID;
+        let userId = req.params.userID;
 
-    let userNotification = user.notifications;
-    let index = userNotification.indexOf(notificationID);
+        //Search of the user to whom was sent the request
+        let user = await User.findById(userId).exec();
 
-    if (index == -1) {
-        errResp.notificationNotFound(res);
-        return;
+        let userNotification = user.notifications;
+        let index = userNotification.indexOf(notificationID);
+
+        if (index == -1) {
+            errResp.notificationNotFound(res);
+            return;
+        }
+
+        //The element associated to "index" is removed from the list
+        userNotification.splice(index, 1);
+
+        //The user is updated with the deleted notification
+        User.findByIdAndUpdate(
+            userId,
+            newUserDelete(user, userNotification)
+        ).exec();
+
+        res.status(201).send();
     }
-
-    //The element associated to "index" is removed from the list
-    userNotification.splice(index, 1);
-
-    //The user is updated with the deleted notification
-    User.findByIdAndUpdate(
-        userId,
-        newUserDelete(user, userNotification)
-    ).exec();
-
-    res.status(200).send();
-});
+);
 
 module.exports = router;

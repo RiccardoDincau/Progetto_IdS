@@ -23,9 +23,10 @@ app.get("", (req, res) => {
 
 app.use("/api/authentication", authentication);
 
-app.use("/api/notifications", notifications);
 app.use("/api/reports", reports);
 app.use("/api/reports", comments);
+
 app.use("/api/users", users);
+app.use("/api/users", notifications);
 
 module.exports = app;

@@ -91,7 +91,7 @@ mongoose
         console.log("Setup completed!");
         return;
     }).catch(() => {
-        console.error("Database connection error:", err);
+        console.error("Database connection error");
     });
     
 
