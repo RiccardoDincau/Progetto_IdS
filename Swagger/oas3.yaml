@@ -268,8 +268,31 @@ paths:
             description: Delete a notification with a given id.
             responses:
                 "204":
-                    description: Notification deleted
+                    description: Notification deleted.
 
+    /authentication:
+        post:
+            description: Get a JWT token for authentication.
+
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                email: 
+                                    type: string
+                                password: 
+                                    type: string
+
+            responses:
+                "200": 
+                    description: User authenticaded correctly. JWT token sent.
+                    headers:
+                        "x-access-token":
+                            description: JWT token for the authentication.
+                            schema:
+                                type: string
 
 
 components:
