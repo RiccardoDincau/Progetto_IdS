@@ -14,6 +14,7 @@ paths:
                 description: Get all user of the given user_level.
                 schema:    
                     $ref: "#/components/schemas/User_level"
+
             responses:
               "200":
                 description: Correctly sent users list. (Attribute reports is of the type [ "/reports/:id" ]).
@@ -93,6 +94,7 @@ paths:
                     description: Returns all the reports within 1 kilometer from the given position. 
                     schema: 
                         $ref: "#/components/schemas/Position"
+
             responses: 
                 "200":
                     description: Correctly sent a list of reports. (Attribute user is of the type "/user/:id", attribute comments is of the type [ "/report/:id" ])
@@ -318,8 +320,6 @@ components:
                     type: string
                 content:
                     type: string
-                user:
-                    type: string
                 position:
                     $ref: "#/components/schemas/Position"
                 kind:
@@ -343,8 +343,6 @@ components:
             type: object
             properties:
                 content:
-                    type: string
-                user:
                     type: string
 
         User_GET:
@@ -378,20 +376,6 @@ components:
             properties:
                 id:
                     type: integer
-                title:
-                    type: string
-                content:
-                    type: string
-                report:
-                    type: string
-                users:
-                    type: array
-                    items: 
-                        type: string
-
-        Notification_POST:
-            type: object
-            properties:
                 title:
                     type: string
                 content:
