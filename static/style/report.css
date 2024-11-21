@@ -8,12 +8,11 @@ body {
 }
 
 .report-wrapper {
-    width: 80%;
     max-width: 1000px;
     font-family: "Raleway", sans-serif;
     font-optical-sizing: auto;
     font-style: normal;
-    margin: 20px auto 20px auto;
+    margin-top: 20px;
 }
 
 .report-container {
@@ -119,11 +118,19 @@ body {
 
 .report-tag {
     margin-left: 10px;
-    color: white;
+    color: black;
     padding: 5px 20px 2px 20px;
     background-color: red;
     border-radius: 10px 10px 0 0;
+    margin-top: 5px;
+    transition-duration: 0.2s;
     /* box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.2); */
+}
+
+.report-tag:hover {
+    padding-bottom: 5px;
+    margin-top: 0;
+    cursor: pointer;
 }
 
 .report-type-tag {
