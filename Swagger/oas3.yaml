@@ -221,7 +221,45 @@ paths:
                 "204":
                     description: Comment deleted.
 
-    
+    /reports/{id}/image:
+        get:
+            description: Get the image of a given report.
+            responses:
+                "200": 
+                    description: Image correctly sent.
+                    content:
+                        image/*:
+                            schema:
+                                type: string
+                                format: binary
+                "400":
+                    description: Id not valid.
+                "404":
+                    description: Report not found, image not found.
+
+        post:
+            description: Add a new image to the  given report.
+            requestBody:
+                content:
+                        image/*:
+                            schema:
+                                type: string
+                                format: binary
+                required: true
+            responses:
+                "201": 
+                    description: Image correctly saved
+                    headers:
+                        "Location":
+                            description: Link to the newly created image.
+                            schema:
+                                type: string
+                "400":
+                    description: Id not valid.
+                "404":
+                    description: Report not found.
+
+
     /users/{id}/notifications:
         get:
             description: Get the notifications of a given user.
