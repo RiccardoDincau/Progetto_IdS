@@ -1,6 +1,7 @@
 const express = require("express");
 
 const app = express();
+const cors = require("cors");
 
 const notifications = require("./notifications.js");
 const reports = require("./reports.js");
@@ -8,6 +9,8 @@ const users = require("./users.js");
 const authentication = require("./authentication.js");
 const comments = require("./comments.js");
 const images = require("./images.js");
+
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
