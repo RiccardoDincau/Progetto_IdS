@@ -28,6 +28,10 @@ class ErrorResponse {
         this.baseErrorResponse(res, 400, "Report malformed", additionalInfo);
     }
 
+    static imageNotFound(res, additionalInfo) {
+        this.baseErrorResponse(res, 404, "Image was not found", additionalInfo);
+    }
+
     static notificationNotFound(res, additionalInfo) {
         this.baseErrorResponse(
             res,
@@ -63,7 +67,12 @@ class ErrorResponse {
     }
 
     static user_levelNotValid(res, additionalInfo) {
-        this.baseErrorResponse(res, 400, "User level is not valid", additionalInfo);
+        this.baseErrorResponse(
+            res,
+            400,
+            "User level is not valid",
+            additionalInfo
+        );
     }
 
     static categoryNotValid(res, additionalInfo) {
