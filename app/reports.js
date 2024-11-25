@@ -237,17 +237,17 @@ router.put("/:id", tokenChecker, async (req, res) => {
 
     notification = await notification.save();
 
-    let comments = await Comment.find({ report: report.id }).exec();
+    for (let userID of report.votes) {
+        let user = await User.findByIdAndUpdate(userID, {
+            $addToSet: { notifications: notification.id },
+        })
+            .exec()
+            .catch(() => errResp.idNotValid(res));
 
-    for (let el of comments) {
-        let userID = el.user;
-
-        let user = await User.findById(userID).exec();
-
-        let notifications = user.notifications;
-        notifications.push(notification.id);
-
-        await User.findByIdAndUpdate(user.id, { notifications }).exec();
+        if (!user) {
+            errResp.userNotFound(res);
+            return;
+        }
     }
     console.log("Notifica inviata");
 

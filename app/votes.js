@@ -24,11 +24,11 @@ router.put("/:id/votes", tokenChecker, async (req, res) => {
     if (liked) {
         report = await Report.findByIdAndUpdate(req.params.id, {
             $addToSet: { votes: userID },
-        });
+        }).exec();
     } else {
         report = await Report.findByIdAndUpdate(req.params.id, {
             $pull: { votes: userID },
-        });
+        }).exec();
     }
 
     report = await Report.findById(req.params.id).exec();
