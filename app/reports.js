@@ -16,7 +16,7 @@ function displayedReport(mongooseReport) {
         title: mongooseReport.title,
         content: mongooseReport.content,
         user: mongooseReport.user,
-        votes: mongooseReport.votes,
+        votes: mongooseReport.votes.length,
         position: mongooseReport.position,
         kind: mongooseReport.kind,
         category: mongooseReport.category,

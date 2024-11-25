@@ -6,21 +6,6 @@ const tokenChecker = require("./tokenChecker.js");
 
 const errResp = require("./errors/errorResponse.js");
 
-function displayedReport(mongooseReport) {
-    return {
-        _id: mongooseReport._id,
-        title: mongooseReport.title,
-        content: mongooseReport.content,
-        user: mongooseReport.user,
-        votes: mongooseReport.votes,
-        position: mongooseReport.position,
-        kind: mongooseReport.kind,
-        category: mongooseReport.category,
-        state: mongooseReport.state,
-        comments: mongooseReport.comments,
-    };
-}
-
 router.put("/:id/votes", tokenChecker, async (req, res) => {
     let report = await Report.findById(req.params.id)
         .exec()
@@ -48,7 +33,7 @@ router.put("/:id/votes", tokenChecker, async (req, res) => {
 
     report = await Report.findById(req.params.id).exec();
 
-    res.status(200).json(displayedReport(report));
+    res.status(200).json(report.votes.length);
 });
 
 module.exports = router;
