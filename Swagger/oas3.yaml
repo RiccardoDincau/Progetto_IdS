@@ -141,15 +141,13 @@ paths:
                     description: Report was not found. (Id may be wrong or the report may not exist).
         
         put:
-            description: Update the given report. (Only votes and state can be updated).
+            description: Update the given report. State can only be updated by admins.
             requestBody:
                 content:
                     application/json:
                         schema:
                             type: object
                             properties:
-                                votes: 
-                                    type: integer
                                 state:
                                     $ref: "#/components/schemas/State"
                 required: true
@@ -258,6 +256,28 @@ paths:
                     description: Id not valid.
                 "404":
                     description: Report not found.
+
+    /reports/{id}/votes:
+        put:
+            description: Update votes of a given report. Requires authentication.
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: boolean
+            responses:
+                "200":
+                    description: Corectly updated the report. Returns the total number of votes.
+                    content:
+                        application/json:
+                            schema:
+                                type: integer
+                "400":
+                    description: Report ID is not valid.
+                "404":
+                    description: Report was not found.
+        
+            
 
 
     /users/{id}/notifications:
