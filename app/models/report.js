@@ -9,7 +9,7 @@ module.exports = mongoose.model(
         title: String,
         content: String,
         user: { type: Schema.Types.ObjectId, ref: "User" },
-        votes: Number,
+        votes: [{ type: Schema.Types.ObjectId, ref: "User" }],
         position: String,
         kind,
         category,

@@ -163,7 +163,7 @@ router.post("", tokenChecker, async (req, res) => {
 
     let reportAttributes = {};
     reportAttributes["user"] = userID;
-    reportAttributes["votes"] = 0;
+    reportAttributes["votes"] = [];
 
     for (let attr of requiredAttributes) {
         if (req.body[attr] == undefined) {
@@ -210,7 +210,14 @@ router.get("/:id", async (req, res) => {
 });
 
 router.put("/:id", tokenChecker, async (req, res) => {
-    let { votes, state } = req.body;
+    if (req.loggedUser.user_level != "admin") {
+        errResp.unauthorizedAction(
+            res,
+            "This user can not change the state of the report"
+        );
+        return;
+    }
+    let { state } = req.body;
 
     let previousReport = await Report.findById(req.params.id)
         .exec()
@@ -221,52 +228,28 @@ router.put("/:id", tokenChecker, async (req, res) => {
         return;
     }
 
-    let previousState = previousReport.state;
+    let report = await Report.findByIdAndUpdate(req.params.id, { state });
 
-    if (
-        state &&
-        previousState != state &&
-        req.loggedUser.user_level != "admin"
-    ) {
-        errResp.unauthorizedAction(
-            res,
-            "This user can not change the state of the report"
-        );
-        return;
+    report = await Report.findById(req.params.id);
+
+    // inserire l'invio della notifica
+    let notification = notificationTitleAndContent(report);
+
+    notification = await notification.save();
+
+    let comments = await Comment.find({ report: report.id }).exec();
+
+    for (let el of comments) {
+        let userID = el.user;
+
+        let user = await User.findById(userID).exec();
+
+        let notifications = user.notifications;
+        notifications.push(notification.id);
+
+        await User.findByIdAndUpdate(user.id, { notifications }).exec();
     }
-
-    let report = await Report.findByIdAndUpdate(req.params.id, { votes, state })
-        .exec()
-        .catch(() => errResp.idNotValid(res));
-
-    if (!report) {
-        errResp.reportNotFound(res);
-        return;
-    }
-
-    report = await Report.findById(req.params.id); 
-
-    //Here starts the notification sending
-    if (report.state != previousState) {
-        console.log("Notifica inviata");
-        // inserire l'invio della notifica
-        let notification = notificationTitleAndContent(report);
-
-        notification = await notification.save();
-
-        let comments = await Comment.find({ report: report.id }).exec();
-
-        for (let el of comments) {
-            let userID = el.user;
-
-            let user = await User.findById(userID).exec();
-
-            let notifications = user.notifications;
-            notifications.push(notification.id);
-
-            await User.findByIdAndUpdate(user.id, { notifications }).exec();
-        }
-    }
+    console.log("Notifica inviata");
 
     res.status(200).json(displayedReport(report));
 });

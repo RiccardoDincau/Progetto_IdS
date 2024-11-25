@@ -9,6 +9,7 @@ const users = require("./users.js");
 const authentication = require("./authentication.js");
 const comments = require("./comments.js");
 const images = require("./images.js");
+const votes = require("./votes.js");
 
 app.use(cors());
 
@@ -30,6 +31,7 @@ app.use("/api/authentication", authentication);
 app.use("/api/reports", reports);
 app.use("/api/reports", comments);
 app.use("/api/reports", images);
+app.use("/api/reports", votes);
 
 app.use("/api/users", users);
 app.use("/api/users", notifications);
