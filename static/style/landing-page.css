@@ -146,6 +146,11 @@ h1.title {
     justify-content: right;
 }
 
+.search-icon{
+    width : 15px;
+    height : 15px;
+}
+
 .filter-button {
     height: 90%;
     padding: 3px 10px;
