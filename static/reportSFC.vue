@@ -2,14 +2,7 @@
 
 <template>
     <div class="report-wrapper">
-                    <div class="tags-bar">
-                        <div :class="report.category + '-type-tag'" class="report-tag">
-                            <p>{{ report.category }}</p>
-                        </div>
-                        <div :class="report.kind + '-type-tag'" class="report-tag">
-                            <p>{{ report.kind }}</p>
-                        </div>
-                    </div>
+                    <tagSFC />
                     <div class="report-container">
                         <div class="state-container">
                             <div class="state-circle"></div>
@@ -55,7 +48,8 @@
 </template>
 
 <script setup>
-    import{ defineProps, ref, onMounted } from 'vue'
+    import{ defineProps, ref, onMounted } from 'vue';
+    import{ tagSFC } from './tagSFC.vue';
 
     const SERVERURL = process.env.SERVERURL;
     const props = defineProps(['reportId']);
