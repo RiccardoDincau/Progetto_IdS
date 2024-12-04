@@ -22,7 +22,7 @@
                             <div class="report-content-container">
                                 <p class="report-content">{{ report.content }}.</p>
                             </div>
-                            <div class="vote-container">
+                            <div class="vote-container" :class="upvoteClass" @click="changeUpvote">
                                 <svg class="vote-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
                                     stroke="#ffffff">
 
@@ -53,6 +53,8 @@
 
     const SERVERURL = process.env.SERVERURL;
     const props = defineProps(['reportId']);
+    const upvoteClass = ref('');
+
 
     const upvote = ref(false);
 
@@ -73,26 +75,53 @@
         username: ''
     });
 
-    await fetch(SERVERURL+"/api/reports/"+props.reportId)
-    .then( async (res) => {
-        res = await res.json();
-        report.value = res;
-        report.image = process.env.SERVERURL+"/report_images/"+props.reportId+"/_rep_image.jpeg";
-    })
-    .catch( () => console.log("errore report in 'reportSFC'"));
+    const fetchRep = async () => {
+        try {
+            const res = await fetch(SERVERURL+"/api/reports/"+reportId);
+            if (!res.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            if (report.content.length>150){
+                report.content = report.content.slice(0, 150);
+                report.content += "...";
+            }
+            const resData = await res.json();
+            report.value = resData;
+            report.image = process.env.SERVERURL+"/report_images/"+reportId+"/_rep_image.jpeg";
+        } catch (error){
+            console.log(error);
+        }
+    };
 
-    await fetch(SERVERURL+"/api/users/"+report.user)
-    .then( async (res) => {
-        res = await res.json();
-        user.value = res;
-    })
-    .catch(() => console.log("errore user in 'reportsSFC'"));
+    const fetchUsr = async () => {
+        try {
+            await fetch(SERVERURL+"/api/users/"+report.user);
+            if (!res.ok) {
+                throw new Error(`HTTP error! Status: ${res.status}`);
+            }
+            const resData = await res.json();
+            user.value = resData;
+        } catch (error){
+            console.log(error);
+        }
+    } 
 
-    function toggle(){
-        upvote.value = !upvote.value;
+    function change () {
+        if (!upvoteClass)
+            upvoteClass = "vote-container-clicked";
+        else 
+            upvoteClass = "";
+        fetch (SERVERURL+"/api/reports/"+reportId+'/votes',
+        {
+            method : "PUT",
+            body : JSON.stringify({liked : !upvote})
+        });
     }
-    
-    onMounted(fetch);
+    onMounted(async () => {
+        await fetchRep();
+        await fetchUsr();
+        change
+    });
     
 </script>
 
@@ -185,6 +214,14 @@
         cursor: pointer;
     }
 
+    .vote-container-clicked > *{
+        fill: #2DB432;
+        margin-bottom: 5px;
+        margin-top: 5px;
+        cursor: pointer;
+    }
+
+
     .vote-svg {
         padding: 0;
         width: 30px;
@@ -206,5 +243,45 @@
         max-width: 100%;
         max-height: 100%;
         border-radius: 10px;
+    }
+
+    .tags-bar {
+        display: flex;
+        padding-right: 0;
+        justify-content: right;
+        padding-right: 20px;
+    }
+
+    .report-tag {
+        margin-left: 10px;
+        color: black;
+        padding: 5px 20px 2px 20px;
+        background-color: red;
+        border-radius: 10px 10px 0 0;
+        margin-top: 5px;
+        transition-duration: 0.2s;
+        /* box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.2); */
+    }
+
+    .report-tag:hover {
+        padding-bottom: 5px;
+        margin-top: 0;
+        cursor: pointer;
+    }
+
+    .report-type-tag {
+        background-color: #CA4B2E;
+    }
+
+    .lights-type-tag {
+        background-color: #E6A704;
+    }
+
+    .complaint-type-tag {
+        background-color: #d84f05;
+    }
+
+    .road-type-tag {
+        background-color: #8490F9;
     }
 </style>
