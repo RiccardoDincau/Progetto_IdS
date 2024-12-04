@@ -93,5 +93,114 @@
 </script>
 
 <style>
+    * {
+        padding: 0;
+        margin: 0;
+    }
 
+    body {
+        background-color: #D8D8D8;
+    }
+
+    .report-wrapper {
+        max-width: 1000px;
+        font-family: "Raleway", sans-serif;
+        font-optical-sizing: auto;
+        font-style: normal;
+        margin-top: 20px;
+    }
+
+    .report-container {
+        background-color: white;
+        border: none;
+        border-radius: 20px;
+        display: flex;
+        padding: 10px;
+        box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .state-container {
+        width: 3%;
+        min-width: 30px;
+    }
+
+    .state-circle {
+        width: 15px;
+        height: 15px;
+        background-color: #2DB432;
+        border-radius: 50%;
+        margin-left: auto;
+        margin-right: 0;
+        margin-top: 10px;
+    }
+
+    .content-contaier {
+        min-width: 70%;
+        max-width: 100%;
+        height: 100%;
+        padding-left: 10px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .content-contaier>* {
+        overflow: hidden;
+    }
+
+    .report-title-container {
+        display: flex;
+        align-items: baseline;
+    }
+
+    .report-title-container>* {
+        margin-right: 10px;
+    }
+
+    .report-subtitle {
+        font-weight: 400;
+    }
+
+    .report-position-container {
+        margin-top: 8px;
+    }
+
+    .report-content-container {
+        margin-top: 10px;
+    }
+
+    .vote-container {
+        height: 50px;
+        width: 30px;
+        margin-bottom: 0;
+    }
+
+    .vote-container:hover>* {
+        fill: #2DB432;
+        margin-bottom: 5px;
+        margin-top: 5px;
+        cursor: pointer;
+    }
+
+    .vote-svg {
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        fill: white;
+        stroke: #2DB432;
+        transition-duration: 0.1s;
+        margin-bottom: 0;
+        margin-top: 10px;
+    }
+
+    .report-image-container {
+        max-width: 30%;
+        max-height: 200px;
+    }
+
+    .report-image {
+        margin-left: auto;
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 10px;
+    }
 </style>
