@@ -54,7 +54,7 @@
     const SERVERURL = process.env.SERVERURL;
     const props = defineProps(['reportId']);
 
-    // const upvote = ref(false); TODO
+    const upvote = ref(false);
 
     const report = ref({
         title: '',
@@ -87,6 +87,10 @@
         user.value = res;
     })
     .catch(() => console.log("errore user in 'reportsSFC'"));
+
+    function toggle(){
+        upvote.value = !upvote.value;
+    }
     
     onMounted(fetch);
     
