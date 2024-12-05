@@ -1,27 +1,19 @@
 <template>
-    <div class="tags-bar">
-        <div :class="props.category + '-type-tag'" class="report-tag">
-            <p>{{ props.category }}</p>
-        </div>
-        <div :class="props.kind + '-type-tag'" class="report-tag">
-            <p>{{ props.kind }}</p>
-        </div>
+    <div :class="tagClass">
+        <p>{{ props.fieldValue }}</p>
     </div>
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
+    import { ref } from 'vue';
 
-const props = defineProps(['kind', 'category']);
+    const props = defineProps(['field', 'fieldValue']);
+    const tagClass = ref(props.field+'-type-tag '+props.fieldValue+'-tag');
+    console.log(tagClass.value);
 </script>
 
+
 <style>
-.tags-bar {
-    display: flex;
-    padding-right: 0;
-    justify-content: right;
-    padding-right: 20px;
-}
 
 .report-tag {
     margin-left: 10px;
