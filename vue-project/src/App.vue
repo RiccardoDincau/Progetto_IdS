@@ -1,5 +1,5 @@
 <script setup>
-import ReportSFC from "./components/reportSFC.vue";
+import ReportList from "./components/reportListSFC.vue";
 </script>
 
 <template>
@@ -39,10 +39,10 @@ import ReportSFC from "./components/reportSFC.vue";
                     <button class="filter-button shaded">FILTRI</button>
                     <button class="filter-button shaded">ORDINA PER</button>
                 </div>
+
             </div>
-            <div class="reports-container">
-                <ReportSFC :reportId="'674448834dd10fc2c9a13449'"/>
-            </div>
+            
+            <ReportList />
         </div>
         <div class="right-bar">
             <div class="notification-bar">

@@ -1,10 +1,10 @@
 <template>
     <div class="report-wrapper">
-        <div class="tags-bar">
-            <tagSFC field="category" :fieldValue="report.category" />
-            <tagSFC field="kind" :fieldValue="report.kind" />
+        <div v-if="fetched" class="tags-bar">
+            <tagSFC :fieldValue="report.category" />
+            <tagSFC :fieldValue="report.kind" />
         </div>
-        <div class="report-container">
+        <div v-if="fetched" class="report-container">
             <div class="state-container">
                 <div class="state-circle"></div>
             </div>
@@ -12,7 +12,7 @@
             <div class="content-contaier">
                 <div class="report-title-container">
                     <h1 class="report-title">{{ report.title }}</h1>
-                    <h3 class="report-username-date report-subtitle">{{ user.username }}, 3gg</h3>
+                    <h3 class="report-username-date report-subtitle">{{ user.name }}, 3gg</h3>
                 </div>
 
                 <div class="report-position-container">
@@ -24,7 +24,8 @@
                     <p class="report-content">{{ report.content }}.</p>
                 </div>
                 <div class="vote-container" @click="changeUpvote">
-                    <svg class="vote-svg" :class="upvoteClass" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
+                    <svg class="vote-svg" :class="upvoteClass" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                        stroke="#ffffff">
 
                         <g id="SVGRepo_bgCarrier" stroke-width="0" />
 
@@ -48,13 +49,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onBeforeMount } from 'vue';
 import tagSFC from "./tagSFC.vue";
 
-const SERVERURL = "http://localhost:8080/";
+const SERVERURL = "https://bpjwkxhm-8080.euw.devtunnels.ms/";
 let props = defineProps(['reportId']);
 let upvoteClass = ref("");
-
+let fetched = ref(false);
 
 const upvote = ref(false);
 
@@ -72,7 +73,7 @@ const report = ref({
 });
 
 const user = ref({
-    username: ''
+    name: '',
 });
 
 const fetchRep = async () => {
@@ -87,14 +88,14 @@ const fetchRep = async () => {
             report.value.content = report.value.content.slice(0, 150);
             report.value.content += "...";
         }
-        report.value.image = process.env.SERVERURL + "/report_images/" + props.reportId + "/_rep_image.jpeg";
+        // report.value.image = process.env.SERVERURL + "/report_images/" + props.reportId + "/_rep_image.jpeg";
     } catch (error) {
         console.log(error);
     }
 };
 const fetchUsr = async () => {
     try {
-        await fetch(SERVERURL + "/api/users/" + report.user);
+        let res = await fetch(SERVERURL + "api/users/" + report.value.user);
         if (!res.ok) {
             throw new Error(`HTTP error! Status: ${res.status}`);
         }
@@ -117,9 +118,11 @@ function changeUpvote() {
         }).catch(() => console.log("Sorry :("));
     upvote.value = !upvote.value;
 }
-onMounted(async () => {
+
+onBeforeMount(async () => {
     await fetchRep();
     await fetchUsr();
+    fetched.value = true;
 });
 
 </script>
@@ -209,9 +212,8 @@ body {
 }
 
 .vote-container:hover>* {
-    fill: #2DB432;
-    margin-bottom: 5px;
-    margin-top: 5px;
+    stroke: #2DB432;
+    transform: scale(1.1);
     cursor: pointer;
 }
 
@@ -220,18 +222,32 @@ body {
     width: 30px;
     height: 30px;
     fill: white;
-    stroke: #2DB432;
+    stroke: #969898;
+    stroke-width: 1.5px;
     transition-duration: 0.1s;
     margin-bottom: 0;
     margin-top: 10px;
 }
 
-.vote-svg-clicked>* {
+.vote-svg-clicked {
     fill: #2DB432;
-    margin-bottom: 5px;
-    margin-top: 5px;
+    stroke: #2DB432;
+    animation-name: vote-clicked;
+    animation-duration: 0.3s;
+    animation-timing-function: ease-out;
 }
 
+@keyframes vote-clicked {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.3);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
 
 /* Image style */
 .report-image-container {
