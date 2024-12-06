@@ -212,9 +212,8 @@ body {
 }
 
 .vote-container:hover>* {
-    fill: #2DB432;
-    margin-bottom: 5px;
-    margin-top: 5px;
+    stroke: #2DB432;
+    transform: scale(1.1);
     cursor: pointer;
 }
 
@@ -223,18 +222,32 @@ body {
     width: 30px;
     height: 30px;
     fill: white;
-    stroke: #2DB432;
+    stroke: #969898;
+    stroke-width: 1.5px;
     transition-duration: 0.1s;
     margin-bottom: 0;
     margin-top: 10px;
 }
 
-.vote-svg-clicked>* {
+.vote-svg-clicked {
     fill: #2DB432;
-    margin-bottom: 5px;
-    margin-top: 5px;
+    stroke: #2DB432;
+    animation-name: vote-clicked;
+    animation-duration: 0.3s;
+    animation-timing-function: ease-out;
 }
 
+@keyframes vote-clicked {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.3);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
 
 /* Image style */
 .report-image-container {
