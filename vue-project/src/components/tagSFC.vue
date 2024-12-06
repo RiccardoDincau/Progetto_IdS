@@ -1,20 +1,22 @@
 <template>
-    <div :class="tagClass">
+    <div :class="tagClass" class="report-tag">
         <p>{{ props.fieldValue }}</p>
     </div>
 </template>
 
 <script setup>
-    import { ref } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 
-    const props = defineProps(['field', 'fieldValue']);
-    const tagClass = ref(props.field+'-type-tag '+props.fieldValue+'-tag');
-    console.log(tagClass.value);
+const props = defineProps(['fieldValue']);
+const tagClass = ref("");
+
+onBeforeMount(async () => {
+    tagClass.value = props.fieldValue + '-type-tag';
+});
 </script>
 
 
 <style>
-
 .report-tag {
     margin-left: 10px;
     color: black;
