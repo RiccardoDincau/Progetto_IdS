@@ -44,6 +44,13 @@ import ReportSFC from "./components/reportSFC.vue";
                 <ReportSFC :reportId="'674448834dd10fc2c9a13449'"/>
             </div>
         </div>
-        <div class="right-bar"></div>
+        <div class="right-bar">
+            <div class="notification-bar">
+                
+            </div>
+            <div class="suggested-tags-bar">
+
+            </div>
+        </div>
     </div>
 </template>
