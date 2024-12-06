@@ -1,5 +1,6 @@
 <script setup>
 import ReportSFC from "./components/reportSFC.vue";
+import tagSuggestionSFC from "./components/tagSuggestionSFC.vue";
 </script>
 
 <template>
