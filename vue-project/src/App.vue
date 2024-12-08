@@ -1,11 +1,6 @@
-<script setup>
-import ReportList from "./components/reportListSFC.vue";
-</script>
-
 <template>
     <div class="page-container">
         <div class="left-bar">
-
             <div class="logo-title-container">
                 <div class="logo-container">
                     <!-- <img src="resources/logo.png" class="logo"> -->
@@ -15,17 +10,7 @@ import ReportList from "./components/reportListSFC.vue";
                 </div>
             </div>
 
-            <div class="state-selector-bar">
-                <div class="state-selector-container selected-state-selector-container">
-                    <h3 class="state-selector">ATTIVE</h3>
-                </div>
-                <div class="state-selector-container">
-                    <h3 class="state-selector">PRESE IN CARICO</h3>
-                </div>
-                <div class="state-selector-container">
-                    <h3 class="state-selector">ARCHIVIATE</h3>
-                </div>
-            </div>
+            <StateButtonList @state-changed="stateChanged" />
 
         </div>
 
@@ -41,12 +26,12 @@ import ReportList from "./components/reportListSFC.vue";
                 </div>
 
             </div>
-            
-            <ReportList :state="'active'"/>
+
+            <ReportList v-if="currentSelectedState" :state="currentSelectedState" />
         </div>
         <div class="right-bar">
             <div class="notification-bar">
-                
+
             </div>
             <div class="suggested-tags-bar">
 
@@ -54,3 +39,16 @@ import ReportList from "./components/reportListSFC.vue";
         </div>
     </div>
 </template>
+
+<script setup>
+import { ref } from 'vue';
+import ReportList from "./components/reportListSFC.vue";
+import StateButtonList from "./components/stateButtonListSFC.vue";
+
+let currentSelectedState = ref("");
+
+function stateChanged(newState) {
+    console.log("State changed", newState);
+    currentSelectedState.value = newState;
+}
+</script>

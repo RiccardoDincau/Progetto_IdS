@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch} from 'vue';
 import ReportSFC from "./reportSFC.vue";
 
 const SERVERURL = "https://bpjwkxhm-8080.euw.devtunnels.ms/";
@@ -28,6 +28,10 @@ async function fetchReports(stateFilter) {
         reports.value = resData;
     });
 }
+
+watch(props, async () => {
+    await fetchReports(props.state);
+})
 
 onMounted(async () => {
     await fetchReports(props.state);
