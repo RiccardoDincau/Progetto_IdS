@@ -12,8 +12,15 @@ const SERVERURL = "https://bpjwkxhm-8080.euw.devtunnels.ms/";
 
 let reports = ref([]);
 
+let props = defineProps(["state"]);
+
 async function fetchReports(stateFilter) {
-    await fetch(SERVERURL + "api/reports/").then(async (res) => {
+    let queries = "?";
+    if (stateFilter) {
+        queries += "state=" + stateFilter;
+    }
+
+    await fetch(SERVERURL + "api/reports/" + queries).then(async (res) => {
         if (!res.ok) {
             throw new Error(`HTTP error! Status: ${res.status}`);
         }
@@ -23,7 +30,7 @@ async function fetchReports(stateFilter) {
 }
 
 onMounted(async () => {
-    await fetchReports("active");
+    await fetchReports(props.state);
 });
 
 </script>

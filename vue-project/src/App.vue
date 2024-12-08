@@ -42,7 +42,7 @@ import ReportList from "./components/reportListSFC.vue";
 
             </div>
             
-            <ReportList />
+            <ReportList :state="'active'"/>
         </div>
         <div class="right-bar">
             <div class="notification-bar">

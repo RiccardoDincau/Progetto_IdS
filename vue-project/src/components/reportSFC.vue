@@ -57,13 +57,14 @@
 import { ref, onBeforeMount } from 'vue';
 import tagSFC from "./tagSFC.vue";
 
+const maxReportChars = 150;
+
 const SERVERURL = "https://bpjwkxhm-8080.euw.devtunnels.ms/";
 let props = defineProps(['reportId']);
+
 let upvoteClass = ref("");
 let fetched = ref(false);
-
 const upvote = ref(false);
-
 const report = ref({
     title: '',
     content: '',
@@ -89,8 +90,8 @@ const fetchRep = async () => {
         }
         res = await res.json();
         report.value = res;
-        if (report.value.content.length > 150) {
-            report.value.content = report.value.content.slice(0, 150);
+        if (report.value.content.length > maxReportChars) {
+            report.value.content = report.value.content.slice(0, maxReportChars);
             report.value.content += "...";
         }
         // report.value.image = process.env.SERVERURL + "/report_images/" + props.reportId + "/_rep_image.jpeg";
@@ -116,7 +117,7 @@ function changeUpvote() {
         upvoteClass.value = "vote-svg-clicked";
     else
         upvoteClass.value = "";
-    fetch(SERVERURL + "/api/reports/" + props.reportId + '/votes',
+    fetch(SERVERURL + "api/reports/" + props.reportId + '/votes',
         {
             method: "PUT",
             body: JSON.stringify({ liked: !upvote.value })

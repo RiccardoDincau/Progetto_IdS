@@ -49,4 +49,7 @@ onBeforeMount(async () => {
 .road-type-tag {
     background-color: #8490F9;
 }
+.trash-type-tag {
+    background-color: #02561b;
+}
 </style>
