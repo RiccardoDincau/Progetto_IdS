@@ -6,7 +6,7 @@
         </div>
         <div v-if="fetched" class="report-container">
             <div class="state-container">
-                <div class="state-circle"></div>
+                <div :class="'state-' + report.state" class="state-circle"></div>
             </div>
 
             <div class="content-contaier">
@@ -23,21 +23,26 @@
                 <div class="report-content-container">
                     <p class="report-content">{{ report.content }}.</p>
                 </div>
-                <div class="vote-container" @click="changeUpvote">
-                    <svg class="vote-svg" :class="upvoteClass" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-                        stroke="#ffffff">
+                <div class="vote-container">
+                    <div class="vote-icon-container" @click="changeUpvote">
+                        <svg class="vote-svg" :class="upvoteClass" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
 
-                        <g id="SVGRepo_bgCarrier" stroke-width="0" />
+                            <g id="SVGRepo_bgCarrier" stroke-width="0" />
 
-                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
 
-                        <g id="SVGRepo_iconCarrier">
+                            <g id="SVGRepo_iconCarrier">
 
-                            <path
-                                d="M4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14z" />
+                                <path
+                                    d="M4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14z" />
 
-                        </g>
-                    </svg>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="vote-counter">
+                        <p> {{ report.votes }}</p>
+                    </div>
                 </div>
             </div>
 
@@ -128,15 +133,6 @@ onBeforeMount(async () => {
 </script>
 
 <style>
-* {
-    padding: 0;
-    margin: 0;
-}
-
-body {
-    background-color: #D8D8D8;
-}
-
 .report-wrapper {
     max-width: 1000px;
     font-family: "Raleway", sans-serif;
@@ -162,11 +158,22 @@ body {
 .state-circle {
     width: 15px;
     height: 15px;
-    background-color: #2DB432;
     border-radius: 50%;
     margin-left: auto;
     margin-right: 0;
     margin-top: 10px;
+}
+
+.state-active {
+    background-color: #2DB432;
+}
+
+.state-work_in_progress {
+    background-color: #d8c707;
+}
+
+.state-archived {
+    background-color: #c20000;
 }
 
 .content-contaier {
@@ -204,14 +211,17 @@ body {
 }
 
 
-/* Upvote icon style*/
+/* Vote icon style*/
 .vote-container {
-    height: 50px;
-    width: 30px;
-    margin-bottom: 0;
+    display: flex;
+    align-items: center;
 }
 
-.vote-container:hover>* {
+.vote-icon-container {
+    padding: 5px;
+}
+
+.vote-icon-container:hover>* {
     stroke: #2DB432;
     transform: scale(1.1);
     cursor: pointer;
@@ -225,8 +235,6 @@ body {
     stroke: #969898;
     stroke-width: 1.5px;
     transition-duration: 0.1s;
-    margin-bottom: 0;
-    margin-top: 10px;
 }
 
 .vote-svg-clicked {
@@ -241,9 +249,11 @@ body {
     0% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.3);
     }
+
     100% {
         transform: scale(1);
     }
