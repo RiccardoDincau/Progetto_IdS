@@ -30,9 +30,7 @@
             <ReportList v-if="currentSelectedState" :state="currentSelectedState" />
         </div>
         <div class="right-bar">
-            <div class="notification-bar">
-
-            </div>
+            <NotificationBoxSFC>
             <div class="suggested-tags-bar">
 
             </div>
@@ -44,8 +42,10 @@
 import { ref } from 'vue';
 import ReportList from "./components/reportListSFC.vue";
 import StateButtonList from "./components/stateButtonListSFC.vue";
+import NotificationBoxSFC from './components/notificationBoxSFC.vue';
 
 let currentSelectedState = ref("");
+
 
 function stateChanged(newState) {
     console.log("State changed", newState);

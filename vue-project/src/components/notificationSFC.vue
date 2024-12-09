@@ -1,34 +1,16 @@
 <template>
     <div class = "notification-tag">
         <div class="notification-title-wrapper">
-            <p class="notification-title"> {{ title.value }}</p>
+            <p class="notification-title"> {{ props.title }}</p>
         </div>
         <div class="notification-content-wrapper">
-            <p class="notifcation-content"> {{ content.value }}</p>
+            <p class="notifcation-content"> {{ props.content }}</p>
         </div>
     </div>
 </template>
 
-<script setup>
-    import { ref, onMounted } from 'vue';
-    
-    const props = defineProps(['notificationId']);
-    const title = ref('');
-    const content = ref('');
-    const getNot = async (() => {
-        try {
-            let notification = fetch(SERVERURL + "api/notifications/" + props.notificationId);
-            notification = notification.json();
-            content.value = notification.content;
-            title.value = notification.title;
-        } catch (error){
-            console.log("Errore");
-        }
-    });
-
-    onMounted(async () => {
-        getNot();
-    })
+<script setup>    
+    const props = defineProps(['title', 'content']);
 </script>
 
 <style>
@@ -44,6 +26,7 @@
         max-width: 300px;
         max-height : 100px;
         padding : 10px;
+        margin-bottom: 10px;
         overflow:hidden;
     }
 
