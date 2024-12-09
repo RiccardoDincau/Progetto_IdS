@@ -34,7 +34,7 @@
         font-weight: bold;
     }
 
-    .nofification-content {
+    .notification-content {
         font-weight: normal;
     }
 

@@ -8,22 +8,22 @@
 <script setup> 
     import { onBeforeMount } from 'vue';
     import notificationSFC from './notificationSFC.vue';
-    const props = defineProps(['userId']);
+    const userId = localStorage.getItem("id");
     const notificationList = ref([]);
     const SERVERURL = "https://bpjwkxhm-8080.euw.devtunnels.ms/";
 
     
     async function fetchUsr () {
         const res = await fetch(SERVERURL+'api/user/'+userId+'/notifications');
-        for (let el of res){
-            const elJSON = el.json();
-            notificationList.value.append(elJSON);
+        const resJSON = await res.json();
+        for (let el of resJSON){
+            notificationList.value.push(el);
         }
     }
 
-    onBeforeMount(){
-        await fetchUsr();
-    }
+    onBeforeMount(()=>{
+        fetchUsr();
+    });
 </script>
 
 <style>

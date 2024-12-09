@@ -30,7 +30,7 @@
             <ReportList v-if="currentSelectedState" :state="currentSelectedState" />
         </div>
         <div class="right-bar">
-            <NotificationBoxSFC>
+            <NotificationBoxSFC/>
             <div class="suggested-tags-bar">
 
             </div>
@@ -39,16 +39,17 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import ReportList from "./components/reportListSFC.vue";
-import StateButtonList from "./components/stateButtonListSFC.vue";
-import NotificationBoxSFC from './components/notificationBoxSFC.vue';
+    import { ref } from 'vue';
+    import ReportList from "./components/reportListSFC.vue";
+    import StateButtonList from "./components/stateButtonListSFC.vue";
+    import NotificationBoxSFC from './components/notificationBoxSFC.vue';
+    localStorage.setItem("id", )
 
-let currentSelectedState = ref("");
+    let currentSelectedState = ref("");
 
 
-function stateChanged(newState) {
-    console.log("State changed", newState);
-    currentSelectedState.value = newState;
-}
+    function stateChanged(newState) {
+        console.log("State changed", newState);
+        currentSelectedState.value = newState;
+    }
 </script>
