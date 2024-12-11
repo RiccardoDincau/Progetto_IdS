@@ -21,10 +21,12 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get("", (req, res) => {
-    console.log("New request to the landing page");
-    res.status(200).send("Pagina di accesso");
-});
+app.use("/", express.static("vue-project/dist"));
+
+// app.get("/", (req, res) => {
+//     console.log("New request to the landing page");
+//     res.status(200).send("Pagina di accesso");
+// });
 
 app.use("/api/authentication", authentication);
 

@@ -59,7 +59,7 @@ import tagSFC from "./tagSFC.vue";
 
 const maxReportChars = 150;
 
-const SERVERURL = "https://bpjwkxhm-8080.euw.devtunnels.ms/";
+const SERVERURL = "/";
 let props = defineProps(['reportId']);
 
 let upvoteClass = ref("");

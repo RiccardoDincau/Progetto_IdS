@@ -10,10 +10,10 @@
     "mongoose": "^8.7.3"
   },
   "scripts": {
-    "start": "node index.js",
-    "dev": "node -r dotenv/config index.js",
+    "start": "npm run build -workspace=vue-project && node index.js",
+    "dev": "npm run build -workspace=vue-project && node -r dotenv/config index.js",
     "setup": "node -r dotenv/config scripts/testSetup.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
     "dotenv": "^16.4.5"

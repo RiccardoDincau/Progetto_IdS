@@ -5,16 +5,18 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch} from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import ReportSFC from "./reportSFC.vue";
 
-const SERVERURL = "https://bpjwkxhm-8080.euw.devtunnels.ms/";
+const SERVERURL = "/";
+
 
 let reports = ref([]);
 
 let props = defineProps(["state"]);
 
 async function fetchReports(stateFilter) {
+    // console.log("Reports richiesti: ", stateFilter, ", URL: ", SERVERURL + "api/reports/" + queries);
     let queries = "?";
     if (stateFilter) {
         queries += "state=" + stateFilter;
