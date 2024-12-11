@@ -10,9 +10,9 @@
     import notificationSFC from './notificationSFC.vue';
     const userId = localStorage.getItem("id");
     const notificationList = ref([]);
-    const SERVERURL = "https://bpjwkxhm-8080.euw.devtunnels.ms/";
+    const SERVERURL = "/";
 
-    
+    console.log("Ciao");
     async function fetchUsr () {
         const res = await fetch(SERVERURL+'api/user/'+userId+'/notifications');
         const resJSON = await res.json();
