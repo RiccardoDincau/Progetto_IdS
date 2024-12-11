@@ -32,7 +32,7 @@
         <div class="right-bar">
             <NotificationBoxSFC/>
             <div class="suggested-tags-bar">
-
+                <TagSuggestionBoxSFC/>
             </div>
         </div>
     </div>
@@ -40,9 +40,10 @@
 
 <script setup>
     import { ref } from 'vue';
-    import ReportList from "./components/reportListSFC.vue";
+    import ReportList from "./components/reports/reportListSFC.vue";
     import StateButtonList from "./components/stateButtonListSFC.vue";
-    import NotificationBoxSFC from './components/notificationBoxSFC.vue';
+    import NotificationBoxSFC from './components/notifications/notificationBoxSFC.vue';
+    import TagSuggestionBoxSFC from './components/tags/tagSuggestionBoxSFC.vue';
     localStorage.setItem("id", )
 
     let currentSelectedState = ref("");

@@ -55,7 +55,7 @@
 
 <script setup>
 import { ref, onBeforeMount } from 'vue';
-import tagSFC from "./tagSFC.vue";
+import tagSFC from "../tags/tagSFC.vue";
 
 const maxReportChars = 150;
 
