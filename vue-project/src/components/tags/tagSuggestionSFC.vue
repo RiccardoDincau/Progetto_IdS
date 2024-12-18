@@ -1,5 +1,5 @@
 <template>
-    <div :class="tagClass" class="report-tag">
+    <div :class="tagClass" class="suggestion-report-tag">
         <p>{{ props.category }}</p>
     </div>
 </template>
@@ -8,12 +8,12 @@
 import { ref } from 'vue';
 
 const props = defineProps(['category']);
-const tagClass = ref(props.category + '-type-tag');
+const tagClass = ref(props.category + '-suggestion-type-tag');
 </script>
 
 
 <style>
-.report-tag {
+.suggestion-report-tag {
     text-align: center;
     font-weight: bold;
     width: fit-content;
@@ -28,25 +28,25 @@ const tagClass = ref(props.category + '-type-tag');
     /* box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.2); */
 }
 
-.report-tag:hover {
+.suggestion-report-tag:hover {
     transform: scale(1.1);
     transition-duration: 0.2;
     cursor: pointer;
 }
 
-.report-type-tag {
+.report-suggestion-type-tag {
     background-color: #CA4B2E;
 }
 
-.lights-type-tag {
+.lights-suggestion-type-tag {
     background-color: #E6A704;
 }
 
-.complaint-type-tag {
+.complaint-suggestion-type-tag {
     background-color: #d84f05;
 }
 
-.road-type-tag {
+.road-suggestion-type-tag {
     background-color: #8490F9;
 }
 </style>

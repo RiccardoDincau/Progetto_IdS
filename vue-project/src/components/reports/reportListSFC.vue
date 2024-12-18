@@ -5,19 +5,25 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch} from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import ReportSFC from "./reportSFC.vue";
 
 const SERVERURL = "https://bpjwkxhm-8080.euw.devtunnels.ms/";
 
 let reports = ref([]);
 
-let props = defineProps(["state"]);
+let props = defineProps(["state", "kind", "category"]);
 
-async function fetchReports(stateFilter) {
+async function fetchReports(stateFilter, kind, category) {
     let queries = "?";
     if (stateFilter) {
-        queries += "state=" + stateFilter;
+        queries += "state=" + stateFilter + "&";
+    }
+    if (kind) {
+        queries += "kind=" + kind + "&";
+    }
+    if (category) {
+        queries += "category=" + category + "&";
     }
 
     await fetch(SERVERURL + "api/reports/" + queries).then(async (res) => {
@@ -30,11 +36,11 @@ async function fetchReports(stateFilter) {
 }
 
 watch(props, async () => {
-    await fetchReports(props.state);
+    await fetchReports(props.state, props.kind, props.category);
 })
 
 onMounted(async () => {
-    await fetchReports(props.state);
+    await fetchReports(props.state, props.kind, props.category);
 });
 
 </script>
