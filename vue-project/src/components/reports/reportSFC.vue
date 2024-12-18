@@ -46,7 +46,7 @@
                 </div>
             </div>
 
-            <div class="report-image-container">
+            <div class="report-image-container" v-if="isImg">
                 <img :src="report.image" class="report-image">
             </div>
         </div>
@@ -82,6 +82,8 @@ const user = ref({
     name: '',
 });
 
+const isImg = ref(false);
+
 const fetchRep = async () => {
     try {
         let res = await fetch(SERVERURL + "api/reports/" + props.reportId);
@@ -94,7 +96,12 @@ const fetchRep = async () => {
             report.value.content = report.value.content.slice(0, maxReportChars);
             report.value.content += "...";
         }
-        // report.value.image = process.env.SERVERURL + "/report_images/" + props.reportId + "/_rep_image.jpeg";
+        report.value.image = SERVERURL + "api/reports/" + props.reportId + "/image";
+        let img = await fetch(SERVERURL + "api/reports/" + props.reportId + "/image").then((res) => {
+            if (!res.ok) isImg.value = false;
+            else isImg.value = true;
+        })
+        // console.log(report.value.image);
     } catch (error) {
         console.log(error);
     }
