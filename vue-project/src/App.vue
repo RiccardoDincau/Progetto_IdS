@@ -21,36 +21,46 @@
                     <input class="search-bar" type="text" placeholder="Cerca...">
                 </div>
                 <div class="filter-buttons-container">
-                    <button class="filter-button shaded">FILTRI</button>
+                    <FilterButtonSCC @filter-changed="filterChanged" />
                     <button class="filter-button shaded">ORDINA PER</button>
                 </div>
 
             </div>
 
-            <ReportList v-if="currentSelectedState" :state="currentSelectedState" />
+            <ReportList v-if="currentSelectedState" :state="currentSelectedState" :kind="currentFilters.kind"
+                :category="currentFilters.category" />
         </div>
         <div class="right-bar">
-            <NotificationBoxSFC/>
+            <NotificationBoxSFC />
             <div class="suggested-tags-bar">
-                <TagSuggestionBoxSFC/>
+                <TagSuggestionBoxSFC />
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-    import { ref } from 'vue';
-    import ReportList from "./components/reports/reportListSFC.vue";
-    import StateButtonList from "./components/stateButtonListSFC.vue";
-    import NotificationBoxSFC from './components/notifications/notificationBoxSFC.vue';
-    import TagSuggestionBoxSFC from './components/tags/tagSuggestionBoxSFC.vue';
-    localStorage.setItem("id", )
+import { ref } from 'vue';
+import ReportList from "./components/reports/reportListSFC.vue";
+import StateButtonList from "./components/stateButtonListSFC.vue";
+import NotificationBoxSFC from './components/notifications/notificationBoxSFC.vue';
+import TagSuggestionBoxSFC from './components/tags/tagSuggestionBoxSFC.vue';
+import FilterButtonSCC from './components/filterButtons/filterButtonSCC.vue';
 
-    let currentSelectedState = ref("");
+let currentSelectedState = ref("");
+let currentFilters = ref({
+    kind: null,
+    category: null
+});
 
+function stateChanged(newState) {
+    console.log("State changed", newState);
+    currentSelectedState.value = newState;
+}
 
-    function stateChanged(newState) {
-        console.log("State changed", newState);
-        currentSelectedState.value = newState;
-    }
+function filterChanged(newFilters) {
+    console.log("Filters changed", newFilters);
+    currentFilters.value = newFilters;
+}
+
 </script>
