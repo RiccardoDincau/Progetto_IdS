@@ -44,7 +44,6 @@
     import StateButtonList from "./components/stateButtonListSFC.vue";
     import NotificationBoxSFC from './components/notifications/notificationBoxSFC.vue';
     import TagSuggestionBoxSFC from './components/tags/tagSuggestionBoxSFC.vue';
-    localStorage.setItem("id", )
 
     let currentSelectedState = ref("");
 

@@ -5,16 +5,14 @@
 </template>
 
 <script setup>
-    import { ref } from 'vue';
+import { ref } from 'vue';
 
-    const props = defineProps(['category']);
-    const tagClass = ref(props.category+'-type-tag');
-    console.log(tagClass.value);
+const props = defineProps(['category']);
+const tagClass = ref(props.category + '-type-tag');
 </script>
 
 
 <style>
-
 .report-tag {
     text-align: center;
     font-weight: bold;

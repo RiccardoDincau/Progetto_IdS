@@ -2,33 +2,27 @@
     <div class="suggestionContainer">
         <ul class="suggestionList">
             <li v-for="suggestion in suggestionList">
-                <tagSuggestionSFC :fieldValue="suggestion"/>
+                <tagSuggestionSFC :category="suggestion" :key="suggestion" />
             </li>
         </ul>
     </div>
 </template>
 
 <script setup>
-    import { ref } from 'vue';
-    import tagSuggestionSFC from './tagSuggestionSFC.vue';
+import { onMounted, ref } from 'vue';
+import tagSuggestionSFC from './tagSuggestionSFC.vue';
 
-    const props = defineProps(['allTagList']);
+const staticTags = ["lights", "roads", "reports", "via Pio X"];
 
-    const tagList = ref( props.allTagList );
-    const tagListLength = ref( tagList.value.length );
-    const suggestionList = ref([]);
-    const index = ref(0);
+const suggestionList = ref([]);
 
-    function fillSuggestionListRandom(){
-        tagListLength.value = tagList.value.length;
-        const rand = Math.floor(Math.random() * tagListLength.value);
-        suggestionList.value[index] = tagList.value[rand];
-        index.value++;
-        tagList.value.splice(rand, 1);
-    }
+function fillSuggestionListRandom() {
+    suggestionList.value = staticTags;
+}
 
+onMounted(() => {
     fillSuggestionListRandom();
+}) 
 </script>
 
-<style>
-</style>
+<style></style>
