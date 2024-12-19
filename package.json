@@ -10,7 +10,7 @@
     "mongoose": "^8.7.3"
   },
   "scripts": {
-    "build": "npm run build -workspace=vue-project && npm i",
+    "build": "npm i && npm run build -workspace=vue-project",
     "start": "node index.js",
     "dev": "npm run build -workspace=vue-project && node -r dotenv/config index.js",
     "setup": "node -r dotenv/config scripts/testSetup.js",
