@@ -23,7 +23,7 @@ router.get("/:id/image", async (req, res) => {
 
     let imageURL =
         process.env.ROOT +
-        "/report_images/" +
+        "report_images/" +
         req.params.id +
         "_rep_image.jpeg";
 
