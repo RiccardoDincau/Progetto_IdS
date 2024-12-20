@@ -31,6 +31,7 @@
                 :category="currentFilters.category" />
         </div>
         <div class="right-bar">
+            <LoginButtonSFC />
             <NotificationBoxSFC />
             <div class="suggested-tags-bar">
                 <TagSuggestionBoxSFC />
@@ -46,6 +47,7 @@ import StateButtonList from "./components/stateButtonListSFC.vue";
 import NotificationBoxSFC from './components/notifications/notificationBoxSFC.vue';
 import TagSuggestionBoxSFC from './components/tags/tagSuggestionBoxSFC.vue';
 import FilterButtonSCC from './components/filterButtons/filterButtonSCC.vue';
+import LoginButtonSFC from './components/account/loginButtonSFC.vue';
 
 let currentSelectedState = ref("");
 let currentFilters = ref({

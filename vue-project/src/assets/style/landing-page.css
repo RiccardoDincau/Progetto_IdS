@@ -55,7 +55,7 @@ h1.title {
 
 
 .central-bar {
-    width: 50%;
+    width: 60%;
     overflow-y: auto;
     padding: 0 40px;
 }
@@ -103,9 +103,9 @@ h1.title {
     justify-content: right;
 }
 
-.search-icon{
-    width : 15px;
-    height : 15px;
+.search-icon {
+    width: 15px;
+    height: 15px;
 }
 
 
@@ -122,4 +122,8 @@ h1.title {
 /* Track */
 ::-webkit-scrollbar-track {
     height: 90%;
+}
+
+.right-bar{
+    width: 15%;
 }
