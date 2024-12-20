@@ -65,6 +65,9 @@ paths:
                 "204":
                     description: User deleted.
 
+            security:
+                - authToken: []
+
     /reports:
         get:
             description: Get a list of reports. (/reports?user={user}&state={state}&kind={kind}&category={category}&position={position})
@@ -115,6 +118,10 @@ paths:
                         schema:
                             $ref: "#/components/schemas/Report_POST"
                 required: true
+
+            security:
+                - authToken: []
+
             responses:
                 "201":
                     description: Added a new report
@@ -161,8 +168,13 @@ paths:
             responses:
                 "204":
                     description: Report deleted.
+                "403":
+                    description: This user can not delete a position.
                 "404":
-                    description: Report was not found and could not be deleted(Id may be wrong)
+                    description: Report was not found and could not be deleted(Id may be wrong).
+
+            security:
+                - authToken: []
 
     /reports/{id}/comments:
         get:
@@ -193,14 +205,17 @@ paths:
                             $ref: "#/components/schemas/Comment_POST"
                 required: true
 
+            security:
+                - authToken: []
+
             responses:
-              "201":
-                description: New user comment added
-                headers:
-                    "Location":
-                        description: Link to the newly created comment
-                        schema:
-                            type: string
+                "201":
+                    description: New user comment added
+                    headers:
+                        "Location":
+                            description: Link to the newly created comment
+                            schema:
+                                type: string
 
     /reports/{id}/comments/{id}:
         get:
@@ -244,6 +259,10 @@ paths:
                                 type: string
                                 format: binary
                 required: true
+            
+            security:
+                - authToken: []
+            
             responses:
                 "201": 
                     description: Image correctly saved
@@ -256,6 +275,8 @@ paths:
                     description: Id not valid.
                 "404":
                     description: Report not found.
+                
+
 
     /reports/{id}/votes:
         put:
@@ -265,6 +286,10 @@ paths:
                     application/json:
                         schema:
                             type: boolean
+            
+            security:
+                - authToken: []
+
             responses:
                 "200":
                     description: Corectly updated the report. Returns the total number of votes.
@@ -283,6 +308,9 @@ paths:
     /users/{id}/notifications:
         get:
             description: Get the notifications of a given user.
+
+            security:
+                - authToken: []
 
             responses:
                 "200":
@@ -315,9 +343,16 @@ paths:
                     description: Can not get the notifications of another users.
                 "404":
                     description: Notification not found.
+            
+            security:
+                - authToken: []
         
         delete:
             description: Delete a notification with a given id.
+
+            security:
+                - authToken: []
+
             responses:
                 "204":
                     description: Notification deleted
@@ -352,7 +387,7 @@ paths:
                             schema:
                                 type: string
                 "400":
-                    description: Missing attribute, email is malformed., authentication failed.
+                    description: Missing attribute, email is malformed. Authentication failed.
                 "404": 
                     description: User not found.
 
@@ -476,3 +511,9 @@ components:
             
         Position:
             type: string
+
+    securitySchemes:
+        authToken:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT
