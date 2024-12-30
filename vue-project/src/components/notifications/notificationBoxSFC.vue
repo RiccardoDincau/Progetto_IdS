@@ -9,12 +9,12 @@
 <script setup>
 import { onBeforeMount, ref } from 'vue';
 import notificationSFC from './notificationSFC.vue';
-const userId = localStorage.getItem("id");
+const userId = localStorage.getItem("userId");
 const notificationList = ref([]);
 const SERVERURL = "/";
 
 async function fetchUsr() {
-    const res = await fetch(SERVERURL + 'api/user/' + userId + '/notifications');
+    const res = await fetch(SERVERURL + 'api/' + userId + '/notifications');
     const resJSON = await res.json();
     for (let el of resJSON) {
         notificationList.value.push(el);

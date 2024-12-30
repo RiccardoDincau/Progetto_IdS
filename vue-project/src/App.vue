@@ -10,7 +10,7 @@ const routes = {
     "/signup": SignupPage
 }
 
-const currentPath = ref(window.location.hash)
+const currentPath = ref(window.location.hash);
 
 window.addEventListener('hashchange', () => {
     currentPath.value = window.location.hash
