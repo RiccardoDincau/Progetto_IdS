@@ -1,6 +1,6 @@
 <template>
     <div class="login-button-container">
-        <a href="/login" class="login-button">
+        <a href="#/login" class="login-button">
             LOGIN
         </a>
     </div>
@@ -26,5 +26,4 @@
     text-decoration: none;
     padding: 5px;
 }
-
 </style>
