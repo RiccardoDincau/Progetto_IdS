@@ -10,15 +10,16 @@
 </template>
 
 <script setup>
-import { ref } from "vue"
+import { ref, defineEmits } from "vue"
 
 const email = ref("riccardo@gmail.com");
 const password = ref("riccardo1");
 
+const emit = defineEmits(["successfullLogin"]);
 
 async function login() {
     if (email.value === "") {
-        console.log("Empty email");
+        loginFailed();
         return;
     }
     let POSTbody = {
@@ -26,7 +27,7 @@ async function login() {
         password: password.value
     };
 
-    await fetch("http://localhost:8080/api/authentication", {
+    fetch("http://localhost:8080/api/authentication", {
         method: "POST",
         headers: {
             'Accept': 'application/json',
@@ -35,12 +36,22 @@ async function login() {
         body: JSON.stringify(POSTbody)
     }).then(async res => {
         if (res.status != 200) {
-            console.log("Connection failed");
+            loginFailed();
         } else {
             let resJSON = await res.json();
-            localStorage.setItem("JWT", resJSON.token);
-            localStorage.setItem("userId", resJSON.id);
+            successfullLogin(resJSON.id, resJSON.token);
         }
     })
 }
+
+function successfullLogin(userID, token) {
+    localStorage.setItem("userId", userID);
+    localStorage.setItem("JWT", token);
+    emit("successfullLogin");
+}
+
+function loginFailed() {
+    console.log("Login failed");
+}
+
 </script>

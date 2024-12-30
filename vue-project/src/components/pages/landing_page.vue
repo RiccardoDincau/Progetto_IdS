@@ -31,7 +31,9 @@
                 :category="currentFilters.category" />
         </div>
         <div class="right-bar">
-            <LoginButtonSFC />
+            <LoginButtonSFC v-if="!username" />
+            <AccountIcon v-else :username="username" @logout="logout" />
+
             <NotificationBoxSFC />
             <div class="suggested-tags-bar">
                 <TagSuggestionBoxSFC />
@@ -41,13 +43,14 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import ReportList from "../reports/reportListSFC.vue";
 import StateButtonList from "../stateButtonListSFC.vue";
 import NotificationBoxSFC from '../notifications/notificationBoxSFC.vue';
 import TagSuggestionBoxSFC from '../tags/tagSuggestionBoxSFC.vue';
 import FilterButtonSCC from '../filterButtons/filterButtonSCC.vue';
 import LoginButtonSFC from '../account/loginButtonSFC.vue';
+import AccountIcon from '../account/accountIconSFC.vue';
 
 let currentSelectedState = ref("");
 let currentFilters = ref({
@@ -55,14 +58,33 @@ let currentFilters = ref({
     category: null
 });
 
+const username = ref("");
+
 function stateChanged(newState) {
-    console.log("State changed", newState);
+    // console.log("State changed", newState);
     currentSelectedState.value = newState;
 }
 
 function filterChanged(newFilters) {
-    console.log("Filters changed", newFilters);
+    // console.log("Filters changed", newFilters);
     currentFilters.value = newFilters;
 }
 
+onMounted(() => {
+    let userId = localStorage.getItem("userId");
+
+    if (userId && userId !== "") {
+        fetch("http://localhost:8080/api" + userId).then(async (res) => {
+            if (res.status != 200) {
+                localStorage.removeItem("userId");
+            } else {
+                username.value = (await res.json()).name;
+            }
+        })
+    }
+});
+
+function logout() {
+    username.value = undefined;
+}
 </script>
