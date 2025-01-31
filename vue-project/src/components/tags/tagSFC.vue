@@ -21,7 +21,7 @@ onBeforeMount(async () => {
     margin-left: 10px;
     color: black;
     padding: 5px 20px 2px 20px;
-    background-color: red;
+    background-color: rgb(35, 170, 82);
     border-radius: 10px 10px 0 0;
     margin-top: 5px;
     transition-duration: 0.2s;
@@ -35,21 +35,22 @@ onBeforeMount(async () => {
 }
 
 .report-type-tag {
-    background-color: #CA4B2E;
+    background-color: #e11717;
+}
+.suggestion-type-tag {
+    background-color: rgb(68, 98, 233);
+}
+.complaint-type-tag {
+    background-color: #f26417;
 }
 
 .lights-type-tag {
     background-color: #E6A704;
 }
-
-.complaint-type-tag {
-    background-color: #d84f05;
-}
-
 .road-type-tag {
-    background-color: #8490F9;
+    background-color: #2fc3e8;
 }
 .trash-type-tag {
-    background-color: #02561b;
+    background-color: #337246;
 }
 </style>

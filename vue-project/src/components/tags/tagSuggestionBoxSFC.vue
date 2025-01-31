@@ -1,5 +1,6 @@
 <template>
     <div class="suggestionContainer">
+        <h1 class="suggestionTitle">Preferiti</h1>
         <ul class="suggestionList">
             <li v-for="suggestion in suggestionList">
                 <tagSuggestionSFC :category="suggestion" :key="suggestion" />
@@ -12,7 +13,7 @@
 import { onMounted, ref } from 'vue';
 import tagSuggestionSFC from './tagSuggestionSFC.vue';
 
-const staticTags = ["lights", "roads", "reports", "via Pio X"];
+const staticTags = ["lights", "road", "report", "via Pio X"];
 
 const suggestionList = ref([]);
 
@@ -25,4 +26,24 @@ onMounted(() => {
 }) 
 </script>
 
-<style></style>
+<style>
+    .suggestionList {
+        list-style: none;
+        display: flex;
+        margin: 5px;
+        padding: 5px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .suggestionTitle {
+        color: #00483A;
+        margin: 5px;
+        padding: 5px;
+    }
+
+    .suggestionContainer {
+        padding: 20px;
+        margin-top: 400px;
+    }
+</style>
