@@ -18,7 +18,8 @@
             <div class="filter-options-bar">
                 <div class="search-bar-container shaded">
                     <!-- <img class="search-icon" src="./resources/search-icon.png"> -->
-                    <input class="search-bar" type="text" placeholder="Cerca...">
+                    <!-- <input class="search-bar" type="text" placeholder="Cerca..."> -->
+                    <searchBarSCC @in-focus="searchedTextChanged" />
                 </div>
                 <div class="filter-buttons-container">
                     <FilterButtonSCC @filter-changed="filterChanged" />
@@ -28,7 +29,7 @@
             </div>
 
             <ReportList v-if="currentSelectedState" :state="currentSelectedState" :kind="currentFilters.kind"
-                :category="currentFilters.category" />
+                :category="currentFilters.category" :text="currentSearchedText" />
         </div>
         <div class="right-bar">
             <LoginButtonSFC v-if="!username" />
@@ -51,14 +52,20 @@ import TagSuggestionBoxSFC from '../tags/tagSuggestionBoxSFC.vue';
 import FilterButtonSCC from '../filterButtons/filterButtonSCC.vue';
 import LoginButtonSFC from '../account/loginButtonSFC.vue';
 import AccountIcon from '../account/accountIconSFC.vue';
+import searchBarSCC from '../filterButtons/searchBarSCC.vue';
 
 let currentSelectedState = ref("");
 let currentFilters = ref({
     kind: null,
     category: null
 });
+let currentSearchedText = ref("");
 
 const username = ref("");
+
+function searchedTextChanged(newText){
+    currentSearchedText.value = newText;
+}
 
 function stateChanged(newState) {
     // console.log("State changed", newState);

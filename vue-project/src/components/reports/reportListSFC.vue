@@ -1,11 +1,11 @@
 <template>
     <div class="reports-container">
-        <ReportSFC v-for="report in reports" :report-id="report._id" :key="report._id" />
+        <ReportSFC v-for="report in filteredReports" :report-id="report._id" :key="report._id"/>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 import ReportSFC from "./reportSFC.vue";
 
 const SERVERURL = "/";
@@ -13,7 +13,7 @@ const SERVERURL = "/";
 
 let reports = ref([]);
 
-let props = defineProps(["state", "kind", "category"]);
+let props = defineProps(["state", "kind", "category", "text"]);
 
 async function fetchReports(stateFilter, kind, category) {
     let queries = "?";
@@ -35,6 +35,15 @@ async function fetchReports(stateFilter, kind, category) {
         reports.value = resData;
     });
 }
+
+const filteredReports = computed(() => {
+    if (!props.text) {
+        return reports.value;
+    }
+    return reports.value.filter(report =>
+        report.content.toLowerCase().includes(props.text.toLowerCase())
+    );
+});
 
 watch(props, async () => {
     await fetchReports(props.state, props.kind, props.category);
