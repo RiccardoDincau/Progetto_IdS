@@ -24,6 +24,7 @@ function clearJWT() {
     min-width: 100px;
     min-height: 40px;
     margin: auto;
+    margin-top: 10px;
     background-color: white;
 
     text-align: center;
