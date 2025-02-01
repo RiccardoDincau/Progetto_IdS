@@ -1,8 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue'
-import LandingPage from './components/pages/landing_page.vue'
-import LoginPage from "./components/pages/login_page.vue"
-import SignupPage from './components/pages/signup_page.vue'
+import LandingPage from './pages/landing_page.vue'
+import LoginPage from "./pages/login_page.vue"
+import SignupPage from './pages/signup_page.vue'
 
 const routes = {
     '/': LandingPage,
