@@ -45,14 +45,14 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import ReportList from "../reports/reportListSFC.vue";
-import StateButtonList from "../stateButtonListSFC.vue";
-import NotificationBoxSFC from '../notifications/notificationBoxSFC.vue';
-import TagSuggestionBoxSFC from '../tags/tagSuggestionBoxSFC.vue';
-import FilterButtonSCC from '../filterButtons/filterButtonSCC.vue';
-import LoginButtonSFC from '../account/loginButtonSFC.vue';
-import AccountIcon from '../account/accountIconSFC.vue';
-import searchBarSCC from '../filterButtons/searchBarSCC.vue';
+import ReportList from "../components/reports/reportListSFC.vue";
+import StateButtonList from "../components/stateButtonListSFC.vue";
+import NotificationBoxSFC from '../components/notifications/notificationBoxSFC.vue';
+import TagSuggestionBoxSFC from '../components/tags/tagSuggestionBoxSFC.vue';
+import FilterButtonSCC from '../components/filterButtons/filterButtonSCC.vue';
+import LoginButtonSFC from '../components/account/loginButtonSFC.vue';
+import AccountIcon from '../components/account/accountIconSFC.vue';
+import searchBarSCC from '../components/filterButtons/searchBarSCC.vue';
 
 let currentSelectedState = ref("");
 let currentFilters = ref({
