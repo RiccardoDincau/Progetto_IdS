@@ -56,6 +56,7 @@
 <script setup>
 import { ref, onBeforeMount } from 'vue';
 import tagSFC from "../tags/tagSFC.vue";
+import { errorMessages } from 'vue/compiler-sfc';
 
 const maxReportChars = 150;
 
@@ -119,18 +120,84 @@ const fetchUsr = async () => {
     }
 }
 
-function changeUpvote() {
-    if (!upvoteClass.value)
+// async function changeUpvote() {
+//     if (!upvoteClass.value){
+//         upvoteClass.value = "vote-svg-clicked";
+//     }else{
+//         upvoteClass.value = "";
+//     }
+    
+//     try {
+//         console.log("Invio richiesta upvote con body:", JSON.stringify({ liked: !upvote.value }));
+
+//         let res = await fetch(SERVERURL + "api/reports/" + props.reportId + '/votes',
+//             {
+//                 method: "PUT",
+//                 body: JSON.stringify({ liked: !upvote.value })
+//             })
+//         if (!res.ok) {
+//             throw new Error(`Errore HTTP: ${res.status}`);
+//         }
+//         const data = await res.json();
+//         report.value.votes = data.votes;
+//         upvote.value = !upvote.value;
+//     } catch(error) {
+//         console.log("Errore upvote frontend", error);
+//     }
+
+// }
+
+async function changeUpvote() {
+    console.log("Funzione changeUpvote chiamata!");
+
+    if (!props.reportId) {
+        console.error("Errore: props.reportId è undefined!");
+        return;
+    }
+
+    console.log("SERVERURL:", SERVERURL);
+    console.log("Report ID:", props.reportId);
+
+    if (!upvoteClass.value) {
         upvoteClass.value = "vote-svg-clicked";
-    else
+    } else {
         upvoteClass.value = "";
-    fetch(SERVERURL + "api/reports/" + props.reportId + '/votes',
-        {
+    }
+
+    try {
+        console.log("Invio richiesta upvote con body:", JSON.stringify({ liked: !upvote.value }));
+        const token = localStorage.getItem("JWT");
+
+        if(token == null){
+            window.location.hash = '/login';
+            // throw new Error("token inesistente");
+            // TODO routing a login page
+            return;
+        }
+
+        let res = await fetch(SERVERURL + "api/reports/" + props.reportId + "/votes", {
             method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "x-access-token": `${token}`
+            },
             body: JSON.stringify({ liked: !upvote.value })
-        }).catch(() => console.log("Sorry :("));
-    upvote.value = !upvote.value;
+        });
+
+        if (!res.ok) {
+            throw new Error(`Errore HTTP: ${res.status}`);
+        }
+
+        const data = await res.json();
+        console.log("Risposta server:", data);
+
+        report.value.votes = data.votes;
+        upvote.value = !upvote.value;
+    } catch (error) {
+        console.error("Errore upvote frontend:", error);
+    }
 }
+
 
 onBeforeMount(async () => {
     await fetchRep();
