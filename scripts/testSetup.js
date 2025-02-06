@@ -232,7 +232,7 @@ mongoose
     });
 
 function make_user(name, email, password, user_level) {
-    return { name, email, password, user_level };
+    return { name, email, password, user_level, reports : [], notifications : []};
 }
 
 function make_report(

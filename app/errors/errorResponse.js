@@ -24,6 +24,10 @@ class ErrorResponse {
         );
     }
 
+    static invalidContent(res, additionalInfo) {
+        this.baseErrorResponse(res, 400, "Content over the given limits", additionalInfo);
+    }
+
     static reportMalformed(res, additionalInfo) {
         this.baseErrorResponse(res, 400, "Report malformed", additionalInfo);
     }
