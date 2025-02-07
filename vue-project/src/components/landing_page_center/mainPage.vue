@@ -3,6 +3,7 @@
         <div class="search-bar-container shaded">
             <!-- <img class="search-icon" src="./resources/search-icon.png"> -->
             <input class="search-bar" type="text" placeholder="Cerca...">
+            <SearchBarSCC @in-focus="searchedTextChanged"/>
         </div>
         <div class="filter-buttons-container">
             <FilterButtonSCC @filter-changed="filterChanged" />
@@ -27,6 +28,11 @@ import FilterButtonSCC from "../filterButtons/filterButtonSCC.vue"
 
 const props = defineProps(["currentSelectedState", "currentFilters"]);
 
+let currentSearchedText = ref("");
+
+function searchedTextChanged(newText){
+    currentSearchedText.value = newText;
+}
 
 </script>
 
