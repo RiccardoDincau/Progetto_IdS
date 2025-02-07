@@ -15,20 +15,7 @@
         </div>
 
         <div class="central-bar">
-            <div class="filter-options-bar">
-                <div class="search-bar-container shaded">
-                    <!-- <img class="search-icon" src="./resources/search-icon.png"> -->
-                    <input class="search-bar" type="text" placeholder="Cerca...">
-                </div>
-                <div class="filter-buttons-container">
-                    <FilterButtonSCC @filter-changed="filterChanged" />
-                    <button class="filter-button shaded">ORDINA PER</button>
-                </div>
-
-            </div>
-
-            <ReportList v-if="currentSelectedState" :state="currentSelectedState" :kind="currentFilters.kind"
-                :category="currentFilters.category" />
+            <MainPage :currentSelectedState="currentSelectedState" :currentFilters="currentFilters" />
         </div>
         <div class="right-bar">
             <LoginButtonSFC v-if="!username" />
@@ -44,13 +31,12 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import ReportList from "../reports/reportListSFC.vue";
-import StateButtonList from "../stateButtonListSFC.vue";
-import NotificationBoxSFC from '../notifications/notificationBoxSFC.vue';
-import TagSuggestionBoxSFC from '../tags/tagSuggestionBoxSFC.vue';
-import FilterButtonSCC from '../filterButtons/filterButtonSCC.vue';
-import LoginButtonSFC from '../account/loginButtonSFC.vue';
-import AccountIcon from '../account/accountIconSFC.vue';
+import StateButtonList from "../components/stateButtonListSFC.vue";
+import NotificationBoxSFC from '../components/notifications/notificationBoxSFC.vue';
+import TagSuggestionBoxSFC from '../components/tags/tagSuggestionBoxSFC.vue';
+import LoginButtonSFC from '../components/account/loginButtonSFC.vue';
+import AccountIcon from '../components/account/accountIconSFC.vue';
+import MainPage from "../components/landing_page_center/mainPage.vue"
 
 let currentSelectedState = ref("");
 let currentFilters = ref({
