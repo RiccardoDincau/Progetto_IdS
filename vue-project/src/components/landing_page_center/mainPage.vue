@@ -13,9 +13,11 @@
     <ReportList v-if="currentSelectedState" :state="currentSelectedState" :kind="currentFilters.kind"
         :category="currentFilters.category" />
 
-    <div class="new-report-button">
-        <h3>+</h3>
-    </div>
+    <a href="#/new-report">
+        <div class="new-report-button">
+            <h3>+</h3>
+        </div>
+    </a>
 </template>
 
 
@@ -86,7 +88,7 @@ const props = defineProps(["currentSelectedState", "currentFilters"]);
     color: white;
     text-align: center;
     margin: 5px;
-    font-size: 45px;  
+    font-size: 45px;
 
     bottom: 30px;
     right: 15%;

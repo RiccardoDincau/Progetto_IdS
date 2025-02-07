@@ -3,11 +3,13 @@ import { ref, computed } from 'vue'
 import LandingPage from './pages/landing_page.vue'
 import LoginPage from "./pages/login_page.vue"
 import SignupPage from './pages/signup_page.vue'
+import NewReportPage from './pages/new_report_page.vue'
 
 const routes = {
     '/': LandingPage,
     "/login": LoginPage,
-    "/signup": SignupPage
+    "/signup": SignupPage,
+    "/new-report": NewReportPage,
 }
 
 const currentPath = ref(window.location.hash);
