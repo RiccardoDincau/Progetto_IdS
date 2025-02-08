@@ -1,5 +1,5 @@
 <template>
-    <div class="report-wrapper">
+    <div class="report-wrapper" router-link :to="{ name: 'big-report', params: { report: 'report' } }">
         <div v-if="fetched" class="tags-bar">
             <tagSFC :fieldValue="report.category" />
             <tagSFC :fieldValue="report.kind" />

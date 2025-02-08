@@ -4,12 +4,14 @@ import LandingPage from './pages/landing_page.vue'
 import LoginPage from "./pages/login_page.vue"
 import SignupPage from './pages/signup_page.vue'
 import NewReportPage from './pages/new_report_page.vue'
+import BigReportPage from './components/landing_page_center/bigReportPage.vue'
 
 const routes = {
     '/': LandingPage,
     "/login": LoginPage,
     "/signup": SignupPage,
     "/new-report": NewReportPage,
+    "/big-report": BigReportPage
 }
 
 const currentPath = ref(window.location.hash);

@@ -1,0 +1,261 @@
+<template>
+    <div class="report-wrapper">
+        <div class="tags-bar">
+            <tagSFC :fieldValue="props.report.category" />
+            <tagSFC :fieldValue="props.report.kind" />
+        </div>
+        <div class="report-container">
+            <div class="state-container">
+                <div :class="'state-' + report.state" class="state-circle"></div>
+            </div>
+
+            <div class="content-contaier">
+                <div class="report-title-container">
+                    <h1 class="report-title">{{ props.report.title }}</h1>
+                    <h3 class="report-username-date report-subtitle">{{ props.user.name }}, 3gg</h3>
+                </div>
+
+                <div class="report-position-container">
+                    <h3 class="report-position report-subtitle">{{ props.report.position }}</h3>
+
+                </div>
+
+                <div class="report-content-container">
+                    <p class="report-content">{{ props.report.content }}.</p>
+                </div>
+                <div class="vote-container">
+                    <div class="vote-icon-container" @click="changeUpvote">
+                        <svg class="vote-svg" :class="upvoteClass" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
+
+                            <g id="SVGRepo_bgCarrier" stroke-width="0" />
+
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
+
+                            <g id="SVGRepo_iconCarrier">
+
+                                <path
+                                    d="M4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14z" />
+
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="vote-counter">
+                        <p> {{ props.report.votes }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="report-image-container" v-if="isImg">
+                <img :src="report.image" class="report-image">
+            </div>
+        </div>
+        <CommentListSFC :report-id="props.report._id"></CommentListSFC>
+    </div>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+import tagSFC from '../tags/tagSFC.vue';
+import CommentListSFC from '../comments/commentListSFC.vue';
+
+let props = defineProps(['report']);
+
+let upvoteClass = ref("");
+const upvote = ref(false);
+
+async function changeUpvote() {
+
+    if (!props.report._id) {
+        console.error("Errore: props.report._id è undefined!");
+        return;
+    }
+
+    if (!upvoteClass.value) {
+        upvoteClass.value = "vote-svg-clicked";
+    } else {
+        upvoteClass.value = "";
+    }
+
+    try {
+        // console.log("Invio richiesta upvote con body:", JSON.stringify({ liked: !upvote.value }));
+        const token = localStorage.getItem("JWT");
+
+        if(token == null){
+            window.location.hash = '/login';
+            return;
+        }
+
+        let res = await fetch(SERVERURL + "api/reports/" + props.report._id + "/votes", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "x-access-token": `${token}`
+            },
+            body: JSON.stringify({ liked: !upvote.value })
+        });
+
+        if (!res.ok) {
+            throw new Error(`Errore HTTP: ${res.status}`);
+        }
+
+        const data = await res.json();
+        // console.log("Risposta server:", data);
+
+        report.value.votes = data.votes;
+        upvote.value = !upvote.value;
+    } catch (error) {
+        console.error("Errore upvote frontend:", error);
+    }
+}
+
+</script>
+
+<style>
+.report-wrapper {
+    max-width: 1000px;
+    font-family: "Raleway", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    margin-top: 20px;
+}
+
+.report-container {
+    background-color: white;
+    border: none;
+    border-radius: 20px;
+    display: flex;
+    padding: 10px;
+    box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.2);
+}
+
+.state-container {
+    width: 3%;
+    min-width: 30px;
+}
+
+.state-circle {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    margin-left: auto;
+    margin-right: 0;
+    margin-top: 10px;
+}
+
+.state-active {
+    background-color: #2DB432;
+}
+
+.state-work_in_progress {
+    background-color: #d8c707;
+}
+
+.state-archived {
+    background-color: #c20000;
+}
+
+.content-contaier {
+    min-width: 70%;
+    max-width: 100%;
+    height: 100%;
+    padding-left: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.content-contaier>* {
+    overflow: hidden;
+}
+
+.report-title-container {
+    display: flex;
+    align-items: baseline;
+}
+
+.report-title-container>* {
+    margin-right: 10px;
+}
+
+.report-subtitle {
+    font-weight: 400;
+}
+
+.report-position-container {
+    margin-top: 8px;
+}
+
+.report-content-container {
+    margin-top: 10px;
+}
+
+
+/* Vote icon style*/
+.vote-container {
+    display: flex;
+    align-items: center;
+}
+
+.vote-icon-container {
+    padding: 5px;
+}
+
+.vote-icon-container:hover>* {
+    stroke: #2DB432;
+    transform: scale(1.1);
+    cursor: pointer;
+}
+
+.vote-svg {
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    fill: white;
+    stroke: #969898;
+    stroke-width: 1.5px;
+    transition-duration: 0.1s;
+}
+
+.vote-svg-clicked {
+    fill: #2DB432;
+    stroke: #2DB432;
+    animation-name: vote-clicked;
+    animation-duration: 0.3s;
+    animation-timing-function: ease-out;
+}
+
+@keyframes vote-clicked {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.3);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Image style */
+.report-image-container {
+    max-width: 30%;
+    max-height: 200px;
+}
+
+.report-image {
+    margin-left: auto;
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 10px;
+}
+
+
+.tags-bar {
+    display: flex;
+    padding-right: 0;
+    justify-content: right;
+    padding-right: 20px;
+}
+</style>
