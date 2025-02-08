@@ -150,7 +150,6 @@ router.post("", tokenChecker, async (req, res) => {
 
     let userUrl = req.loggedUser.id;
     let userID = userUrl.substring(userUrl.lastIndexOf("/") + 1);
-
     let user = null;
     user = await User.findById(userID)
         .exec()
@@ -173,20 +172,21 @@ router.post("", tokenChecker, async (req, res) => {
 
         reportAttributes[attr] = req.body[attr];
     }
-    if (reportAttributes["content"].length > 500 || reportAttributes["title"] > 100){
+    if (
+        reportAttributes["content"].length > 500 ||
+        reportAttributes["title"] > 100
+    ) {
         errResp.invalidContent(res);
         return;
     }
 
     let report = new Report(reportAttributes);
-
     report = await report.save().catch(() => {
         errResp.reportMalformed(res, {
             message: "An invalid enum was probably given",
         });
         return;
-    }
-    );
+    });
     if (!report) return;
     let reportId = report.id;
 
@@ -196,11 +196,13 @@ router.post("", tokenChecker, async (req, res) => {
 
     user = await User.findByIdAndUpdate(userID, {
         reports: newUser.reports,
-    }).exec().catch(() => {
-        return;
-    });
+    })
+        .exec()
+        .catch(() => {
+            return;
+        });
 
-    res.location(req.path + reportId)
+    res.location("/reports/" + reportId)
         .status(201)
         .send();
 });
