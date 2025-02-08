@@ -219,6 +219,7 @@ router.get("/:id", async (req, res) => {
 });
 
 router.put("/:id", tokenChecker, async (req, res) => {
+    console.log(req.loggedUser.user_level);
     if (req.loggedUser.user_level != "admin") {
         errResp.unauthorizedAction(
             res,
