@@ -26,6 +26,8 @@
 import ReportList from "../reports/reportListSFC.vue"
 import FilterButtonSCC from "../filterButtons/filterButtonSCC.vue"
 
+import { ref } from "vue";
+
 const props = defineProps(["currentSelectedState", "currentFilters"]);
 
 let currentSearchedText = ref("");
