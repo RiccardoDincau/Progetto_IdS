@@ -27,6 +27,8 @@ const signupName = ref("");
 const signupEmail = ref("");
 const signupPassword = ref("");
 
+const emit = defineEmits(["successfullLogin"]);
+
 const emptyFields = ref({
     name: false,
     email: false,
@@ -63,8 +65,49 @@ async function signup() {
         user_level: "citizen"
     };
 
-    let response = await fetch("/api/users", { method: "POST", body: JSON.stringify(user) });
+    let signupResp = await fetch("/api/users", {
+        method: "POST",
+        headers: {
+            "Content-type": "application/json"
+        },
+        body: JSON.stringify(user)
+    });
+
+    if (signupResp.status != 201) {
+        alert("Registrazione non completata (Forse la email è gia stata usata)");
+        return;
+    }
+
+    let authResp = await fetch("/api/authentication", {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: signupEmail.value,
+            password: signupPassword.value
+        })
+    });
+
+    if (authResp.status != 200) {
+        loginFailed();
+    } else {
+        let resJSON = await authResp.json();
+        successfullLogin(resJSON.id, resJSON.token);
+    }
 }
+
+function loginFailed() {
+    console.log("Login failed");
+}
+
+function successfullLogin(userID, token) {
+    localStorage.setItem("userId", userID);
+    localStorage.setItem("JWT", token);
+    emit("successfullLogin");
+}
+
 
 </script>
 

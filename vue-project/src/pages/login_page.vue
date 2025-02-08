@@ -33,7 +33,7 @@ async function login() {
         password: password.value
     };
 
-    fetch("http://localhost:8080/api/authentication", {
+    fetch("/api/authentication", {
         method: "POST",
         headers: {
             'Accept': 'application/json',
