@@ -58,7 +58,7 @@ router.put("/:id/votes", tokenChecker, async (req, res) => {
 
     report = await Report.findById(req.params.id).exec();
 
-    res.status(200).json({votes: report.votes.length});
+    res.status(200).json(report.votes.length);
 });
 
 module.exports = router;
