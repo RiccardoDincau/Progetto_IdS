@@ -60,7 +60,7 @@ onMounted(() => {
     let userId = localStorage.getItem("userId");
 
     if (userId && userId !== "") {
-        fetch("http://localhost:8080/api" + userId).then(async (res) => {
+        fetch("/api" + userId).then(async (res) => {
             if (res.status != 200) {
                 localStorage.removeItem("userId");
             } else {

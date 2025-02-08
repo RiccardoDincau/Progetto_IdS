@@ -10,7 +10,6 @@ import ReportSFC from "./reportSFC.vue";
 
 const SERVERURL = "/";
 
-
 let reports = ref([]);
 
 let props = defineProps(["state", "kind", "category", "text"]);

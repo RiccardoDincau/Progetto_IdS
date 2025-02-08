@@ -3,10 +3,13 @@
         <div class="signup-container">
             <h1 class="signup-title">Treport</h1>
             <div class="form-container">
-                <input class="signup-input shaded" type="text" placeholder="Nome">
-                <input class="signup-input shaded" type="email" placeholder="Email">
-                <input class="signup-input shaded" type="password" placeholder="Password">
-                <button class="confirm-signup">Registrati</button>
+                <input :class="{ 'red-border': emptyFields.name }" v-model="signupName" class="signup-input shaded"
+                    type="text" placeholder="Nome">
+                <input :class="{ 'red-border': emptyFields.email }" v-model="signupEmail" class="signup-input shaded"
+                    type="email" placeholder="Email">
+                <input :class="{ 'red-border': emptyFields.password }" v-model="signupPassword"
+                    class="signup-input shaded" type="password" placeholder="Password">
+                <button @click="signup" class="confirm-signup">Registrati</button>
             </div>
             <div class="links-container">
                 <a class="link" href="#/">Torna alla home page</a>
@@ -17,6 +20,95 @@
 </template>
 
 <script setup>
+
+import { ref } from 'vue';
+
+const signupName = ref("");
+const signupEmail = ref("");
+const signupPassword = ref("");
+
+const emit = defineEmits(["successfullLogin"]);
+
+const emptyFields = ref({
+    name: false,
+    email: false,
+    password: false
+})
+
+async function signup() {
+    let valid = true;
+
+    if (signupName.value == "") {
+        valid = false;
+        emptyFields.value.name = true;
+    }
+
+    if (signupEmail.value == "") {
+        valid = false;
+        emptyFields.value.email = true;
+    }
+
+    if (signupPassword.value == "") {
+        valid = false;
+        emptyFields.value.password = true;
+    }
+
+    if (!valid) {
+        alert("Completa tutti i campi!");
+        return;
+    }
+
+    let user = {
+        name: signupName.value,
+        email: signupEmail.value,
+        password: signupPassword.value,
+        user_level: "citizen"
+    };
+
+    let signupResp = await fetch("/api/users", {
+        method: "POST",
+        headers: {
+            "Content-type": "application/json"
+        },
+        body: JSON.stringify(user)
+    });
+
+    if (signupResp.status != 201) {
+        alert("Registrazione non completata (Forse la email è gia stata usata)");
+        return;
+    }
+
+    let authResp = await fetch("/api/authentication", {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: signupEmail.value,
+            password: signupPassword.value
+        })
+    });
+
+    if (authResp.status != 200) {
+        loginFailed();
+    } else {
+        let resJSON = await authResp.json();
+        successfullLogin(resJSON.id, resJSON.token);
+    }
+}
+
+function loginFailed() {
+    console.log("Login failed");
+}
+
+function successfullLogin(userID, token) {
+    localStorage.setItem("userId", userID);
+    localStorage.setItem("JWT", token);
+    emit("successfullLogin");
+}
+
+
 </script>
 
 <style lang="css" scoped>
@@ -100,5 +192,9 @@
 
 .link:hover {
     letter-spacing: 0.2px;
+}
+
+.red-border {
+    border: 3px solid red;
 }
 </style>
