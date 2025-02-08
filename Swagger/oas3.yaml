@@ -4,26 +4,26 @@ info:
     title: Treport
     version: v.0
 
-paths:  
+paths:
     /users:
         get:
             description: Get a user list. (/users?user_level={user_level}).
             parameters:
-              - in: query
-                name: user_level
-                description: Get all user of the given user_level.
-                schema:    
-                    $ref: "#/components/schemas/User_level"
+                - in: query
+                  name: user_level
+                  description: Get all user of the given user_level.
+                  schema:
+                      $ref: "#/components/schemas/User_level"
 
             responses:
-              "200":
-                description: Correctly sent users list. (Attribute reports is of the type [ "/reports/:id" ]).
-                content:
-                    application/json:
-                        schema:
-                            type: array
-                            items: 
-                                $ref: "#/components/schemas/User_GET" 
+                "200":
+                    description: Correctly sent users list. (Attribute reports is of the type [ "/reports/:id" ]).
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/User_GET"
         post:
             description: Add new user.
             requestBody:
@@ -72,40 +72,40 @@ paths:
         get:
             description: Get a list of reports. (/reports?user={user}&state={state}&kind={kind}&category={category}&position={position})
             parameters:
-                -   in: query
-                    name: user
-                    description: Returns only the reports of a given user. (Query value must be of the type "/user/:id").
-                    schema:
-                        type: string
-                -   in: query
-                    name: state
-                    description: Filters the reports based on a state.
-                    schema:
-                        $ref: "#/components/schemas/State"
-                -   in: query
-                    name: kind
-                    description: Filters the reports based on a kind.
-                    schema: 
-                        $ref: "#/components/schemas/Kind"
-                -   in: query
-                    name: category
-                    description: Filters the reports based on a category.
-                    schema: 
-                        $ref: "#/components/schemas/Category"
-                -   in: query
-                    name: position
-                    description: Returns all the reports within 1 kilometer from the given position. 
-                    schema: 
-                        $ref: "#/components/schemas/Position"
+                - in: query
+                  name: user
+                  description: Returns only the reports of a given user. (Query value must be of the type "/user/:id").
+                  schema:
+                      type: string
+                - in: query
+                  name: state
+                  description: Filters the reports based on a state.
+                  schema:
+                      $ref: "#/components/schemas/State"
+                - in: query
+                  name: kind
+                  description: Filters the reports based on a kind.
+                  schema:
+                      $ref: "#/components/schemas/Kind"
+                - in: query
+                  name: category
+                  description: Filters the reports based on a category.
+                  schema:
+                      $ref: "#/components/schemas/Category"
+                - in: query
+                  name: position
+                  description: Returns all the reports within 1 kilometer from the given position.
+                  schema:
+                      $ref: "#/components/schemas/Position"
 
-            responses: 
+            responses:
                 "200":
                     description: Correctly sent a list of reports. (Attribute user is of the type "/user/:id", attribute comments is of the type [ "/report/:id" ])
                     content:
                         application/json:
                             schema:
                                 type: array
-                                items: 
+                                items:
                                     $ref: "#/components/schemas/Report_GET"
                 "400":
                     description: Queries values may be wrong.
@@ -132,11 +132,11 @@ paths:
                                 type: string
                 "400":
                     description: Error in report saving (User may not exist or some attributes are missing).
-    
+
     /reports/{id}:
         get:
             description: Get a report by the id.
-            
+
             responses:
                 "200":
                     description: Correctly sent the report. (Attribute comments is of the type [ "/reports/:repID/comments/:commID" ], attribute user is of the type "users/:id").
@@ -144,9 +144,9 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/Report_GET"
-                "404": 
+                "404":
                     description: Report was not found. (Id may be wrong or the report may not exist).
-        
+
         put:
             description: Update the given report. State can only be updated by admins.
             requestBody:
@@ -179,12 +179,12 @@ paths:
     /reports/{id}/comments:
         get:
             description: Get a list of all the comments of a report. (/reports/{id}/comments?user={user})
-            parameters:                
-                -   in: query
-                    name: user
-                    description: Get all comments about a report of a given user.
-                    schema:
-                        type: integer
+            parameters:
+                - in: query
+                  name: user
+                  description: Get all comments about a report of a given user.
+                  schema:
+                      type: integer
 
             responses:
                 "200":
@@ -193,7 +193,7 @@ paths:
                         application/json:
                             schema:
                                 type: array
-                                items: 
+                                items:
                                     $ref: "#/components/schemas/Comment_GET"
         post:
             description: Add new comment to a report. (Attribute user must be of the type "/users/:id")
@@ -227,7 +227,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/Comment_GET"
-        
+
         delete:
             description: Delete a comment of a given report.
             responses:
@@ -238,7 +238,7 @@ paths:
         get:
             description: Get the image of a given report.
             responses:
-                "200": 
+                "200":
                     description: Image correctly sent.
                     content:
                         image/*:
@@ -254,17 +254,17 @@ paths:
             description: Add a new image to the  given report.
             requestBody:
                 content:
-                        image/*:
-                            schema:
-                                type: string
-                                format: binary
+                    image/*:
+                        schema:
+                            type: string
+                            format: binary
                 required: true
-            
+
             security:
                 - authToken: []
-            
+
             responses:
-                "201": 
+                "201":
                     description: Image correctly saved
                     headers:
                         "Location":
@@ -275,24 +275,46 @@ paths:
                     description: Id not valid.
                 "404":
                     description: Report not found.
-                
-
 
     /reports/{id}/votes:
+        get:
+            description: Check if a user has liked the given report. Requires authentication.
+
+            security:
+                - authToken: []
+
+            responses:
+                "200":
+                    description: The vote has correctly been checked.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    hasLiked:
+                                        type: boolean
+                "400":
+                    description: Report ID is not valid.
+                "404":
+                    description: Report was not found.
+
         put:
             description: Update votes of a given report. Requires authentication.
             requestBody:
                 content:
                     application/json:
                         schema:
-                            type: boolean
-            
+                            type: object
+                            properties:
+                                liked:
+                                    type: boolean
+
             security:
                 - authToken: []
 
             responses:
                 "200":
-                    description: Corectly updated the report. Returns the total number of votes.
+                    description: Correctly updated the report. Returns the total number of votes.
                     content:
                         application/json:
                             schema:
@@ -301,9 +323,6 @@ paths:
                     description: Report ID is not valid.
                 "404":
                     description: Report was not found.
-        
-            
-
 
     /users/{id}/notifications:
         get:
@@ -319,12 +338,13 @@ paths:
                         application/json:
                             schema:
                                 type: array
-                                $ref: "#/components/schemas/Notification_GET"
+                                items:
+                                    $ref: "#/components/schemas/Notification_GET"
                 "400":
                     description: User id is not valid.
                 "403":
                     description: Can not get the notifications of another users.
-                "404": 
+                "404":
                     description: User not found.
 
     /users/{id}/notifications/{id}:
@@ -343,10 +363,10 @@ paths:
                     description: Can not get the notifications of another users.
                 "404":
                     description: Notification not found.
-            
+
             security:
                 - authToken: []
-        
+
         delete:
             description: Delete a notification with a given id.
 
@@ -373,24 +393,34 @@ paths:
                         schema:
                             type: object
                             properties:
-                                email: 
+                                email:
                                     type: string
-                                password: 
+                                password:
                                     type: string
 
             responses:
-                "200": 
+                "200":
                     description: User authenticaded correctly. JWT token sent.
-                    headers:
-                        "x-access-token":
-                            description: JWT token for the authentication.
+                    content:
+                        application/json:
                             schema:
-                                type: string
+                                type: object
+                                properties:
+                                    success:
+                                        type: boolean
+                                    token:
+                                        type: string
+                                    email:
+                                        type: string
+                                    id:
+                                        type: string
+                                    user_level:
+                                        $ref: "#/components/schemas/User_level"
+
                 "400":
                     description: Missing attribute, email is malformed. Authentication failed.
-                "404": 
+                "404":
                     description: User not found.
-
 
 components:
     schemas:
@@ -399,7 +429,7 @@ components:
             properties:
                 id:
                     type: integer
-                title: 
+                title:
                     type: string
                 content:
                     type: string
@@ -417,14 +447,13 @@ components:
                     $ref: "#/components/schemas/State"
                 comments:
                     type: array
-                    items: 
-                        type:
-                            string
-        
+                    items:
+                        type: string
+
         Report_POST:
             type: object
             properties:
-                title: 
+                title:
                     type: string
                 content:
                     type: string
@@ -440,7 +469,7 @@ components:
         Comment_GET:
             type: object
             properties:
-                id: 
+                id:
                     type: integer
                 content:
                     type: string
@@ -463,10 +492,10 @@ components:
                 email:
                     type: string
                 user_level:
-                    $ref: "#/components/schemas/User_level"  
+                    $ref: "#/components/schemas/User_level"
                 reports:
                     type: array
-                    items: 
+                    items:
                         type: string
 
         User_POST:
@@ -477,10 +506,10 @@ components:
                 email:
                     type: string
                 user_level:
-                    $ref: "#/components/schemas/User_level"  
+                    $ref: "#/components/schemas/User_level"
                 password:
                     type: string
-                    
+
         Notification_GET:
             type: object
             properties:
@@ -493,7 +522,7 @@ components:
                 report:
                     type: string
 
-        Kind: 
+        Kind:
             type: string
             enum: [report, suggestion, complaint]
 
@@ -508,7 +537,7 @@ components:
         User_level:
             type: string
             enum: [citizen, admin, not_logged]
-            
+
         Position:
             type: string
 
