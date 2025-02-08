@@ -31,24 +31,12 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-<<<<<<< HEAD
-import ReportList from "../components/reports/reportListSFC.vue";
-import StateButtonList from "../components/stateButtonListSFC.vue";
-import NotificationBoxSFC from '../components/notifications/notificationBoxSFC.vue';
-import TagSuggestionBoxSFC from '../components/tags/tagSuggestionBoxSFC.vue';
-import FilterButtonSCC from '../components/filterButtons/filterButtonSCC.vue';
-import LoginButtonSFC from '../components/account/loginButtonSFC.vue';
-import AccountIcon from '../components/account/accountIconSFC.vue';
-import searchBarSCC from '../components/filterButtons/searchBarSCC.vue';
-=======
 import StateButtonList from "../components/stateButtonListSFC.vue";
 import NotificationBoxSFC from '../components/notifications/notificationBoxSFC.vue';
 import TagSuggestionBoxSFC from '../components/tags/tagSuggestionBoxSFC.vue';
 import LoginButtonSFC from '../components/account/loginButtonSFC.vue';
 import AccountIcon from '../components/account/accountIconSFC.vue';
 import MainPage from "../components/landing_page_center/mainPage.vue"
-import NewReportPage from "../components/landing_page_center/newReportPage.vue"
->>>>>>> frontend
 
 let currentSelectedState = ref("");
 let currentFilters = ref({
