@@ -80,7 +80,7 @@ router.post("", async (req, res) => {
 
     //Check if the email is already used by a user
     let email = body["email"];
-    email = await User.findOne(email).exec();
+    email = await User.findOne({ email }).exec();
     if (email) {
         errResp.emailAlredyRegistered(res);
         return;

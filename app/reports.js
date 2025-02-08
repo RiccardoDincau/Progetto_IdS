@@ -150,7 +150,6 @@ router.post("", tokenChecker, async (req, res) => {
 
     let userUrl = req.loggedUser.id;
     let userID = userUrl.substring(userUrl.lastIndexOf("/") + 1);
-    console.log(userID);
     let user = null;
     user = await User.findById(userID)
         .exec()
@@ -203,7 +202,7 @@ router.post("", tokenChecker, async (req, res) => {
             return;
         });
 
-    res.location("/reports" + reportId)
+    res.location("/reports/" + reportId)
         .status(201)
         .send();
 });
