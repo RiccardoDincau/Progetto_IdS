@@ -26,7 +26,7 @@
                 <div class="report-interactions-container">
                     <div class="interaction-container">
                         <div class="interaction-icon-container" @click="changeUpvote">
-                            <svg class="interaction-svg" :class="upvoteClass" viewBox="0 0 24 24"
+                            <svg class="interaction-svg" :class="{ 'vote-svg-clicked': hasVoted }" viewBox="0 0 24 24"
                                 xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
 
                                 <g id="SVGRepo_bgCarrier" stroke-width="0" />
@@ -89,9 +89,9 @@ const maxReportChars = 150;
 const SERVERURL = "";
 let props = defineProps(['reportId']);
 
-let upvoteClass = ref("");
 let fetched = ref(false);
-const upvote = ref(false);
+let hasVoted = ref(false);
+
 const report = ref({
     title: '',
     content: '',
@@ -124,15 +124,19 @@ const fetchRep = async () => {
             report.value.content += "...";
         }
         report.value.image = SERVERURL + "api/reports/" + props.reportId + "/image";
-        let img = await fetch(SERVERURL + "api/reports/" + props.reportId + "/image").then((res) => {
-            if (!res.ok) isImg.value = false;
-            else isImg.value = true;
-        })
 
-        let comments = await fetch(SERVERURL + "api/reports/" + props.reportId + "/comments").then(async (res) => {
+        // await fetch(SERVERURL + "api/reports/" + props.reportId + "/image").then((res) => {
+        //     if (!res.ok) isImg.value = false;
+        //     else isImg.value = true;
+        // })
+
+        await fetch(SERVERURL + "api/reports/" + props.reportId + "/comments").then(async (res) => {
             if (!res.ok) report.value.commentsNum = 0;
             else report.value.commentsNum = (await res.json()).length;
         })
+
+        updateUpVoteIcon();
+
         // console.log(report.value.image);
     } catch (error) {
         console.log(error);
@@ -153,16 +157,34 @@ const fetchUsr = async () => {
 }
 
 function changeUpvote() {
-    if (!upvoteClass.value)
-        upvoteClass.value = "vote-svg-clicked";
-    else
-        upvoteClass.value = "";
     fetch(SERVERURL + "api/reports/" + props.reportId + '/votes',
         {
             method: "PUT",
-            body: JSON.stringify({ liked: !upvote.value })
+            headers: {
+                "Content-type": "application/json",
+                "x-access-token": localStorage.getItem("JWT"),
+            },
+            body: JSON.stringify({ liked: !hasVoted.value })
+        }).then(async (res) => {
+            updateUpVoteIcon();
+            res = await res.json();
+            report.value.votes = res;
+
         }).catch(() => console.log("Sorry :("));
-    upvote.value = !upvote.value;
+
+}
+
+async function updateUpVoteIcon() {
+    await fetch(SERVERURL + "api/reports/" + props.reportId + "/votes", {
+        headers: {
+            "x-access-token": localStorage.getItem("JWT"),
+        }
+    }).then(async (res) => {
+        if (res.ok) {
+            res = await res.json();
+            hasVoted.value = res.hasVoted;
+        }
+    });
 }
 
 onBeforeMount(async () => {
