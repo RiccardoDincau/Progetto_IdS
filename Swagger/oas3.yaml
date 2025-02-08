@@ -445,10 +445,6 @@ components:
                     $ref: "#/components/schemas/Category"
                 state:
                     $ref: "#/components/schemas/State"
-                comments:
-                    type: array
-                    items:
-                        type: string
 
         Report_POST:
             type: object
