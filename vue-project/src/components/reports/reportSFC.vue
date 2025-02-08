@@ -26,7 +26,7 @@
                 <div class="report-interactions-container">
                     <div class="interaction-container">
                         <div class="interaction-icon-container" @click="changeUpvote">
-                            <svg class="interaction-svg" :class="upvoteClass" viewBox="0 0 24 24"
+                            <svg class="interaction-svg" :class="{ 'vote-svg-clicked': hasVoted }" viewBox="0 0 24 24"
                                 xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
 
                                 <g id="SVGRepo_bgCarrier" stroke-width="0" />
@@ -90,9 +90,9 @@ const maxReportChars = 150;
 const SERVERURL = "";
 let props = defineProps(['reportId']);
 
-let upvoteClass = ref("");
 let fetched = ref(false);
-const upvote = ref(false);
+let hasVoted = ref(false);
+
 const report = ref({
     title: '',
     content: '',
@@ -125,15 +125,19 @@ const fetchRep = async () => {
             report.value.content += "...";
         }
         report.value.image = SERVERURL + "api/reports/" + props.reportId + "/image";
-        let img = await fetch(SERVERURL + "api/reports/" + props.reportId + "/image").then((res) => {
-            if (!res.ok) isImg.value = false;
-            else isImg.value = true;
-        })
 
-        let comments = await fetch(SERVERURL + "api/reports/" + props.reportId + "/comments").then(async (res) => {
+        // await fetch(SERVERURL + "api/reports/" + props.reportId + "/image").then((res) => {
+        //     if (!res.ok) isImg.value = false;
+        //     else isImg.value = true;
+        // })
+
+        await fetch(SERVERURL + "api/reports/" + props.reportId + "/comments").then(async (res) => {
             if (!res.ok) report.value.commentsNum = 0;
             else report.value.commentsNum = (await res.json()).length;
         })
+
+        updateUpVoteIcon();
+
         // console.log(report.value.image);
     } catch (error) {
         console.log(error);
@@ -153,82 +157,35 @@ const fetchUsr = async () => {
     }
 }
 
-// async function changeUpvote() {
-//     if (!upvoteClass.value){
-//         upvoteClass.value = "vote-svg-clicked";
-//     }else{
-//         upvoteClass.value = "";
-//     }
-    
-//     try {
-//         console.log("Invio richiesta upvote con body:", JSON.stringify({ liked: !upvote.value }));
-
-//         let res = await fetch(SERVERURL + "api/reports/" + props.reportId + '/votes',
-//             {
-//                 method: "PUT",
-//                 body: JSON.stringify({ liked: !upvote.value })
-//             })
-//         if (!res.ok) {
-//             throw new Error(`Errore HTTP: ${res.status}`);
-//         }
-//         const data = await res.json();
-//         report.value.votes = data.votes;
-//         upvote.value = !upvote.value;
-//     } catch(error) {
-//         console.log("Errore upvote frontend", error);
-//     }
-
-// }
-
-async function changeUpvote() {
-    console.log("Funzione changeUpvote chiamata!");
-
-    if (!props.reportId) {
-        console.error("Errore: props.reportId è undefined!");
-        return;
-    }
-
-    console.log("SERVERURL:", SERVERURL);
-    console.log("Report ID:", props.reportId);
-
-    if (!upvoteClass.value) {
-        upvoteClass.value = "vote-svg-clicked";
-    } else {
-        upvoteClass.value = "";
-    }
-
-    try {
-        console.log("Invio richiesta upvote con body:", JSON.stringify({ liked: !upvote.value }));
-        const token = localStorage.getItem("JWT");
-
-        if(token == null){
-            window.location.hash = '/login';
-            // throw new Error("token inesistente");
-            // TODO routing a login page
-            return;
-        }
-
-        let res = await fetch(SERVERURL + "api/reports/" + props.reportId + "/votes", {
+function changeUpvote() {
+    fetch(SERVERURL + "api/reports/" + props.reportId + '/votes',
+        {
             method: "PUT",
             headers: {
-                "Content-Type": "application/json",
-                "x-access-token": `${token}`
+                "Content-type": "application/json",
+                "x-access-token": localStorage.getItem("JWT"),
             },
-            body: JSON.stringify({ liked: !upvote.value })
-        });
+            body: JSON.stringify({ liked: !hasVoted.value })
+        }).then(async (res) => {
+            updateUpVoteIcon();
+            res = await res.json();
+            report.value.votes = res;
 
-        if (!res.ok) {
-            throw new Error(`Errore HTTP: ${res.status}`);
+        }).catch(() => console.log("Sorry :("));
+
+}
+
+async function updateUpVoteIcon() {
+    await fetch(SERVERURL + "api/reports/" + props.reportId + "/votes", {
+        headers: {
+            "x-access-token": localStorage.getItem("JWT"),
         }
-
-        const data = await res.json();
-        console.log("Risposta server:", data);
-
-        report.value.votes = data.votes;
-        upvote.value = !upvote.value;
-    } catch (error) {
-        console.error("Errore upvote frontend:", error);
-    }
+    }).then(async (res) => {
+        if (res.ok) {
+            res = await res.json();
+            hasVoted.value = res.hasVoted;
+        }
+    });
 }
 
 
