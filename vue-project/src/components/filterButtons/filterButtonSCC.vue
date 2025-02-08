@@ -36,7 +36,7 @@ let showMenu = ref(false);
 let emit = defineEmits(["filterChanged"]);
 
 const kinds = ref([
-    { type: "report", text: "report", pressed: false },
+    { type: "report", text: "segnalazione", pressed: false },
     { type: "suggestion", text: "suggerimento", pressed: false },
     { type: "complaint", text: "reclamo", pressed: false },
 ]);
