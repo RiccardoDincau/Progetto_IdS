@@ -142,7 +142,7 @@ async function saveReport() {
     };
 
 
-    let response = await fetch("http://localhost:8080/api/reports",
+    let response = await fetch("/api/reports",
         {
             method: "POST",
             headers: { "x-access-token": localStorage.getItem("JWT"), "Content-type": "application/json" },

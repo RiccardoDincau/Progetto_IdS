@@ -1,8 +1,6 @@
 <template>
     <div class="filter-options-bar">
         <div class="search-bar-container shaded">
-            <!-- <img class="search-icon" src="./resources/search-icon.png"> -->
-            <input class="search-bar" type="text" placeholder="Cerca...">
             <SearchBarSCC @in-focus="searchedTextChanged"/>
         </div>
         <div class="filter-buttons-container">
