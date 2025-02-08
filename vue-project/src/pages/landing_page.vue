@@ -15,7 +15,7 @@
         </div>
 
         <div class="central-bar">
-            <MainPage :currentSelectedState="currentSelectedState" :currentFilters="currentFilters" />
+            <MainPage :currentSelectedState="currentSelectedState"/>
         </div>
         <div class="right-bar">
             <LoginButtonSFC v-if="!username" />
@@ -39,11 +39,7 @@ import AccountIcon from '../components/account/accountIconSFC.vue';
 import MainPage from "../components/landing_page_center/mainPage.vue"
 
 let currentSelectedState = ref("");
-let currentFilters = ref({
-    kind: null,
-    category: null
-});
-let currentSearchedText = ref("");
+
 
 const username = ref("");
 
@@ -54,11 +50,6 @@ function searchedTextChanged(newText){
 function stateChanged(newState) {
     // console.log("State changed", newState);
     currentSelectedState.value = newState;
-}
-
-function filterChanged(newFilters) {
-    // console.log("Filters changed", newFilters);
-    currentFilters.value = newFilters;
 }
 
 onMounted(() => {

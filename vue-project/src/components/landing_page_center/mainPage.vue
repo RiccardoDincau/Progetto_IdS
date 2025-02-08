@@ -25,8 +25,14 @@
 <script setup>
 import ReportList from "../reports/reportListSFC.vue"
 import FilterButtonSCC from "../filterButtons/filterButtonSCC.vue"
+import SearchBarSCC from "../filterButtons/searchBarSCC.vue";
 
 import { ref } from "vue";
+
+let currentFilters = ref({
+    kind: null,
+    category: null
+});
 
 const props = defineProps(["currentSelectedState", "currentFilters"]);
 
@@ -34,6 +40,11 @@ let currentSearchedText = ref("");
 
 function searchedTextChanged(newText){
     currentSearchedText.value = newText;
+}
+
+function filterChanged(newFilters) {
+    // console.log("Filters changed", newFilters);
+    currentFilters.value = newFilters;
 }
 
 </script>

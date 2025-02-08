@@ -1,5 +1,5 @@
 <template>
-    <div class="notification-container">
+    <div class="notification-container" v-if="notificationList.length > 0">
         <h3 class="notification-title">Notifiche</h3>
         <notificationSFC v-for="notification in notificationList" :title="notification.title"
             :content="notification.content" :key="notification.id" />
@@ -14,10 +14,18 @@ const notificationList = ref([]);
 const SERVERURL = "/";
 
 async function fetchUsr() {
-    const res = await fetch(SERVERURL + 'api' + userId + '/notifications');
-    const resJSON = await res.json();
-    for (let el of resJSON) {
-        notificationList.value.push(el);
+    const res = await fetch(SERVERURL + 'api' + userId + '/notifications', {
+        headers: {
+            "x-access-token": localStorage.getItem("JWT"),
+        }
+    });
+
+    if (res.status == 200) {
+        const resJSON = await res.json();
+        console.log(resJSON);
+        for (let el of resJSON) {
+            notificationList.value.push(el);
+        }
     }
 }
 
