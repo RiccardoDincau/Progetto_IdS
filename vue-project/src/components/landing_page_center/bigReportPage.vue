@@ -1,27 +1,27 @@
 <template>
-    <div class="report-wrapper" router-link :to="{ name: 'big-report', params: { report: 'report' } }">
-        <div v-if="fetched" class="tags-bar">
-            <tagSFC :fieldValue="report.category" />
-            <tagSFC :fieldValue="report.kind" />
+    <div class="report-wrapper">
+        <div class="tags-bar">
+            <tagSFC :fieldValue="props.report.category" />
+            <tagSFC :fieldValue="props.report.kind" />
         </div>
-        <div v-if="fetched" class="report-container">
+        <div class="report-container">
             <div class="state-container">
                 <div :class="'state-' + report.state" class="state-circle"></div>
             </div>
 
             <div class="content-contaier">
                 <div class="report-title-container">
-                    <h1 class="report-title">{{ report.title }}</h1>
-                    <h3 class="report-username-date report-subtitle">{{ user.name }}, 3gg</h3>
+                    <h1 class="report-title">{{ props.report.title }}</h1>
+                    <h3 class="report-username-date report-subtitle">{{ props.user.name }}, 3gg</h3>
                 </div>
 
                 <div class="report-position-container">
-                    <h3 class="report-position report-subtitle">{{ report.position }}</h3>
+                    <h3 class="report-position report-subtitle">{{ props.report.position }}</h3>
 
                 </div>
 
                 <div class="report-content-container">
-                    <p class="report-content">{{ report.content }}.</p>
+                    <p class="report-content">{{ props.report.content }}.</p>
                 </div>
                 <div class="vote-container">
                     <div class="vote-icon-container" @click="changeUpvote">
@@ -41,7 +41,7 @@
                         </svg>
                     </div>
                     <div class="vote-counter">
-                        <p> {{ report.votes }}</p>
+                        <p> {{ props.report.votes }}</p>
                     </div>
                 </div>
             </div>
@@ -50,93 +50,64 @@
                 <img :src="report.image" class="report-image">
             </div>
         </div>
+        <CommentListSFC :report-id="props.report._id"></CommentListSFC>
     </div>
 </template>
 
 <script setup>
-import { ref, onBeforeMount } from 'vue';
-import tagSFC from "../tags/tagSFC.vue";
+import { ref } from 'vue';
+import tagSFC from '../tags/tagSFC.vue';
+import CommentListSFC from '../comments/commentListSFC.vue';
 
-const maxReportChars = 150;
-
-const SERVERURL = "/";
-let props = defineProps(['reportId']);
+let props = defineProps(['report']);
 
 let upvoteClass = ref("");
-let fetched = ref(false);
 const upvote = ref(false);
-const report = ref({
-    title: '',
-    content: '',
-    user: '',
-    votes: 0,
-    position: '',
-    kind: '',
-    category: '',
-    state: '',
-    comments: [],
-    image: ''
-});
 
-const user = ref({
-    name: '',
-});
+async function changeUpvote() {
 
-const isImg = ref(false);
-
-const fetchRep = async () => {
-    try {
-        let res = await fetch(SERVERURL + "api/reports/" + props.reportId);
-        if (!res.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        res = await res.json();
-        report.value = res;
-        if (report.value.content.length > maxReportChars) {
-            report.value.content = report.value.content.slice(0, maxReportChars);
-            report.value.content += "...";
-        }
-        report.value.image = SERVERURL + "api/reports/" + props.reportId + "/image";
-        let img = await fetch(SERVERURL + "api/reports/" + props.reportId + "/image").then((res) => {
-            if (!res.ok) isImg.value = false;
-            else isImg.value = true;
-        })
-        // console.log(report.value.image);
-    } catch (error) {
-        console.log(error);
+    if (!props.report._id) {
+        console.error("Errore: props.report._id è undefined!");
+        return;
     }
-};
-const fetchUsr = async () => {
-    try {
-        let res = await fetch(SERVERURL + "api/users/" + report.value.user);
-        if (!res.ok) {
-            throw new Error(`HTTP error! Status: ${res.status}`);
-        }
-        const resData = await res.json();
-        user.value = resData;
-    } catch (error) {
-        console.log(error);
-    }
-}
 
-function changeUpvote() {
-    if (!upvoteClass.value)
+    if (!upvoteClass.value) {
         upvoteClass.value = "vote-svg-clicked";
-    else
+    } else {
         upvoteClass.value = "";
-    fetch(SERVERURL + "api/reports/" + props.reportId + '/votes',
-        {
-            method: "PUT",
-            body: JSON.stringify({ liked: !upvote.value })
-        }).catch(() => console.log("Sorry :("));
-    upvote.value = !upvote.value;
-}
+    }
 
-onBeforeMount(async () => {
-    await fetchRep();
-    await fetchUsr();
-    fetched.value = true;
-});
+    try {
+        // console.log("Invio richiesta upvote con body:", JSON.stringify({ liked: !upvote.value }));
+        const token = localStorage.getItem("JWT");
+
+        if(token == null){
+            window.location.hash = '/login';
+            return;
+        }
+
+        let res = await fetch(SERVERURL + "api/reports/" + props.report._id + "/votes", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "x-access-token": `${token}`
+            },
+            body: JSON.stringify({ liked: !upvote.value })
+        });
+
+        if (!res.ok) {
+            throw new Error(`Errore HTTP: ${res.status}`);
+        }
+
+        const data = await res.json();
+        // console.log("Risposta server:", data);
+
+        report.value.votes = data.votes;
+        upvote.value = !upvote.value;
+    } catch (error) {
+        console.error("Errore upvote frontend:", error);
+    }
+}
 
 </script>
 
