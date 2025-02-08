@@ -3,10 +3,13 @@
         <div class="signup-container">
             <h1 class="signup-title">Treport</h1>
             <div class="form-container">
-                <input class="signup-input shaded" type="text" placeholder="Nome">
-                <input class="signup-input shaded" type="email" placeholder="Email">
-                <input class="signup-input shaded" type="password" placeholder="Password">
-                <button class="confirm-signup">Registrati</button>
+                <input :class="{ 'red-border': emptyFields.name }" v-model="signupName" class="signup-input shaded"
+                    type="text" placeholder="Nome">
+                <input :class="{ 'red-border': emptyFields.email }" v-model="signupEmail" class="signup-input shaded"
+                    type="email" placeholder="Email">
+                <input :class="{ 'red-border': emptyFields.password }" v-model="signupPassword"
+                    class="signup-input shaded" type="password" placeholder="Password">
+                <button @click="signup" class="confirm-signup">Registrati</button>
             </div>
             <div class="links-container">
                 <a class="link" href="#/">Torna alla home page</a>
@@ -17,6 +20,52 @@
 </template>
 
 <script setup>
+
+import { ref } from 'vue';
+
+const signupName = ref("");
+const signupEmail = ref("");
+const signupPassword = ref("");
+
+const emptyFields = ref({
+    name: false,
+    email: false,
+    password: false
+})
+
+async function signup() {
+    let valid = true;
+
+    if (signupName.value == "") {
+        valid = false;
+        emptyFields.value.name = true;
+    }
+
+    if (signupEmail.value == "") {
+        valid = false;
+        emptyFields.value.email = true;
+    }
+
+    if (signupPassword.value == "") {
+        valid = false;
+        emptyFields.value.password = true;
+    }
+
+    if (!valid) {
+        alert("Completa tutti i campi!");
+        return;
+    }
+
+    let user = {
+        name: signupName.value,
+        email: signupEmail.value,
+        password: signupPassword.value,
+        user_level: "citizen"
+    };
+
+    let response = await fetch("/api/users", { method: "POST", body: JSON.stringify(user) });
+}
+
 </script>
 
 <style lang="css" scoped>
@@ -100,5 +149,9 @@
 
 .link:hover {
     letter-spacing: 0.2px;
+}
+
+.red-border {
+    border: 3px solid red;
 }
 </style>

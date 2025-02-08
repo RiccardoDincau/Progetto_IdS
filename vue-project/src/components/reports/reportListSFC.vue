@@ -8,7 +8,7 @@
 import { ref, onMounted, watch } from 'vue';
 import ReportSFC from "./reportSFC.vue";
 
-const SERVERURL = "https://bpjwkxhm-8080.euw.devtunnels.ms/";
+const SERVERURL = "/";
 
 let reports = ref([]);
 
