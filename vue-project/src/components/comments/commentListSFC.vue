@@ -1,11 +1,12 @@
 <template>
     <div class="comment-list-container">
         <h1>Commenti</h1>
+        <addCommentBar :report-id="props.reportId" @commentAdded="handleCommentAdded"></addCommentBar>
         <ul class="comment-list">
             <li v-for="comment in commentList">
                 <commentSFC 
-                :username="comment.user.name"
-                :userlevel="comment.user.user_level"
+                :username="comment.username"
+                :userlevel="comment.user_level"
                 :content="comment.content"> 
                 </commentSFC>
             </li>
@@ -17,6 +18,7 @@
 <script setup>
 import { ref, onBeforeMount } from 'vue';
 import commentSFC from './commentSFC.vue';
+import addCommentBar from './addCommentBar.vue';
 
 const SERVERURL = "/";
 
@@ -31,12 +33,27 @@ const fetchComments = async () => {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         res = await res.json();
+        console.log(res);
+
+        for (let comment of res) {
+            const userRes = await fetch(SERVERURL + "api/users/" + comment.user);
+            if (userRes.ok) {
+                const userData = await userRes.json();
+                comment.username = userData.name; // Aggiungi il nome dell'utente
+                comment.userlevel = userData.user_level; // Aggiungi il livello dell'utente (se necessario)
+            }
+        }
+
         commentList.value = res;
     } catch(error){
         console.log(error);
         throw new Error(error);
     }
 }
+
+const handleCommentAdded = async () => {
+    await fetchComments();
+};
 
 onBeforeMount(async () => {
     await fetchComments();
@@ -46,9 +63,8 @@ onBeforeMount(async () => {
 
 <style>
 
-    .commentList {
-        padding: 10px;
-        margin: 10px;
-    }
+.comment-list {
+    list-style-type: none;
+}
 
 </style>

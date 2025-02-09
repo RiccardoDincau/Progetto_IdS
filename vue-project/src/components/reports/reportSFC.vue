@@ -1,5 +1,5 @@
 <template>
-    <div class="report-wrapper" router-link :to="{ name: 'big-report', params: { report: 'report' } }">
+    <div class="report-wrapper" @click="goToBigReport(props.reportId)">
         <div v-if="fetched" class="tags-bar">
             <tagSFC :fieldValue="report.category" />
             <tagSFC :fieldValue="report.kind" />
@@ -116,7 +116,7 @@ const fetchRep = async () => {
     try {
         let res = await fetch(SERVERURL + "api/reports/" + props.reportId);
         if (!res.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            throw new Error(`HTTP error! Status: ${res.status}`);
         }
         res = await res.json();
         report.value = res;
@@ -188,6 +188,9 @@ async function updateUpVoteIcon() {
     });
 }
 
+function goToBigReport(reportId) {
+    window.location.hash = `/big-report?id=${reportId}`;
+}
 
 onBeforeMount(async () => {
     await fetchRep();
