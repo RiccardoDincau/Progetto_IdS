@@ -21,6 +21,10 @@ const emit = defineEmits();
 const submitComment = async () => {
     if (!comment.value.content.trim()) return; // Per non permettere commenti vuoti
     
+    if(!localStorage.getItem("JWT")){
+        window.location.hash = '/login';
+    }
+
     try{
         let res = await fetch("/api/reports/"+props.reportId+"/comments",
             {
@@ -39,6 +43,7 @@ const submitComment = async () => {
     } catch(error){
         console.log("Errore nella richiesta:", error);
     }
+    comment.value.content = '';
 };
 
 const getUserFromToken = () => {

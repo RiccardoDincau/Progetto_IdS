@@ -18,7 +18,7 @@
 <script setup>
 import { ref, onBeforeMount } from 'vue';
 import commentSFC from './commentSFC.vue';
-import addCommentBar from './addCommentBar.vue';
+import addCommentBar from './addCommentBarSFC.vue';
 
 const SERVERURL = "/";
 
