@@ -167,11 +167,11 @@ function changeUpvote() {
             body: JSON.stringify({ liked: !hasVoted.value })
         }).then(async (res) => {
             updateUpVoteIcon();
-            res = await res.json();
-            report.value.votes = res;
-
+            if (res.ok) {
+                res = await res.json();
+                report.value.votes = res;
+            }
         }).catch(() => console.log("Sorry :("));
-
 }
 
 async function updateUpVoteIcon() {
