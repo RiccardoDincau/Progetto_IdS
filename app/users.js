@@ -21,7 +21,6 @@ function displayedUsers(mongooseUser) {
 //GET methods
 router.get("", async (req, res) => {
     let possibleQueries = ["user_level"];
-    let interrupt = false;
 
     //Check to filter only the available query strings
     let finalQueries = {};
@@ -77,6 +76,10 @@ router.post("", async (req, res) => {
             return;
         }
     }
+    if (req.body.user_level != 'citizen') {
+        errResp.unauthorizedAction(res, "Unauthorized creation of the account");
+        return;
+    }
 
     //Check if the email is already used by a user
     let email = body["email"];
@@ -102,8 +105,8 @@ router.post("", async (req, res) => {
 
 //DELETE methods
 router.delete("/:id", tokenChecker, async (req, res) => {
-    if (req.loggedUser.user_level != "admin") {
-        errResp.unauthorizedAction(res, "Thi user can not delete a user");
+    if (req.loggedUser.user_level == "citizen") {
+        errResp.unauthorizedAction(res, "This user can not delete a user");
         return;
     }
     let userID = req.params.id;

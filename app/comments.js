@@ -99,8 +99,7 @@ router.get("/:reportID/comments/:commentID", async (req, res) => {
 
 router.post("/:id/comments", tokenChecker, async (req, res) => {
     let requiredAttributes = ["content"];
-    let userUrl = req.loggedUser.id;
-    let userID = userUrl.substring(userUrl.lastIndexOf("/") + 1);
+    let userID = req.loggedUser.id;
 
     //Check if the user id is properly formatted and exists
     let user = await User.findById(userID)
@@ -125,11 +124,10 @@ router.post("/:id/comments", tokenChecker, async (req, res) => {
         errResp.reportNotFound(res);
         return;
     }
-
     //The necessary attributes are taken out by the sent body
     let commentAttributes = {};
     commentAttributes["user"] = userID;
-    commentAttributes["report"] = reportUrl.substring(reportUrl.lastIndexOf("/") + 1);
+    commentAttributes["report"] = reportUrl;
     for (let attr of requiredAttributes) {
         if (req.body[attr] == undefined) {
             errResp.missingAttribute(res, attr);
@@ -140,7 +138,6 @@ router.post("/:id/comments", tokenChecker, async (req, res) => {
     }
 
     let comment = new Comment(commentAttributes);
-
     comment = await comment.save()
         .catch(() => {
             errResp.commentMalformed(res);
@@ -150,7 +147,6 @@ router.post("/:id/comments", tokenChecker, async (req, res) => {
     if (comment == null) return;
     // TODO
     // da aggiungere il commento nello user
-
     let commentID = comment.id;
 
     res.location(req.path + commentID)

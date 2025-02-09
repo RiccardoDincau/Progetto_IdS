@@ -43,7 +43,6 @@ function notificationTitleAndContent(mongooseReport) {
     let state = mongooseReport.state;
     switch (state) {
         case "active":
-            console.log("Changed to active");
             title = "Report switched to active!";
             content =
                 "The report " +
@@ -52,7 +51,6 @@ function notificationTitleAndContent(mongooseReport) {
             break;
 
         case "work_in_progress":
-            console.log("Changed to work in progress");
             title = "Report switched to work in progress!";
             content =
                 "The report " +
@@ -61,7 +59,6 @@ function notificationTitleAndContent(mongooseReport) {
             break;
 
         case "archived":
-            console.log("Changed to archived");
             title = "Report switched to archived!";
             content =
                 "The report " +
@@ -128,8 +125,6 @@ router.get("", async (req, res) => {
             return;
         }
     }
-
-    console.log("Queries requested: ", sentQueries);
 
     let reports = await Report.find(sentQueries);
 
@@ -221,14 +216,19 @@ router.get("/:id", async (req, res) => {
 });
 
 router.put("/:id", tokenChecker, async (req, res) => {
-    console.log(req.loggedUser.user_level);
-    if (req.loggedUser.user_level != "admin") {
+    if (req.loggedUser.user_level == "citizen") {
         errResp.unauthorizedAction(
             res,
             "This user can not change the state of the report"
         );
         return;
     }
+    let comments = await Comment.findOne({'report' : req.params.id, 'user' : req.loggedUser.id}).exec();
+    if (!comments){
+        errResp.unauthorizedAction(res);
+        return;
+    }
+
     let { state } = req.body;
 
     let previousReport = await Report.findById(req.params.id)
@@ -261,13 +261,12 @@ router.put("/:id", tokenChecker, async (req, res) => {
             return;
         }
     }
-    console.log("Notifica inviata");
 
     res.status(200).json(displayedReport(report));
 });
 
 router.delete("/:id", tokenChecker, async (req, res) => {
-    if (req.loggedUser.user_level != "admin") {
+    if (req.loggedUser.user_level != "district") {
         errResp.unauthorizedAction(res, "This user can not delete a report");
         return;
     }
