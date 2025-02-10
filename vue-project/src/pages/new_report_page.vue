@@ -5,6 +5,7 @@
         </div>
 
         <div class="central-bar">
+            <GoBackButton @go-back-pressed="$emit('goToLastPage')" />
             <NewReportPage />
         </div>
         <div class="right-bar">
@@ -27,6 +28,7 @@ import LoginButtonSFC from '../components/account/loginButtonSFC.vue';
 import AccountIcon from '../components/account/accountIconSFC.vue';
 import NewReportPage from "../components/landing_page_center/newReportPage.vue"
 import LeftBar from '@/components/landing_page_center/leftBar.vue';
+import GoBackButton from '@/components/navigationButtons/goBackButton.vue';
 
 let currentSelectedState = ref("");
 let currentFilters = ref({
@@ -50,7 +52,7 @@ onMounted(() => {
     if (!localStorage.getItem("JWT")) {
         window.location.hash = "#/required-login";
     }
-    
+
     let userId = localStorage.getItem("userId");
 
     if (userId && userId !== "") {

@@ -48,7 +48,25 @@ function getQueryParams() {
 function goToLastNotLogin() {
     for (let i = 0; i < URLHistory.length; i++) {
         let possiblePath = URLHistory[i];
-        if (possiblePath != "#/login" && possiblePath != "#/signup" && possiblePath != "#/required-login") {
+        if (possiblePath != "#/login"
+            && possiblePath != "#/signup"
+            && possiblePath != "#/required-login") {
+
+            if (URLHistory[0] == "#/required-login"
+                && possiblePath == "#/new-report") continue
+            window.location.hash = possiblePath;
+            break;
+        }
+    }
+}
+
+function goToLast() {
+    for (let i = 0; i < URLHistory.length; i++) {
+        let possiblePath = URLHistory[i];
+        if (possiblePath != URLHistory[0]
+            && possiblePath != "#/login"
+            && possiblePath != "#/signup"
+            && possiblePath != "#/required-login") {
             window.location.hash = possiblePath;
             break;
         }
@@ -59,5 +77,5 @@ function goToLastNotLogin() {
 
 <template>
     <component :is="currentView" v-bind="getQueryParams()" @successfullLogin="goToLastNotLogin"
-        @goBack="goToLastNotLogin" />
+        @go-back="goToLastNotLogin" @go-to-last-page="goToLast" />
 </template>

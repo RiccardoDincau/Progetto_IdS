@@ -5,6 +5,7 @@
         </div>
 
         <div class="central-bar">
+            <GoBackButton @go-back-pressed="$emit('goToLastPage')" />
             <!-- <MainPage :currentSelectedState="currentSelectedState"/> -->
             <bigReport :id="props.id"></bigReport>
         </div>
@@ -28,6 +29,7 @@ import LoginButtonSFC from '../components/account/loginButtonSFC.vue';
 import AccountIcon from '../components/account/accountIconSFC.vue';
 import bigReport from '@/components/landing_page_center/bigReportPage.vue';
 import LeftBar from '@/components/landing_page_center/leftBar.vue';
+import GoBackButton from '@/components/navigationButtons/goBackButton.vue';
 
 let props = defineProps({ id: String });
 
