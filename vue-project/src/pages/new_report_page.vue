@@ -47,6 +47,10 @@ function filterChanged(newFilters) {
 }
 
 onMounted(() => {
+    if (!localStorage.getItem("JWT")) {
+        window.location.hash = "#/required-login";
+    }
+    
     let userId = localStorage.getItem("userId");
 
     if (userId && userId !== "") {

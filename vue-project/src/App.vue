@@ -22,10 +22,14 @@ window.addEventListener('hashchange', () => {
     currentPath.value = window.location.hash;
 });
 
-let lastViewURL = "/";
 let currentViewURL = "/";
+let lastViewURL = "/";
+
+let URLHistory = ["/"];
 
 const currentView = computed(() => {
+    URLHistory.unshift(currentPath.value);
+    // console.log(URLHistory);
     lastViewURL = currentViewURL;
     const pathWithQuery = currentPath.value.slice(1) || '/';
 
@@ -33,7 +37,7 @@ const currentView = computed(() => {
     const [path] = pathWithQuery.split('?');
     currentViewURL = path;
 
-    return routes[path] || NotFound;
+    return routes[path] || LandingPage;
 });
 
 // Funzione per ottenere i parametri query dalla hash
@@ -47,14 +51,19 @@ function goToLastPage() {
     window.location.hash = lastViewURL;
 }
 
+function goToLastNotLogin() {
+    for (let i = 0; i < URLHistory.length; i++) {
+        let possiblePath = URLHistory[i];
+        if (possiblePath != "#/login" && possiblePath != "#/signup" && possiblePath != "#/required-login") {
+            window.location.hash = possiblePath;
+            break;
+        }
+    }
+}
+
 </script>
 
 
 <template>
-    <component 
-        :is="currentView" 
-        v-bind="getQueryParams()" 
-        @successfullLogin="goToLastPage" 
-        @goBack="goToLastPage"
-    />
+    <component :is="currentView" v-bind="getQueryParams()" @successfullLogin="goToLastNotLogin" @goBack="goToLastNotLogin" />
 </template>

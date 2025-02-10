@@ -43,11 +43,12 @@ function filterChanged(newFilters) {
 }
 
 function goToNewReport() {
-    if (localStorage.getItem("JWT")) {
-        window.location.hash = "#/new-report";
-    } else {
-        window.location.hash = "#/required-login";
-    }
+    window.location.hash = "#/new-report";
+    // if (localStorage.getItem("JWT")) {
+    //     window.location.hash = "#/new-report";
+    // } else {
+    //     window.location.hash = "#/required-login";
+    // }
 }
 </script>
 
