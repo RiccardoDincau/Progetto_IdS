@@ -2,7 +2,7 @@
     <div class="notification-container" v-if="notificationList.length > 0">
         <h3 class="notification-title">Notifiche</h3>
         <notificationSFC v-for="notification in notificationList" :title="notification.title"
-            :content="notification.content" :key="notification.id" />
+            :content="notification.content" :id="notification.report" :key="notification.id" />
     </div>
 </template>
 
@@ -22,7 +22,7 @@ async function fetchUsr() {
 
     if (res.status == 200) {
         const resJSON = await res.json();
-        console.log(resJSON);
+        console.log("Console log notificationBox, riga 25", resJSON);
         for (let el of resJSON) {
             notificationList.value.push(el);
         }

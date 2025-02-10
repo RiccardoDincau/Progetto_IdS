@@ -1,16 +1,21 @@
 <template>
-    <div class="notification-tag">
-        <div class="notification-title-wrapper">
-            <p class="notification-title"> {{ props.title }}</p>
+    <a :href="'#/big-report?id=' + props.id" class="notification-anchor">
+        <div class="notification-tag">
+            <div class="notification-title-wrapper">
+                <p class="notification-title"> {{ props.title }}</p>
+            </div>
+            <div class="notification-content-wrapper">
+                <p class="notifcation-content"> {{ props.content }}</p>
+            </div>
         </div>
-        <div class="notification-content-wrapper">
-            <p class="notifcation-content"> {{ props.content }}</p>
-        </div>
-    </div>
+    </a>
 </template>
 
 <script setup>
-const props = defineProps(['title', 'content']);
+import { onMounted } from 'vue';
+import { ref } from 'vue';
+
+const props = defineProps(['title', 'content', 'id']);
 </script>
 
 <style>
@@ -29,6 +34,11 @@ const props = defineProps(['title', 'content']);
     padding: 10px;
     margin-bottom: 10px;
     overflow: hidden;
+}
+
+.notification-anchor {
+    text-decoration: none;
+    color: black;
 }
 
 .notification-title {
