@@ -77,7 +77,7 @@ onMounted(() => {
 }
 
 .comment-input {
-    background: #f1f1f1;
+    background: #E4E4E4;
     padding: 10px;
     border-radius: 8px;
     margin-bottom: 8px;
@@ -85,7 +85,6 @@ onMounted(() => {
     border: 1px solid;
     border-color: transparent;
     resize: none;
-    box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.2);
     width: 100%;
 }
 

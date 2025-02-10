@@ -10,6 +10,7 @@
                 </ul>
             </button>
         </div>
+
         <div v-if="fetched" class="tags-bar">
             <tagSFC :fieldValue="report.category" />
             <tagSFC :fieldValue="report.kind" />
@@ -250,25 +251,27 @@ onBeforeMount(async () => {
     }
     fetched.value = true;
 })
-
 </script>
 
-<style>
+<style scoped>
 .report-wrapper {
     max-width: 1000px;
     font-family: "Raleway", sans-serif;
     font-optical-sizing: auto;
     font-style: normal;
     margin-top: 20px;
+
+    background-color: white;
+
+    padding: 20px;
 }
 
 .report-container {
     background-color: white;
-    border: none;
+    border: 1px solid black;
     border-radius: 20px;
     display: flex;
     padding: 10px;
-    box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.2);
 }
 
 .state-container {

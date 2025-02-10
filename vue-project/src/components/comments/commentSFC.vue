@@ -1,23 +1,25 @@
 <template>
-    <div :class="commentClass" class="comment">
-        <h1 :class="usernameClass" class="username">{{ props.username }}</h1>
+    <div :class="{ 'comment-admin': (props.userlevel == 'admin' || props.userlevel == 'district') }" class="comment">
+        <h1 :class="{ 'username-admin': (props.userlevel == 'admin' || props.userlevel == 'district') }"
+            class="username">{{ props.username }}</h1>
         <h2 class="content">{{ props.content }}</h2>
     </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onMounted } from 'vue';
 
 let props = defineProps(['username', 'userlevel', 'content']);
 
-let commentClass = ref("comment-"+props.userlevel);
-let usernameClass = ref("username-"+props.userlevel);
+onMounted(() => {
+    console.log("awdawda", props.userlevel);
+});
 
 </script>
 
-<style>
+<style scoped>
 .comment {
-    background: #f1f1f1;
+    background: #E4E4E4;
     padding: 10px;
     border-radius: 8px;
     margin-bottom: 8px;
@@ -25,7 +27,6 @@ let usernameClass = ref("username-"+props.userlevel);
 }
 
 .comment-admin {
-    background: #d4d3d3;
     padding: 10px;
     border-radius: 8px;
     margin-bottom: 8px;
@@ -46,5 +47,4 @@ let usernameClass = ref("username-"+props.userlevel);
     font-size: 18px;
     font-weight: lighter;
 }
-
 </style>
