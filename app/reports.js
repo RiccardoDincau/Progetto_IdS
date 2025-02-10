@@ -45,25 +45,25 @@ function notificationTitleAndContent(mongooseReport) {
         case "active":
             title = "Segnalazione cambiata ad Attiva!";
             content =
-                "La segnalazione" +
+                "La segnalazione \"" +
                 mongooseReport.title +
-                " è stata cambiata ad Attiva.";
+                "\" è stata cambiata ad Attiva.";
             break;
 
         case "work_in_progress":
             title = "Segnalazione cambiata a Presa in carico!";
             content =
-                "La segnalazione" +
+                "La segnalazione \"" +
                 mongooseReport.title +
-                " è stata cambiata a Presa in carico.";
+                "\" è stata cambiata a Presa in carico.";
             break;
 
         case "archived":
-            title = "Segnalazione cambiata a Archiviata!";
+            title = "Segnalazione cambiata ad Archiviata!";
             content =
-                "La segnalazione" +
+                "La segnalazione \"" +
                 mongooseReport.title +
-                " è stata cambiata a Archiviata";
+                "\" è stata cambiata ad Archiviata";
             break;
 
         default:
