@@ -10,11 +10,6 @@
 import { onMounted } from 'vue';
 
 let props = defineProps(['username', 'userlevel', 'content']);
-
-onMounted(() => {
-    console.log("awdawda", props.userlevel);
-});
-
 </script>
 
 <style scoped>

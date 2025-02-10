@@ -30,7 +30,6 @@ const fetchComments = async () => {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         res = await res.json();
-        console.log(res);
 
         for (let comment of res) {
             const userRes = await fetch(SERVERURL + "api/users/" + comment.user);

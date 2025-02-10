@@ -3,8 +3,8 @@
         <div v-if="districtUser" class="change-state-container">
             <button :class="'change-state-' + report.state" class="state-button" @click="showStates = !showStates">
                 <h1>Cambia stato</h1>
-                <ul v-show="showStates" class="stateList">
-                    <li v-for="state in states" :class="'change-state-' + state.type" @click="changeState(state.type)">
+                <ul v-if="showStates" class="stateList">
+                    <li v-for="state in states" :class="'change-state-' + state.type" @click.stop="changeState(state.type)">
                         {{ state.text }}
                     </li>
                 </ul>
@@ -15,6 +15,7 @@
             <tagSFC :fieldValue="report.category" />
             <tagSFC :fieldValue="report.kind" />
         </div>
+
         <div v-if="fetched" class="report-container">
             <div class="state-container">
                 <div :class="'state-' + report.state" class="state-circle"></div>
@@ -137,7 +138,7 @@ computed(() => {
 
 
 function changeState(newState) {
-    showStates.value = !showStates.value;
+    showStates.value = false;
     fetch(SERVERURL + "api/reports/" + reportId.value,
         {
             method: "PUT",
@@ -148,8 +149,8 @@ function changeState(newState) {
             body: JSON.stringify({ state: newState })
         }
     ).then(async (res) => {
-        res = await res.json();
-        if(res.ok){
+        if (res.ok) {
+            res = await res.json();
             report.value = res;
         } else {
             console.log("User level 'citizen' non sufficiente");
@@ -246,7 +247,6 @@ const getUserFromToken = () => {
 
 onBeforeMount(async () => {
     reportId.value = props.id;
-    console.log("ID del report ricevuto:", reportId.value);
     await fetchRep();
     await fetchUsr();
     const userData = getUserFromToken();
