@@ -1,13 +1,10 @@
 <template>
     <div class="comment-list-container">
-        <h1>Commenti</h1>
+        <h1 class="comment-list-title">Commenti</h1>
         <addCommentBar :report-id="props.reportId" @commentAdded="handleCommentAdded"></addCommentBar>
         <ul class="comment-list">
             <li v-for="comment in commentList">
-                <commentSFC 
-                :username="comment.username"
-                :userlevel="comment.user_level"
-                :content="comment.content"> 
+                <commentSFC :username="comment.username" :userlevel="comment.userlevel" :content="comment.content">
                 </commentSFC>
             </li>
         </ul>
@@ -28,8 +25,8 @@ let commentList = ref([]);
 
 const fetchComments = async () => {
     try {
-        let res = await fetch(SERVERURL+"api/reports/"+props.reportId+"/comments");
-        if(!res.ok){
+        let res = await fetch(SERVERURL + "api/reports/" + props.reportId + "/comments");
+        if (!res.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         res = await res.json();
@@ -45,7 +42,7 @@ const fetchComments = async () => {
         }
 
         commentList.value = res;
-    } catch(error){
+    } catch (error) {
         console.log(error);
         throw new Error(error);
     }
@@ -62,9 +59,11 @@ onBeforeMount(async () => {
 </script>
 
 <style>
-
 .comment-list {
     list-style-type: none;
 }
 
+.comment-list-title {
+    margin-top: 20px;
+}
 </style>
