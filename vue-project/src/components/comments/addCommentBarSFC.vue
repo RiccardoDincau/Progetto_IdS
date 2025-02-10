@@ -1,7 +1,7 @@
 <template>
     <div class="comment-input-container">
-      <textarea v-model="comment.content" placeholder="Scrivi un commento..." class="comment-input"></textarea>
-      <button @click="submitComment" class="submit-button">Invia</button>
+        <textarea v-model="comment.content" placeholder="Scrivi un commento..." class="comment-input"></textarea>
+        <button @click="submitComment" class="submit-button">Invia</button>
     </div>
 </template>
 
@@ -9,7 +9,7 @@
 import { ref, onMounted } from "vue";
 
 let props = defineProps(['reportId']);
-  
+
 const comment = ref({
     content: '',
     report: props.reportId,
@@ -17,16 +17,16 @@ const comment = ref({
 });
 
 const emit = defineEmits();
-  
+
 const submitComment = async () => {
     if (!comment.value.content.trim()) return; // Per non permettere commenti vuoti
-    
-    if(!localStorage.getItem("JWT")){
-        window.location.hash = '/login';
+
+    if (!localStorage.getItem("JWT")) {
+        window.location.hash = '#/required-login';
     }
 
-    try{
-        let res = await fetch("/api/reports/"+props.reportId+"/comments",
+    try {
+        let res = await fetch("/api/reports/" + props.reportId + "/comments",
             {
                 method: "POST",
                 headers: { "x-access-token": localStorage.getItem("JWT"), "Content-type": "application/json" },
@@ -34,13 +34,13 @@ const submitComment = async () => {
             }
         );
 
-        if(res.ok){
+        if (res.ok) {
             emit('commentAdded');
         } else {
             console.log("Errore nell'invio del commento.");
         }
 
-    } catch(error){
+    } catch (error) {
         console.log("Errore nella richiesta:", error);
     }
     comment.value.content = '';
@@ -67,7 +67,7 @@ onMounted(() => {
 });
 
 </script>
-  
+
 <style scoped>
 .comment-input-container {
     display: flex;
@@ -108,6 +108,4 @@ onMounted(() => {
 .submit-button:hover {
     background-color: #249b29;
 }
-
 </style>
-  
