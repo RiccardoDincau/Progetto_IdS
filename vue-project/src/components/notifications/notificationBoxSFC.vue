@@ -11,10 +11,10 @@ import { onBeforeMount, ref } from 'vue';
 import notificationSFC from './notificationSFC.vue';
 const userId = localStorage.getItem("userId");
 const notificationList = ref([]);
-const SERVERURL = "/";
+const SERVERURL = "http://localhost:8080";
 
 async function fetchUsr() {
-    const res = await fetch(SERVERURL + 'api' + userId + '/notifications', {
+    const res = await fetch(SERVERURL + '/api' + userId + '/notifications', {
         headers: {
             "x-access-token": localStorage.getItem("JWT"),
         }

@@ -23,6 +23,9 @@ const password = ref("riccardo1");
 
 const emit = defineEmits(["successfullLogin"]);
 
+const SERVERURL = "http://localhost:8080";
+
+
 async function login() {
     if (email.value === "") {
         loginFailed();
@@ -33,7 +36,7 @@ async function login() {
         password: password.value
     };
 
-    fetch("/api/authentication", {
+    fetch(SERVERURL + "/api/authentication", {
         method: "POST",
         headers: {
             'Accept': 'application/json',

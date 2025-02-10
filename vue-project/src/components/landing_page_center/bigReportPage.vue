@@ -64,6 +64,9 @@ let props = defineProps(['report']);
 let upvoteClass = ref("");
 const upvote = ref(false);
 
+const SERVERURL = "http://localhost:8080";
+
+
 async function changeUpvote() {
 
     if (!props.report._id) {

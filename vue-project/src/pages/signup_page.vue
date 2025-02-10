@@ -29,6 +29,9 @@ const signupPassword = ref("");
 
 const emit = defineEmits(["successfullLogin"]);
 
+const SERVERURL = "http://localhost:8080";
+
+
 const emptyFields = ref({
     name: false,
     email: false,
@@ -78,7 +81,7 @@ async function signup() {
         return;
     }
 
-    let authResp = await fetch("/api/authentication", {
+    let authResp = await fetch(SERVERURL + "/api/authentication", {
         method: "POST",
         headers: {
             'Accept': 'application/json',

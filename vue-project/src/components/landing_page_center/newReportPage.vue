@@ -49,6 +49,8 @@ const reportTitle = ref("");
 const reportPos = ref("");
 const reportContent = ref("");
 
+const SERVERURL = "http://localhost:8080";
+
 const emptyFields = ref({
     title: false,
     position: false,
@@ -142,7 +144,7 @@ async function saveReport() {
     };
 
 
-    let response = await fetch("/api/reports",
+    let response = await fetch(SERVERURL + "/api/reports",
         {
             method: "POST",
             headers: { "x-access-token": localStorage.getItem("JWT"), "Content-type": "application/json" },

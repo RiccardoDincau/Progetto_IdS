@@ -48,11 +48,13 @@ function stateChanged(newState) {
     currentSelectedState.value = newState;
 }
 
+const SERVERURL = "http://localhost:8080";
+
 onMounted(() => {
     let userId = localStorage.getItem("userId");
 
     if (userId && userId !== "") {
-        fetch("/api" + userId).then(async (res) => {
+        fetch(SERVERURL + "/api" + userId).then(async (res) => {
             if (res.status != 200) {
                 localStorage.removeItem("userId");
             } else {

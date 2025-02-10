@@ -8,7 +8,7 @@
 import { ref, onMounted, watch } from 'vue';
 import ReportSFC from "./reportSFC.vue";
 
-const SERVERURL = "/";
+const SERVERURL = "http://localhost:8080";
 
 let reports = ref([]);
 
@@ -26,7 +26,7 @@ async function fetchReports(stateFilter, kind, category) {
         queries += "category=" + category + "&";
     }
 
-    await fetch(SERVERURL + "api/reports/" + queries).then(async (res) => {
+    await fetch(SERVERURL + "/api/reports/" + queries).then(async (res) => {
         if (!res.ok) {
             throw new Error(`HTTP error! Status: ${res.status}`);
         }

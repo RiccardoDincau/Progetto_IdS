@@ -86,7 +86,7 @@ import tagSFC from "../tags/tagSFC.vue";
 
 const maxReportChars = 150;
 
-const SERVERURL = "";
+const SERVERURL = "http://localhost:8080";
 let props = defineProps(['reportId']);
 
 let fetched = ref(false);
@@ -113,7 +113,7 @@ const isImg = ref(false);
 
 const fetchRep = async () => {
     try {
-        let res = await fetch(SERVERURL + "api/reports/" + props.reportId);
+        let res = await fetch(SERVERURL + "/api/reports/" + props.reportId);
         if (!res.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -123,14 +123,14 @@ const fetchRep = async () => {
             report.value.content = report.value.content.slice(0, maxReportChars);
             report.value.content += "...";
         }
-        report.value.image = SERVERURL + "api/reports/" + props.reportId + "/image";
+        report.value.image = SERVERURL + "/api/reports/" + props.reportId + "/image";
 
-        // await fetch(SERVERURL + "api/reports/" + props.reportId + "/image").then((res) => {
-        //     if (!res.ok) isImg.value = false;
-        //     else isImg.value = true;
-        // })
+        await fetch(SERVERURL + "/api/reports/" + props.reportId + "/image").then((res) => {
+            if (!res.ok) isImg.value = false;
+            else isImg.value = true;
+        })
 
-        await fetch(SERVERURL + "api/reports/" + props.reportId + "/comments").then(async (res) => {
+        await fetch(SERVERURL + "/api/reports/" + props.reportId + "/comments").then(async (res) => {
             if (!res.ok) report.value.commentsNum = 0;
             else report.value.commentsNum = (await res.json()).length;
         })
@@ -145,7 +145,7 @@ const fetchRep = async () => {
 
 const fetchUsr = async () => {
     try {
-        let res = await fetch(SERVERURL + "api/users/" + report.value.user);
+        let res = await fetch(SERVERURL + "/api/users/" + report.value.user);
         if (!res.ok) {
             throw new Error(`HTTP error! Status: ${res.status}`);
         }
@@ -157,7 +157,7 @@ const fetchUsr = async () => {
 }
 
 function changeUpvote() {
-    fetch(SERVERURL + "api/reports/" + props.reportId + '/votes',
+    fetch(SERVERURL + "/api/reports/" + props.reportId + '/votes',
         {
             method: "PUT",
             headers: {
@@ -175,7 +175,7 @@ function changeUpvote() {
 }
 
 async function updateUpVoteIcon() {
-    await fetch(SERVERURL + "api/reports/" + props.reportId + "/votes", {
+    await fetch(SERVERURL + "/api/reports/" + props.reportId + "/votes", {
         headers: {
             "x-access-token": localStorage.getItem("JWT"),
         }
