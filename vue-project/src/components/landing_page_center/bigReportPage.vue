@@ -1,5 +1,13 @@
 <template>
     <div class="report-wrapper">
+        <div v-if="districtUser" class="change-state-container">
+            <button :class="'change-state-'+report.state" class="state-button" @click="showStates = !showStates">
+                <h1>Cambia stato</h1>
+                <ul v-show="showStates" class="stateList">
+                    <li v-for="state in states" :class="'change-state-'+state.type" @click="changeState(state.type)">{{ state.text }}</li>
+                </ul>
+            </button>
+        </div>
         <div v-if="fetched" class="tags-bar">
             <tagSFC :fieldValue="report.category" />
             <tagSFC :fieldValue="report.kind" />
@@ -91,6 +99,8 @@ let props = defineProps({ id: String });
 const isImg = ref(false);
 let hasVoted = ref(false);
 let fetched = ref(false);
+let districtUser = ref(false);
+let showStates = ref(false);
 let reportId = ref(null);
 const SERVERURL = "";
 
@@ -111,9 +121,34 @@ const user = ref({
     name: '',
 });
 
+const states = ref([
+    { type: "active", text: "Attiva" },
+    { type: "work_in_progress", text: "Presa in carico" },
+    { type: "archived", text: "Archiviata" },
+]);
+
 computed(() => {
     reportId.value = props.id;
 });
+
+
+
+function changeState(newState) {
+    showStates.value = !showStates.value;
+    fetch(SERVERURL + "api/reports/" + reportId.value, 
+        {
+            method: "PUT",
+            headers: {
+                "Content-type": "application/json",
+                "x-access-token": localStorage.getItem("JWT"),
+            },
+            body: JSON.stringify({ state: newState })
+        }
+    ).then(async (res) => {
+        res = await res.json();
+        report.value = res;
+    }).catch( error => console.log("Errore nella PUT del report per il cambio di stato: ", error));
+}
 
 function changeUpvote() {
     fetch(SERVERURL + "api/reports/" + reportId.value + '/votes',
@@ -130,7 +165,6 @@ function changeUpvote() {
             report.value.votes = res;
 
         }).catch(() => console.log("Sorry :("));
-
 }
 
 async function updateUpVoteIcon() {
@@ -181,13 +215,30 @@ const fetchUsr = async () => {
     } catch (error) {
         console.log(error);
     }
-}
+};
+
+const getUserFromToken = () => {
+    const token = localStorage.getItem("JWT");
+    if (!token) return null;
+
+    try {
+        const payload = JSON.parse(atob(token.split(".")[1])); // Decodifica il payload
+        return payload;
+    } catch (error) {
+        console.error("Errore nel decoding del token:", error);
+        return null;
+    }
+};
 
 onBeforeMount(async () => {
     reportId.value = props.id;
     console.log("ID del report ricevuto:", reportId.value);
     await fetchRep();
     await fetchUsr();
+    const userData = getUserFromToken();
+    if(userData && (userData.user_level == 'district' || userData.user_level == 'admin')){
+        districtUser.value = true;
+    }
     fetched.value = true;
 })
 
@@ -345,4 +396,76 @@ onBeforeMount(async () => {
     justify-content: right;
     padding-right: 20px;
 }
+
+.change-state-container {
+    position: relative;
+    display: inline-block;
+}
+
+.state-button {
+    padding: 8px 12px;
+    font-size: 8px;
+    font-weight: bold;
+    color: black;
+    background-color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Menu a tendina */
+.stateList {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 10;
+    width: 150px;
+    padding: 5px 0;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+/* Animazione di apertura */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Stile delle opzioni */
+.stateList li {
+    list-style: none;
+    padding: 10px;
+    margin: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.1s ease;
+    border-radius: 8px;
+}
+
+/* Stati specifici nel menu */
+.change-state-active {
+    border: 2px solid #2DB432;
+    color: black;
+    background-color: #96e999;
+}
+
+.change-state-work_in_progress {
+    border: 2px solid #d8c707;
+    color: black;
+    background-color: #f1ea99;
+}
+
+.change-state-archived {
+    border: 2px solid #c20000;
+    color: black;
+    background-color: #d97272;
+}
+
+/* Effetto hover sulle opzioni */
+.stateList li:hover {
+    transform: scale(1.02);
+}
+
 </style>

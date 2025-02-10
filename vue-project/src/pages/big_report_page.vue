@@ -37,7 +37,7 @@ import NotificationBoxSFC from '../components/notifications/notificationBoxSFC.v
 import TagSuggestionBoxSFC from '../components/tags/tagSuggestionBoxSFC.vue';
 import LoginButtonSFC from '../components/account/loginButtonSFC.vue';
 import AccountIcon from '../components/account/accountIconSFC.vue';
-import bigReport from '@/components/landing_page_center/bigReport.vue';
+import bigReport from '@/components/landing_page_center/bigReportPage.vue';
 import MainPage from "../components/landing_page_center/mainPage.vue"
 
 let props = defineProps({ id: String });
