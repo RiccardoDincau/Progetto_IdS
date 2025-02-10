@@ -4,8 +4,9 @@
             <button :class="'change-state-' + report.state" class="state-button" @click="showStates = !showStates">
                 <h1>Cambia stato</h1>
                 <ul v-show="showStates" class="stateList">
-                    <li v-for="state in states" :class="'change-state-' + state.type" @click="changeState(state.type)">{{
-                        state.text }}</li>
+                    <li v-for="state in states" :class="'change-state-' + state.type" @click="changeState(state.type)">
+                        {{
+                            state.text }}</li>
                 </ul>
             </button>
         </div>
@@ -174,16 +175,18 @@ function changeUpvote() {
 }
 
 async function updateUpVoteIcon() {
-    await fetch(SERVERURL + "api/reports/" + reportId.value + "/votes", {
-        headers: {
-            "x-access-token": localStorage.getItem("JWT"),
-        }
-    }).then(async (res) => {
-        if (res.ok) {
-            res = await res.json();
-            hasVoted.value = res.hasVoted;
-        }
-    });
+    if (localStorage.getItem("JWT")) {
+        fetch(SERVERURL + "api/reports/" + reportId.value + "/votes", {
+            headers: {
+                "x-access-token": localStorage.getItem("JWT"),
+            }
+        }).then(async (res) => {
+            if (res.ok) {
+                res = await res.json();
+                hasVoted.value = res.hasVoted;
+            }
+        });
+    }
 }
 
 const fetchRep = async () => {

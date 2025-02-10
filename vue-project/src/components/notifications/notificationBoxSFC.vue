@@ -14,17 +14,19 @@ const notificationList = ref([]);
 const SERVERURL = "/";
 
 async function fetchUsr() {
-    const res = await fetch(SERVERURL + 'api' + userId + '/notifications', {
-        headers: {
-            "x-access-token": localStorage.getItem("JWT"),
-        }
-    });
+    if (localStorage.getItem("JWT")) {
+        const res = await fetch(SERVERURL + 'api' + userId + '/notifications', {
+            headers: {
+                "x-access-token": localStorage.getItem("JWT"),
+            }
+        });
 
-    if (res.status == 200) {
-        const resJSON = await res.json();
-        console.log("Console log notificationBox, riga 25", resJSON);
-        for (let el of resJSON) {
-            notificationList.value.push(el);
+        if (res.status == 200) {
+            const resJSON = await res.json();
+            // console.log("Console log notificationBox, riga 25", resJSON);
+            for (let el of resJSON) {
+                notificationList.value.push(el);
+            }
         }
     }
 }

@@ -180,16 +180,18 @@ function changeUpvote() {
 }
 
 async function updateUpVoteIcon() {
-    await fetch(SERVERURL + "api/reports/" + props.reportId + "/votes", {
-        headers: {
-            "x-access-token": localStorage.getItem("JWT"),
-        }
-    }).then(async (res) => {
-        if (res.ok) {
-            res = await res.json();
-            hasVoted.value = res.hasVoted;
-        }
-    });
+    if (localStorage.getItem("JWT")) {
+        await fetch(SERVERURL + "api/reports/" + props.reportId + "/votes", {
+            headers: {
+                "x-access-token": localStorage.getItem("JWT"),
+            }
+        }).then(async (res) => {
+            if (res.ok) {
+                res = await res.json();
+                hasVoted.value = res.hasVoted;
+            }
+        });
+    }
 }
 
 function goToBigReport(reportId) {
