@@ -1,17 +1,7 @@
 <template>
     <div class="page-container">
         <div class="left-bar">
-            <div class="logo-title-container">
-                <div class="logo-container">
-                    <!-- <img src="resources/logo.png" class="logo"> -->
-                </div>
-                <div class="logo-title">
-                    <h1 class="title">Treport</h1>
-                </div>
-            </div>
-
-            <StateButtonList @state-changed="stateChanged" />
-
+            <LeftBar @pass-up-state="stateChanged" />
         </div>
 
         <div class="central-bar">
@@ -32,13 +22,12 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import StateButtonList from "../components/stateButtonListSFC.vue";
 import NotificationBoxSFC from '../components/notifications/notificationBoxSFC.vue';
 import TagSuggestionBoxSFC from '../components/tags/tagSuggestionBoxSFC.vue';
 import LoginButtonSFC from '../components/account/loginButtonSFC.vue';
 import AccountIcon from '../components/account/accountIconSFC.vue';
 import bigReport from '@/components/landing_page_center/bigReportPage.vue';
-import MainPage from "../components/landing_page_center/mainPage.vue"
+import LeftBar from '@/components/landing_page_center/leftBar.vue';
 
 let props = defineProps({ id: String });
 

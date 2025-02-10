@@ -1,17 +1,7 @@
 <template>
     <div class="page-container">
         <div class="left-bar">
-            <div class="logo-title-container">
-                <div class="logo-container">
-                    <!-- <img src="resources/logo.png" class="logo"> -->
-                </div>
-                <div class="logo-title">
-                    <h1 class="title">Treport</h1>
-                </div>
-            </div>
-
-            <StateButtonList @state-changed="stateChanged" />
-
+            <LeftBar @pass-up-state="stateChanged" />
         </div>
 
         <div class="central-bar">
@@ -30,13 +20,13 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
-import StateButtonList from "../components/stateButtonListSFC.vue";
+import { onMounted, onUpdated, ref } from 'vue';
 import NotificationBoxSFC from '../components/notifications/notificationBoxSFC.vue';
 import TagSuggestionBoxSFC from '../components/tags/tagSuggestionBoxSFC.vue';
 import LoginButtonSFC from '../components/account/loginButtonSFC.vue';
 import AccountIcon from '../components/account/accountIconSFC.vue';
 import NewReportPage from "../components/landing_page_center/newReportPage.vue"
+import LeftBar from '@/components/landing_page_center/leftBar.vue';
 
 let currentSelectedState = ref("");
 let currentFilters = ref({
@@ -61,7 +51,7 @@ onMounted(() => {
 
     if (userId && userId !== "") {
         fetch("/api" + userId).then(async (res) => {
-            if (res.status != 200) {
+            if (!res.ok) {
                 localStorage.removeItem("userId");
             } else {
                 username.value = (await res.json()).name;
@@ -69,6 +59,12 @@ onMounted(() => {
         })
     }
 });
+
+onUpdated(() => {
+    if (!localStorage.getItem("JWT")) {
+        window.location.hash = "#/";
+    }
+})
 
 function logout() {
     username.value = undefined;

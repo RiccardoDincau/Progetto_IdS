@@ -40,6 +40,10 @@ body {
     margin: auto;
 }
 
+.logo-title-anchor {
+    text-decoration: none;
+}
+
 .logo-container {
     width: 100%
 }

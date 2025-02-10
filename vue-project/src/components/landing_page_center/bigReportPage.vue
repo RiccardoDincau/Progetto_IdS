@@ -1,10 +1,11 @@
 <template>
     <div class="report-wrapper">
         <div v-if="districtUser" class="change-state-container">
-            <button :class="'change-state-'+report.state" class="state-button" @click="showStates = !showStates">
+            <button :class="'change-state-' + report.state" class="state-button" @click="showStates = !showStates">
                 <h1>Cambia stato</h1>
                 <ul v-show="showStates" class="stateList">
-                    <li v-for="state in states" :class="'change-state-'+state.type" @click="changeState(state.type)">{{ state.text }}</li>
+                    <li v-for="state in states" :class="'change-state-' + state.type" @click="changeState(state.type)">{{
+                        state.text }}</li>
                 </ul>
             </button>
         </div>
@@ -135,7 +136,7 @@ computed(() => {
 
 function changeState(newState) {
     showStates.value = !showStates.value;
-    fetch(SERVERURL + "api/reports/" + reportId.value, 
+    fetch(SERVERURL + "api/reports/" + reportId.value,
         {
             method: "PUT",
             headers: {
@@ -147,24 +148,29 @@ function changeState(newState) {
     ).then(async (res) => {
         res = await res.json();
         report.value = res;
-    }).catch( error => console.log("Errore nella PUT del report per il cambio di stato: ", error));
+    }).catch(error => console.log("Errore nella PUT del report per il cambio di stato: ", error));
 }
 
 function changeUpvote() {
-    fetch(SERVERURL + "api/reports/" + reportId.value + '/votes',
-        {
-            method: "PUT",
-            headers: {
-                "Content-type": "application/json",
-                "x-access-token": localStorage.getItem("JWT"),
-            },
-            body: JSON.stringify({ liked: !hasVoted.value })
-        }).then(async (res) => {
-            updateUpVoteIcon();
-            res = await res.json();
-            report.value.votes = res;
-
-        }).catch(() => console.log("Sorry :("));
+    if (localStorage.getItem("JWT")) {
+        fetch(SERVERURL + "/api/reports/" + props.reportId + '/votes',
+            {
+                method: "PUT",
+                headers: {
+                    "Content-type": "application/json",
+                    "x-access-token": localStorage.getItem("JWT"),
+                },
+                body: JSON.stringify({ liked: !hasVoted.value })
+            }).then(async (res) => {
+                updateUpVoteIcon();
+                if (res.ok) {
+                    res = await res.json();
+                    report.value.votes = res;
+                }
+            }).catch(() => console.log("Sorry :("));
+    } else {
+        window.location.hash = "#/required-login";
+    }
 }
 
 async function updateUpVoteIcon() {
@@ -236,7 +242,7 @@ onBeforeMount(async () => {
     await fetchRep();
     await fetchUsr();
     const userData = getUserFromToken();
-    if(userData && (userData.user_level == 'district' || userData.user_level == 'admin')){
+    if (userData && (userData.user_level == 'district' || userData.user_level == 'admin')) {
         districtUser.value = true;
     }
     fetched.value = true;
@@ -429,8 +435,15 @@ onBeforeMount(async () => {
 
 /* Animazione di apertura */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Stile delle opzioni */
@@ -467,5 +480,4 @@ onBeforeMount(async () => {
 .stateList li:hover {
     transform: scale(1.02);
 }
-
 </style>

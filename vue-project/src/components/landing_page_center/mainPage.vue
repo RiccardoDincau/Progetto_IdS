@@ -1,7 +1,7 @@
 <template>
     <div class="filter-options-bar">
         <div class="search-bar-container shaded">
-            <SearchBarSCC @in-focus="searchedTextChanged"/>
+            <SearchBarSCC @in-focus="searchedTextChanged" />
         </div>
         <div class="filter-buttons-container">
             <FilterButtonSCC @filter-changed="filterChanged" />
@@ -12,11 +12,9 @@
     <ReportList v-if="currentSelectedState" :state="currentSelectedState" :kind="currentFilters.kind"
         :category="currentFilters.category" />
 
-    <a href="#/new-report">
-        <div class="new-report-button">
-            <h3>+</h3>
-        </div>
-    </a>
+    <div @click="goToNewReport" class="new-report-button">
+        <h3>+</h3>
+    </div>
 </template>
 
 
@@ -36,15 +34,21 @@ const props = defineProps(["currentSelectedState", "currentFilters"]);
 
 let currentSearchedText = ref("");
 
-function searchedTextChanged(newText){
+function searchedTextChanged(newText) {
     currentSearchedText.value = newText;
 }
 
 function filterChanged(newFilters) {
-    // console.log("Filters changed", newFilters);
     currentFilters.value = newFilters;
 }
 
+function goToNewReport() {
+    if (localStorage.getItem("JWT")) {
+        window.location.hash = "#/new-report";
+    } else {
+        window.location.hash = "#/required-login";
+    }
+}
 </script>
 
 <style lang="css" scoped>

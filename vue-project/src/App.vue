@@ -50,13 +50,15 @@ import LoginPage from "./pages/login_page.vue"
 import SignupPage from './pages/signup_page.vue'
 import NewReportPage from './pages/new_report_page.vue'
 import big_report_page from './pages/big_report_page.vue'
+import requiredLoginPage from './pages/required_login_page.vue'
 
 const routes = {
     '/': LandingPage,
     "/login": LoginPage,
     "/signup": SignupPage,
     "/new-report": NewReportPage,
-    "/big-report": big_report_page
+    "/big-report": big_report_page,
+    "/required-login": requiredLoginPage,
 }
 
 const currentPath = ref(window.location.hash);
@@ -98,5 +100,6 @@ function goToLastPage() {
         :is="currentView" 
         v-bind="getQueryParams()" 
         @successfullLogin="goToLastPage" 
+        @goBack="goToLastPage"
     />
 </template>

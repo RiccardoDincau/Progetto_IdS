@@ -158,21 +158,25 @@ const fetchUsr = async () => {
 }
 
 function changeUpvote() {
-    fetch(SERVERURL + "api/reports/" + props.reportId + '/votes',
-        {
-            method: "PUT",
-            headers: {
-                "Content-type": "application/json",
-                "x-access-token": localStorage.getItem("JWT"),
-            },
-            body: JSON.stringify({ liked: !hasVoted.value })
-        }).then(async (res) => {
-            updateUpVoteIcon();
-            if (res.ok) {
-                res = await res.json();
-                report.value.votes = res;
-            }
-        }).catch(() => console.log("Sorry :("));
+    if (localStorage.getItem("JWT")) {
+        fetch(SERVERURL + "/api/reports/" + props.reportId + '/votes',
+            {
+                method: "PUT",
+                headers: {
+                    "Content-type": "application/json",
+                    "x-access-token": localStorage.getItem("JWT"),
+                },
+                body: JSON.stringify({ liked: !hasVoted.value })
+            }).then(async (res) => {
+                updateUpVoteIcon();
+                if (res.ok) {
+                    res = await res.json();
+                    report.value.votes = res;
+                }
+            }).catch(() => console.log("Sorry :("));
+    } else {
+        window.location.hash = "#/required-login";
+    }
 }
 
 async function updateUpVoteIcon() {
@@ -207,6 +211,7 @@ onBeforeMount(async () => {
     font-optical-sizing: auto;
     font-style: normal;
     margin-top: 20px;
+    cursor: pointer;
 }
 
 .report-container {
