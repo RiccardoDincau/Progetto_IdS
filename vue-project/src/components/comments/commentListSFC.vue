@@ -1,7 +1,9 @@
 <template>
     <div class="comment-list-container">
         <h1 class="comment-list-title">Commenti</h1>
-        <addCommentBar :report-id="props.reportId" @commentAdded="handleCommentAdded"></addCommentBar>
+        <addCommentBar :report-id="props.reportId" @has-content="updateThereIsContent"
+            @commentAdded="handleCommentAdded"></addCommentBar>
+
         <ul class="comment-list">
             <li v-for="comment in commentList">
                 <commentSFC :username="comment.username" :userlevel="comment.userlevel" :content="comment.content">
@@ -22,6 +24,11 @@ const SERVERURL = "/";
 let props = defineProps(['reportId']);
 
 let commentList = ref([]);
+
+let emits = defineEmits(["thereIsContent", "commentSent"]);
+function updateThereIsContent(hasContent) {
+    emits("thereIsContent", hasContent);
+}
 
 const fetchComments = async () => {
     try {
@@ -48,6 +55,7 @@ const fetchComments = async () => {
 }
 
 const handleCommentAdded = async () => {
+    emits("commentSent");
     await fetchComments();
 };
 

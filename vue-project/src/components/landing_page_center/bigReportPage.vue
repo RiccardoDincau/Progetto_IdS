@@ -1,10 +1,12 @@
 <template>
     <div class="report-wrapper">
+
         <div v-if="districtUser" class="change-state-container">
             <button :class="'change-state-' + report.state" class="state-button" @click="showStates = !showStates">
                 <h1>Cambia stato</h1>
                 <ul v-if="showStates" class="stateList">
-                    <li v-for="state in states" :class="'change-state-' + state.type" @click.stop="changeState(state.type)">
+                    <li v-for="state in states" :class="'change-state-' + state.type"
+                        @click.stop="changeState(state.type)">
                         {{ state.text }}
                     </li>
                 </ul>
@@ -89,7 +91,9 @@
                 <img :src="report.image" class="report-image">
             </div>
         </div>
-        <CommentListSFC :report-id="reportId"></CommentListSFC>
+        <CommentListSFC @comment-sent="commentCorrectlySent" @thereIsContent="(val) => { commentIsReadyToPost = val }"
+            :report-id="reportId">
+        </CommentListSFC>
     </div>
 </template>
 
@@ -97,6 +101,7 @@
 import { onBeforeMount, ref, computed } from 'vue';
 import tagSFC from '../tags/tagSFC.vue';
 import CommentListSFC from '../comments/commentListSFC.vue';
+import { provide } from 'vue'
 
 let props = defineProps({ id: String });
 
@@ -106,7 +111,13 @@ let fetched = ref(false);
 let districtUser = ref(false);
 let showStates = ref(false);
 let reportId = ref(null);
+let commentIsReadyToPost = ref(false);
 const SERVERURL = "";
+let newSelectedState;
+
+
+const count = ref(0)
+provide('sendCommentTrigger', count)
 
 const report = ref({
     title: '',
@@ -135,10 +146,7 @@ computed(() => {
     reportId.value = props.id;
 });
 
-
-
-function changeState(newState) {
-    showStates.value = false;
+function commentCorrectlySent() {
     fetch(SERVERURL + "api/reports/" + reportId.value,
         {
             method: "PUT",
@@ -146,7 +154,7 @@ function changeState(newState) {
                 "Content-type": "application/json",
                 "x-access-token": localStorage.getItem("JWT"),
             },
-            body: JSON.stringify({ state: newState })
+            body: JSON.stringify({ state: newSelectedState })
         }
     ).then(async (res) => {
         if (res.ok) {
@@ -156,6 +164,17 @@ function changeState(newState) {
             console.log("User level 'citizen' non sufficiente");
         }
     }).catch(error => console.log("Errore nella PUT del report per il cambio di stato: ", error));
+}
+
+function changeState(newState) {
+    if (!commentIsReadyToPost.value) {
+        alert("Scrivi un commento prima di cambiare stato. (Non premere \"inviva\", una volta scritto il commento invece ripremi il tasto di cambio stato)");
+        return;
+    }
+
+    count.value += 1;
+    showStates.value = false;
+    newSelectedState = newState;
 }
 
 function changeUpvote() {
