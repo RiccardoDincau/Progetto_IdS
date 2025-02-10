@@ -31,7 +31,7 @@ function newUserDelete(oldUser, notifications) {
 //GET methods
 router.get("/:userID/notifications", tokenChecker, async (req, res) => {
     if (
-        req.loggedUser.user_level != "admin" &&
+        req.loggedUser.user_level != "district" &&
         req.params.userID != req.loggedUser.id
     ) {
         errResp.unauthorizedAction(
@@ -75,7 +75,7 @@ router.get("/:userID/notifications/:notID", tokenChecker, async (req, res) => {
     }   
 
     if (
-        req.loggedUser.user_level != "admin" &&
+        req.loggedUser.user_level != "district" &&
         req.params.userID != req.loggedUser.id
     ) {
         errResp.unauthorizedAction(
@@ -103,7 +103,7 @@ router.delete(
     tokenChecker,
     async (req, res) => {
         if (
-            req.loggedUser.user_level != "admin" &&
+            req.loggedUser.user_level != "district" &&
             req.params.userID != req.loggedUser.id
         ) {
             errResp.unauthorizedAction(

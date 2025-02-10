@@ -10,6 +10,7 @@ const authentication = require("./authentication.js");
 const comments = require("./comments.js");
 const images = require("./images.js");
 const votes = require("./votes.js");
+const district_user = require("./district_user.js");
 
 app.use(cors());
 
@@ -37,5 +38,6 @@ app.use("/api/reports", votes);
 
 app.use("/api/users", users);
 app.use("/api/users", notifications);
+app.use("/api/district_user", district_user);
 
 module.exports = app;

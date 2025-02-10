@@ -12,9 +12,10 @@ mongoose
     .then(async () => {
         let users_id = {};
         const test_users = [
-            make_user("riccardo", "riccardo@gmail.com", "riccardo1", "admin"),
+            make_user("riccardo", "riccardo@gmail.com", "riccardo1", "district"),
             make_user("marco", "marco@gmail.com", "marco1", "citizen"),
-            make_user("tommaso", "tommaso@gmail.com", "tommaso1", "admin"),
+            make_user("tommaso", "tommaso@gmail.com", "tommaso1", "district"),
+            make_user("giacomo", "giacomo@gmail.com", "giacomo1", "admin")
         ];
 
         await User.deleteMany({}).then(async () => {
