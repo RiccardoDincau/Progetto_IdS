@@ -221,7 +221,8 @@ router.get("/:id", async (req, res) => {
 });
 
 router.put("/:id", tokenChecker, async (req, res) => {
-    if (req.loggedUser.user_level != "admin") {
+    if (req.loggedUser.user_level == "citizen") {
+        console.log("Errore, non hai lo user level minimo (district)");
         errResp.unauthorizedAction(
             res,
             "This user can not change the state of the report"
