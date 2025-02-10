@@ -5,8 +5,8 @@
                 <h1>Cambia stato</h1>
                 <ul v-show="showStates" class="stateList">
                     <li v-for="state in states" :class="'change-state-' + state.type" @click="changeState(state.type)">
-                        {{
-                            state.text }}</li>
+                        {{ state.text }}
+                    </li>
                 </ul>
             </button>
         </div>
@@ -148,7 +148,11 @@ function changeState(newState) {
         }
     ).then(async (res) => {
         res = await res.json();
-        report.value = res;
+        if(res.ok){
+            report.value = res;
+        } else {
+            console.log("User level 'citizen' non sufficiente");
+        }
     }).catch(error => console.log("Errore nella PUT del report per il cambio di stato: ", error));
 }
 
