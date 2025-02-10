@@ -113,10 +113,9 @@ function goToNewReport() {
     font-size: 45px;
 
     bottom: 30px;
-    right: 15%;
+    right: 25%;
 
     transition-duration: 0.3s;
-
 }
 
 .new-report-button:hover {
