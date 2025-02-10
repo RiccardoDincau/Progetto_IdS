@@ -10,7 +10,7 @@
     </div>
 
     <ReportList v-if="currentSelectedState" :state="currentSelectedState" :kind="currentFilters.kind"
-        :category="currentFilters.category" />
+        :category="currentFilters.category" :text="currentSearchedText" />
 
     <div @click="goToNewReport" class="new-report-button">
         <h3>+</h3>
