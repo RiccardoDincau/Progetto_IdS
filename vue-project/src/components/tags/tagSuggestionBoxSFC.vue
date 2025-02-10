@@ -44,6 +44,6 @@ onMounted(() => {
 
     .suggestionContainer {
         padding: 20px;
-        margin-top: 400px;
+        /* margin-top: 400px; */
     }
 </style>

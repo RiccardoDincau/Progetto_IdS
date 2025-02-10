@@ -1,6 +1,6 @@
 <template>
     <div class="notification-container" v-if="notificationList.length > 0">
-        <h3 class="notification-title">Notifiche</h3>
+        <h1 class="notification-title">Notifiche</h1>
         <notificationSFC v-for="notification in notificationList" :title="notification.title"
             :content="notification.content" :id="notification.report" :key="notification.id" />
     </div>
@@ -37,9 +37,14 @@ onBeforeMount(() => {
 <style>
 .notification-container {
     margin: 20px;
+    overflow-y: scroll;
+    max-height: 50%;
+    padding-right: 10px;
 }
 
 .notification-title {
     color: #00483A;
+    margin: 5px;
+    padding: 5px;
 }
 </style>
