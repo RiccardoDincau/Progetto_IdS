@@ -25,7 +25,7 @@
 
                 <div class="report-interactions-container">
                     <div class="interaction-container">
-                        <div class="interaction-icon-container" @click="changeUpvote">
+                        <div class="interaction-icon-container" @click.stop="changeUpvote">
                             <svg class="interaction-svg" :class="{ 'vote-svg-clicked': hasVoted }" viewBox="0 0 24 24"
                                 xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
 

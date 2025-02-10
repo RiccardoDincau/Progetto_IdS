@@ -39,8 +39,8 @@ const fetchComments = async () => {
             const userRes = await fetch(SERVERURL + "api/users/" + comment.user);
             if (userRes.ok) {
                 const userData = await userRes.json();
-                comment.username = userData.name; // Aggiungi il nome dell'utente
-                comment.userlevel = userData.user_level; // Aggiungi il livello dell'utente (se necessario)
+                comment.username = userData.name;
+                comment.userlevel = userData.user_level;
             }
         }
 
