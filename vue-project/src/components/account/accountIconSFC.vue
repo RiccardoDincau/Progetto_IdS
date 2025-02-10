@@ -15,6 +15,7 @@ function clearJWT() {
     emit("logout");
     localStorage.removeItem("JWT");
     localStorage.removeItem("userId");
+    location.reload()
 }
 </script>
 
