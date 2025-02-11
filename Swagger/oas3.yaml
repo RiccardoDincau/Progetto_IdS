@@ -24,6 +24,10 @@ paths:
                                 type: array
                                 items:
                                     $ref: "#/components/schemas/User_GET"
+                "400":
+                    description: The user level is not defined.
+                "404":
+                    description: No user has been found.
         post:
             description: Add new user.
             requestBody:
@@ -109,6 +113,8 @@ paths:
                                     $ref: "#/components/schemas/Report_GET"
                 "400":
                     description: Queries values may be wrong.
+                "404":
+                    description: The user's id set as query has not been found.
 
         post:
             description: Add a new report.
@@ -146,6 +152,8 @@ paths:
                                 $ref: "#/components/schemas/Report_GET"
                 "404":
                     description: Report was not found. (Id may be wrong or the report may not exist).
+                "400":
+                    description: The given report's id is not valid.
 
         put:
             description: Update the given report. State can only be updated by admins.
@@ -163,16 +171,19 @@ paths:
                     description: Corectly updated the report.
                 "404":
                     description: Report was not found. (Id may be wrong or report may not exist).
+                "403":
+                    description: Report's update is not allowed to the user.
+                "400":
+                    description: May be an error in the notification's sending process.
         delete:
             description: Delete a report
             responses:
                 "204":
                     description: Report deleted.
-                "403":
-                    description: This user can not delete a position.
                 "404":
                     description: Report was not found and could not be deleted(Id may be wrong).
-
+                "403":
+                    description: Report's delete is not allowed to the user.
             security:
                 - authToken: []
 
@@ -195,6 +206,10 @@ paths:
                                 type: array
                                 items:
                                     $ref: "#/components/schemas/Comment_GET"
+                "404": 
+                    description: No report has been found with the given id.
+                "400":
+                    description: May be a malformed report's id or a malformed user's id in the query.
         post:
             description: Add new comment to a report. (Attribute user must be of the type "/users/:id")
             requestBody:
@@ -216,6 +231,10 @@ paths:
                             description: Link to the newly created comment
                             schema:
                                 type: string
+                "404":
+                    description: Given report has not been found
+                "400":
+                    description: Error in comment's saving (may be malformed report's id, a missing attribute in the request or the malformed content).
 
     /reports/{id}/comments/{id}:
         get:
@@ -227,12 +246,20 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/Comment_GET"
+                "400":
+                    description: May be invalid report's id or invalid comment's id.
+                "404":
+                    description: No comment with the given id has been found.
 
         delete:
             description: Delete a comment of a given report.
             responses:
                 "204":
                     description: Comment deleted.
+                "403":
+                    description: The comment's delete is not authorized
+                "400":
+                    description: May be invalid report's id or invalid comment's id
 
     /reports/{id}/image:
         get:
@@ -421,6 +448,29 @@ paths:
                     description: Missing attribute, email is malformed. Authentication failed.
                 "404":
                     description: User not found.
+    /district_user:
+        description: Add new user.
+        requestBody:
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        $ref: "#/components/schemas/User_POST"
+            required: true
+
+        responses:
+            "201":
+                description: New user added.
+                headers:
+                    "Location":
+                        description: Link to the newly created user.
+                        schema:
+                            type: string
+            "400":
+                description: Id may be wrong, attribute may be missing, email may be already used.
+            "403":
+                description: Unauthorized district user's registration
+    
 
 components:
     schemas:
