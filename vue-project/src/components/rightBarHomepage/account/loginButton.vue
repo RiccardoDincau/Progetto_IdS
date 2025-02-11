@@ -15,6 +15,13 @@
     padding: 10px;
     background-color: #00483A;
     margin: 5%;
+    border-radius: 8px;
+    box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.2);
+}
+
+.login-button-container:hover {
+    transform: scale(1.1);
+    transition-duration: 0.1;
 }
 
 .login-link {
