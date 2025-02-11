@@ -1,108 +1,82 @@
-<!-- <template>
-    <div>
-      <label for="order-select">Ordina per:</label>
-      <select id="order-select" class="dropdown" v-model="selectedSort" @change="emitOrderChange">
-        <option value="votes-up">Voti Ascendente</option>
-        <option value="votes-down">Voti Discendente</option>
-      </select>
-    </div>
-  </template>
-  
-  <script setup>
-  import { ref, defineEmits } from 'vue';
-  
-  const selectedSort = ref('votes-up'); // Valore iniziale
-  const emit = defineEmits(['order-changed']);
-  
-  function emitOrderChange() {
-    // console.log("Ordinamento selezionato:", selectedSort.value);
-    emit('order-changed', selectedSort.value);
-  }
-  </script>
-  
-  <style scoped>
-  .dropdown {
-    margin-top: 0.25rem;
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  }
-  </style> -->
-  <template>
-    <div class="dropdown-container">
-      <button class="dropdown-button" @click="toggleDropdown">
-        Ordina per
-      </button>
-      <ul v-if="isDropdownOpen" class="dropdown-menu">
-        <li @click="selectOrder('votes-up')">Voti Ascendente</li>
-        <li @click="selectOrder('votes-down')">Voti Discendente</li>
-      </ul>
-    </div>
-  </template>
-  
-  <script setup>
-  import { ref, watch, defineEmits } from 'vue';
-  
-  const isDropdownOpen = ref(false);
-  const emit = defineEmits(['order-changed']);
-  
-  function toggleDropdown() {
-    isDropdownOpen.value = !isDropdownOpen.value;
-    console.log("🔍 Stato Dropdown:", isDropdownOpen.value);
-  }
-  
-  function selectOrder(order) {
-    console.log("✅ Ordinamento selezionato:", order);
-    emit('order-changed', order);
-    isDropdownOpen.value = false; // Chiude il menu dopo la selezione
-  }
-  
+<template>
+  <div :class="{ 'wide-button-container': isDropdownOpen }" class="dropdown-container">
+    <button :class="{ 'wide-filter': isDropdownOpen }" class="dropdown-button shaded" @click="toggleDropdown">
+      ORDINA PER
+    </button>
+    <ul v-if="isDropdownOpen" class="dropdown-menu">
+      <li @click="selectOrder('votes-up')" class="dropdown-item">Voti Ascendente</li>
+      <li @click="selectOrder('votes-down')" class="dropdown-item">Voti Discendente</li>
+    </ul>
+  </div>
+</template>
 
-  watch(isDropdownOpen, (newValue) => {
-    console.log("Stato cambiato:", newValue);
-  });
-  </script>
-  
-  <style scoped>
-  .dropdown-container {
-    position: relative;
-    display: inline-block;
-  }
-  
-  .dropdown-button {
-    background-color: #00483A;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .dropdown-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background: white;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    width: 150px;
-    border-radius: 5px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    z-index: 1000;
-  }
-  
-  .dropdown-menu li {
-    padding: 10px;
-    cursor: pointer;
-    text-align: center;
-  }
-  
-  .dropdown-menu li:hover {
-    background-color: #f0f0f0;
-  }
-  </style>
-  
+<script setup>
+import { ref, defineEmits } from 'vue';
+
+const isDropdownOpen = ref(false);
+const emit = defineEmits(['order-changed']);
+
+function toggleDropdown() {
+  isDropdownOpen.value = !isDropdownOpen.value;
+}
+
+function selectOrder(order) {
+  emit('order-changed', order);
+  isDropdownOpen.value = false;
+}
+</script>
+
+<style scoped>
+.wide-button-container {
+  width: 140px;
+  border-radius: 20px 20px 0 0;
+  background-color: white;
+}
+
+.dropdown-button {
+  height: 90%;
+  padding: 3px 10px;
+  margin: auto;
+  margin-left: 7px;
+  margin-right: 0;
+  border-radius: 10px;
+  border: 3px solid #ffffff;
+  cursor: pointer;
+  text-align: center;
+  background-color: white;
+  box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-button:active {
+  border: 3px solid #00483A;
+  transition-duration: 0.1s;
+}
+
+.wide-filter {
+  width: 100%;
+  margin: 0;
+}
+
+.dropdown-menu {
+  list-style: none;
+  transition-duration: 1s;
+  width: 120px;
+  background-color: white;
+  margin: auto;
+  padding: 10px;
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-item {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  border-bottom: 3px solid transparent;
+  padding-left: 7px;
+}
+
+.dropdown-item:hover {
+  cursor: pointer;
+  border-bottom: 3px solid #00483A;
+}
+</style>

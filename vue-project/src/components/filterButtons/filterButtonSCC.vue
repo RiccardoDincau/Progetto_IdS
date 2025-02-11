@@ -124,6 +124,7 @@ function filterButtonPressed(isKind, type) {
     margin: auto;
     padding: 10px;
     border-radius: 0 0 20px 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .filter-list {
