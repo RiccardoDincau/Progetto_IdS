@@ -43,27 +43,27 @@ function notificationTitleAndContent(mongooseReport) {
     let state = mongooseReport.state;
     switch (state) {
         case "active":
-            title = "Report switched to active!";
+            title = "Segnalazione cambiata ad Attiva!";
             content =
-                "The report " +
-                reportID +
-                " has been switched to active state.";
+                "La segnalazione \"" +
+                mongooseReport.title +
+                "\" è stata cambiata ad Attiva.";
             break;
 
         case "work_in_progress":
-            title = "Report switched to work in progress!";
+            title = "Segnalazione cambiata a Presa in carico!";
             content =
-                "The report " +
-                reportID +
-                " has been switched to work in progress state.";
+                "La segnalazione \"" +
+                mongooseReport.title +
+                "\" è stata cambiata a Presa in carico.";
             break;
 
         case "archived":
-            title = "Report switched to archived!";
+            title = "Segnalazione cambiata ad Archiviata!";
             content =
-                "The report " +
-                reportID +
-                " has been switched to archived state.";
+                "La segnalazione \"" +
+                mongooseReport.title +
+                "\" è stata cambiata ad Archiviata";
             break;
 
         default:
@@ -223,8 +223,11 @@ router.put("/:id", tokenChecker, async (req, res) => {
         );
         return;
     }
-    let comments = await Comment.findOne({'report' : req.params.id, 'user' : req.loggedUser.id}).exec();
-    if (!comments){
+    let comments = await Comment.findOne({
+        report: req.params.id,
+        user: req.loggedUser.id,
+    }).exec();
+    if (!comments) {
         errResp.unauthorizedAction(res);
         return;
     }
