@@ -1,14 +1,12 @@
 <template>
-    <a :href="'#/big-report?id=' + props.id" class="notification-anchor">
-        <div class="notification-tag">
-            <div class="notification-title-wrapper">
-                <p class="notification-title"> {{ props.title }}</p>
-            </div>
-            <div class="notification-content-wrapper">
-                <p class="notifcation-content"> {{ props.content }}</p>
-            </div>
+    <div @click="changePage" class="notification-tag">
+        <div class="notification-title-wrapper">
+            <p class="notification-title"> {{ props.title }}</p>
         </div>
-    </a>
+        <div class="notification-content-wrapper">
+            <p class="notifcation-content"> {{ props.content }}</p>
+        </div>
+    </div>
 </template>
 
 <script setup>
@@ -16,6 +14,11 @@ import { onMounted } from 'vue';
 import { ref } from 'vue';
 
 const props = defineProps(['title', 'content', 'id']);
+
+function changePage() {
+    window.location.hash = '#/big-report?id=' + props.id;
+    location.reload();
+}
 </script>
 
 <style>
@@ -34,6 +37,7 @@ const props = defineProps(['title', 'content', 'id']);
     padding: 10px;
     margin-bottom: 10px;
     overflow: hidden;
+    cursor: pointer;
 }
 
 .notification-anchor {

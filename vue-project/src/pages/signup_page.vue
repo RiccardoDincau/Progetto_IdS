@@ -105,7 +105,7 @@ function loginFailed() {
 function successfullLogin(userID, token) {
     localStorage.setItem("userId", userID);
     localStorage.setItem("JWT", token);
-    console.log("Login automatico successo");
+    // console.log("Login automatico successo");
     emit("successfullLogin");
 }
 

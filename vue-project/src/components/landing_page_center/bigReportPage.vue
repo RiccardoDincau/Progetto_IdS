@@ -222,7 +222,7 @@ const fetchRep = async () => {
         }
         res = await res.json();
         report.value = res;
-        console.log(report.value);
+        // console.log(report.value);
 
         report.value.image = SERVERURL + "api/reports/" + reportId.value + "/image";
 

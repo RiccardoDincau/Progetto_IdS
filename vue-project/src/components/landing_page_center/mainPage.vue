@@ -46,7 +46,7 @@ function filterChanged(newFilters) {
 }
 
 function orderChanged(newOrder) {
-    console.log("newORder in main page: ", newOrder);
+    // console.log("newORder in main page: ", newOrder);
     currentOrder.value = newOrder;
 }
 

@@ -32,13 +32,13 @@ async function fetchReports(stateFilter, kind, category) {
         }
         const resData = await res.json();
         reports.value = resData;
-        console.log(reports.value);
+        // console.log(reports.value);
         reports.value = sortReports(reports.value);
     });
 }
 
 watch(() => props.order, (newOrder, oldOrder) => {
-    console.log("🔄 Ordinamento selezionato:", newOrder);
+    // console.log("🔄 Ordinamento selezionato:", newOrder);
     reports.value = [...sortReports(reports.value)];
 });
 
@@ -46,7 +46,7 @@ watch(() => props.order, (newOrder, oldOrder) => {
 function sortReports(reportsArray) {
     if (!Array.isArray(reportsArray)) return []; // Evita errori se non è un array
     
-    console.log("SortReports -> Ordinamento attuale:", props.order); // Debug
+    // console.log("SortReports -> Ordinamento attuale:", props.order); // Debug
 
     if (props.order === 'votes-up') {
         return [...reportsArray].sort(compareReportsByVotesUp); // Crescente
