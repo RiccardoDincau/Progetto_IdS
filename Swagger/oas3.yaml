@@ -471,7 +471,7 @@ paths:
                     description: Id may be wrong, attribute may be missing, email may be already used.
                 "403":
                     description: Unauthorized district user's registration
-                    
+
             security:
                 - authToken: []
     
@@ -578,7 +578,7 @@ components:
 
         Category:
             type: string
-            enum: [lights, roads, trash]
+            enum: [lights, roads, trash, green_areas]
 
         State:
             type: string
@@ -586,7 +586,7 @@ components:
 
         User_level:
             type: string
-            enum: [citizen, admin, not_logged]
+            enum: [citizen, district, admin]
 
         Position:
             type: string
