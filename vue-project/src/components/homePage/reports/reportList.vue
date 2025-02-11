@@ -1,12 +1,12 @@
 <template>
     <div class="reports-container">
-        <ReportSFC v-for="report in filteredReports" :report-id="report._id" :key="report._id"/>
+        <Report v-for="report in filteredReports" :report-id="report._id" :key="report._id"/>
     </div>
 </template>
 
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue';
-import ReportSFC from "./reportSFC.vue";
+import Report from './report.vue';
 
 const SERVERURL = "/";
 

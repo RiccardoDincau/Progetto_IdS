@@ -1,8 +1,8 @@
 <template>
     <div class="report-wrapper" @click="goToBigReport(props.reportId)">
         <div v-if="fetched" class="tags-bar">
-            <tagSFC :fieldValue="report.category" />
-            <tagSFC :fieldValue="report.kind" />
+            <tag :fieldValue="report.category" />
+            <tag :fieldValue="report.kind" />
         </div>
         <div v-if="fetched" class="report-container">
             <div class="state-container">
@@ -82,8 +82,7 @@
 
 <script setup>
 import { ref, onBeforeMount } from 'vue';
-import tagSFC from "../tags/tagSFC.vue";
-import { errorMessages } from 'vue/compiler-sfc';
+import tag from './tag.vue';
 
 const maxReportChars = 150;
 

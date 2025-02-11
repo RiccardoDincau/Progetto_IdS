@@ -7,8 +7,6 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
-
 let props = defineProps(['username', 'userlevel', 'content']);
 </script>
 

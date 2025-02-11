@@ -3,7 +3,7 @@
         <h1 class="suggestionTitle">Preferiti</h1>
         <ul class="suggestionList">
             <li v-for="suggestion in suggestionList">
-                <tagSuggestionSFC :category="suggestion" :key="suggestion" />
+                <tagSuggestion :category="suggestion" :key="suggestion" />
             </li>
         </ul>
     </div>
@@ -11,7 +11,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import tagSuggestionSFC from './tagSuggestionSFC.vue';
+import tagSuggestion from './tagSuggestion.vue';
 
 const staticTags = ["lights", "road", "report", "via Pio X"];
 

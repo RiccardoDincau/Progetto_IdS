@@ -10,11 +10,11 @@
         </a>
     </div>
 
-    <StateButtonList @state-changed="passUpState" />
+    <stateButtonList @state-changed="passUpState" />
 </template>
 
 <script setup>
-import StateButtonList from '../stateButtonListSFC.vue';
+import stateButtonList from './stateButtons/stateButtonList.vue';
 
 const emits = defineEmits(["passUpState"]);
 

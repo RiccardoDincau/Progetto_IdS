@@ -1,16 +1,16 @@
 <template>
     <div class="filter-options-bar">
         <div class="search-bar-container shaded">
-            <SearchBarSCC @in-focus="searchedTextChanged" />
+            <searchBar @in-focus="searchedTextChanged" />
         </div>
         <div class="filter-buttons-container">
-            <FilterButtonSCC @filter-changed="filterChanged" />
+            <filterButton @filter-changed="filterChanged" />
             <!-- <button class="filter-button shaded">ORDINA PER</button> -->
-            <OrderButtonSFC @order-changed="orderChanged"></OrderButtonSFC>
+            <orderButton @order-changed="orderChanged"></orderButton>
         </div>
     </div>
 
-    <ReportList v-if="currentSelectedState" :state="currentSelectedState" :kind="currentFilters.kind"
+    <reportList v-if="currentSelectedState" :state="currentSelectedState" :kind="currentFilters.kind"
         :category="currentFilters.category" :text="currentSearchedText" :order="currentOrder" />
 
     <div @click="goToNewReport" class="new-report-button">
@@ -20,10 +20,10 @@
 
 
 <script setup>
-import ReportList from "../reports/reportListSFC.vue"
-import FilterButtonSCC from "../filterButtons/filterButtonSCC.vue"
-import SearchBarSCC from "../filterButtons/searchBarSCC.vue";
-import OrderButtonSFC from "../filterButtons/orderButtonSFC.vue";
+import reportList from "./reports/reportList.vue";
+import filterButton from "./filterButtons/filterButton.vue";
+import searchBar from "./filterButtons/searchBar.vue";
+import orderButton from "./filterButtons/orderButton.vue";
 
 import { ref } from "vue";
 

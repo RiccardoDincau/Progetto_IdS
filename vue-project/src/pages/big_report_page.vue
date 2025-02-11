@@ -1,21 +1,21 @@
 <template>
     <div class="page-container">
         <div class="left-bar">
-            <LeftBar @pass-up-state="stateChanged" />
+            <leftBar @pass-up-state="stateChanged" />
         </div>
 
         <div class="central-bar">
-            <GoBackButton @go-back-pressed="$emit('goToLastPage')" />
+            <goBackButton @go-back-pressed="$emit('goToLastPage')" />
             <!-- <MainPage :currentSelectedState="currentSelectedState"/> -->
             <bigReport :id="props.id"></bigReport>
         </div>
         <div class="right-bar">
-            <LoginButtonSFC v-if="!username" />
-            <AccountIcon v-else :username="username" @logout="logout" />
+            <loginButton v-if="!username" />
+            <accountIcon v-else :username="username" @logout="logout" />
 
-            <NotificationBoxSFC />
+            <notificationBox />
             <div class="suggested-tags-bar">
-                <TagSuggestionBoxSFC />
+                <tagSuggestionBox />
             </div>
         </div>
     </div>
@@ -23,13 +23,13 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import NotificationBoxSFC from '../components/notifications/notificationBoxSFC.vue';
-import TagSuggestionBoxSFC from '../components/tags/tagSuggestionBoxSFC.vue';
-import LoginButtonSFC from '../components/account/loginButtonSFC.vue';
-import AccountIcon from '../components/account/accountIconSFC.vue';
-import bigReport from '@/components/landing_page_center/bigReportPage.vue';
-import LeftBar from '@/components/landing_page_center/leftBar.vue';
-import GoBackButton from '@/components/navigationButtons/goBackButton.vue';
+import notificationBox from '@/components/rightBarHomepage/notifications/notificationBox.vue';
+import tagSuggestionBox from '@/components/rightBarHomepage/tagBox/tagSuggestionBox.vue';
+import loginButton from '@/components/rightBarHomepage/account/loginButton.vue';
+import accountIcon from '@/components/rightBarHomepage/account/accountIcon.vue';
+import bigReport from '@/components/bigReport/bigReport.vue';
+import leftBar from '@/components/leftBarHomepage/leftBar.vue';
+import goBackButton from '@/components/navigationButtons/goBackButton.vue';
 
 let props = defineProps({ id: String });
 

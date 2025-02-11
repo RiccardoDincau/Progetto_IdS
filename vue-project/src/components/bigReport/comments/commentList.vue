@@ -6,8 +6,8 @@
 
         <ul class="comment-list">
             <li v-for="comment in commentList">
-                <commentSFC :username="comment.username" :userlevel="comment.userlevel" :content="comment.content">
-                </commentSFC>
+                <Comment :username="comment.username" :userlevel="comment.userlevel" :content="comment.content">
+                </Comment>
             </li>
         </ul>
 
@@ -16,8 +16,8 @@
 
 <script setup>
 import { ref, onBeforeMount } from 'vue';
-import commentSFC from './commentSFC.vue';
-import addCommentBar from './addCommentBarSFC.vue';
+import Comment from './comment.vue';
+import addCommentBar from './addCommentBar.vue';
 
 const SERVERURL = "/";
 

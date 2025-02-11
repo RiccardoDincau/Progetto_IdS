@@ -14,8 +14,8 @@
         </div>
 
         <div v-if="fetched" class="tags-bar">
-            <tagSFC :fieldValue="report.category" />
-            <tagSFC :fieldValue="report.kind" />
+            <tag :fieldValue="report.category" />
+            <tag :fieldValue="report.kind" />
         </div>
 
         <div v-if="fetched" class="report-container">
@@ -91,16 +91,16 @@
                 <img :src="report.image" class="report-image">
             </div>
         </div>
-        <CommentListSFC @comment-sent="commentCorrectlySent" @thereIsContent="(val) => { commentIsReadyToPost = val }"
+        <commentList @comment-sent="commentCorrectlySent" @thereIsContent="(val) => { commentIsReadyToPost = val }"
             :report-id="reportId">
-        </CommentListSFC>
+        </commentList>
     </div>
 </template>
 
 <script setup>
 import { onBeforeMount, ref, computed } from 'vue';
-import tagSFC from '../tags/tagSFC.vue';
-import CommentListSFC from '../comments/commentListSFC.vue';
+import tag from '../homePage/reports/tag.vue';
+import commentList from './comments/commentList.vue';
 import { provide } from 'vue'
 
 let props = defineProps({ id: String });

@@ -1,6 +1,6 @@
 <template>
     <div class="page-container">
-        <UserInfo :email="user.email" :username="user.name" :created-reports-num="createdReportsId.length"
+        <userInfo :email="user.email" :username="user.name" :created-reports-num="createdReportsId.length"
             :voted-reports-num="votedReportsId.length" />
         <div class="right-side-container">
             <h3 class="list-title">Segnalazioni pubblicate</h3>
@@ -12,8 +12,8 @@
 </template>
 
 <script setup lang="ts">
-import UserInfo from '@/components/userPageComponents/userInfo.vue';
-import userReportList from '@/components/userPageComponents/userReportList.vue';
+import userInfo from '@/components/userPage/userInfo.vue';
+import userReportList from '@/components/userPage/userReportList.vue';
 
 import { onMounted, onUpdated, ref } from 'vue';
 

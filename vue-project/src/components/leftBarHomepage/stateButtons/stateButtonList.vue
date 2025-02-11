@@ -1,13 +1,13 @@
 <template>
     <div class="state-selector-bar">
-        <StateButton v-for="button in stateButtons" :state="button.state" :text="button.text" :pressed="button.pressed"
+        <stateButton v-for="button in stateButtons" :state="button.state" :text="button.text" :pressed="button.pressed"
             :key="button.state" @state-button-pressed="stateChanged" />
     </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import StateButton from "./stateButtonSFC.vue";
+import stateButton from './stateButton.vue';
 
 const emit = defineEmits(['stateChanged']);
 

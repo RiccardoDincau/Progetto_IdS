@@ -1,20 +1,20 @@
 <template>
     <div class="page-container">
         <div class="left-bar">
-            <LeftBar @pass-up-state="stateChanged" />
+            <leftBar @pass-up-state="stateChanged" />
         </div>
 
         <div class="central-bar">
-            <MainPage :currentSelectedState="currentSelectedState" />
+            <mainPage :currentSelectedState="currentSelectedState" />
         </div>
 
         <div class="right-bar">
-            <LoginButtonSFC v-if="!username" />
-            <AccountIcon v-else :username="username" @logout="logout" />
+            <loginButton v-if="!username" />
+            <accountIcon v-else :username="username" @logout="logout" />
 
-            <NotificationBoxSFC />
+            <notificationBox />
             <div class="suggested-tags-bar">
-                <TagSuggestionBoxSFC />
+                <tagSuggestionBox />
             </div>
         </div>
     </div>
@@ -22,15 +22,15 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import NotificationBoxSFC from '../components/notifications/notificationBoxSFC.vue';
-import TagSuggestionBoxSFC from '../components/tags/tagSuggestionBoxSFC.vue';
-import LoginButtonSFC from '../components/account/loginButtonSFC.vue';
-import AccountIcon from '../components/account/accountIconSFC.vue';
-import MainPage from "../components/landing_page_center/mainPage.vue"
-import LeftBar from '@/components/landing_page_center/leftBar.vue';
+
+import notificationBox from '@/components/rightBarHomepage/notifications/notificationBox.vue';
+import tagSuggestionBox from '@/components/rightBarHomepage/tagBox/tagSuggestionBox.vue';
+import loginButton from '@/components/rightBarHomepage/account/loginButton.vue';
+import accountIcon from '@/components/rightBarHomepage/account/accountIcon.vue';
+import mainPage from '@/components/homePage/mainPage.vue';
+import leftBar from '@/components/leftBarHomepage/leftBar.vue';
 
 let currentSelectedState = ref("");
-
 
 const username = ref("");
 

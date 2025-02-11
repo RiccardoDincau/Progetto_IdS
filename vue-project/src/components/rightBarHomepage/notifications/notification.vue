@@ -10,9 +10,6 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
-import { ref } from 'vue';
-
 const props = defineProps(['title', 'content', 'id']);
 
 function changePage() {
