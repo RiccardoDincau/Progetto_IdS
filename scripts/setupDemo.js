@@ -15,6 +15,8 @@ mongoose
             make_user("riccardo", "riccardo@gmail.com", "riccardo1", "citizen"),
             make_user("marco", "marco@gmail.com", "marco1", "citizen"),
             make_user("tommaso", "tommaso@gmail.com", "tommaso1", "citizen"),
+            make_user("citizen1", "citizen1@gmail.com", "citizen1", "citizen"),
+            make_user("citizen2", "citizen2@gmail.com", "citizen2", "citizen"),
             make_user("comune1", "comune1@gmail.com", "comune1", "district"),
             make_user("comune2", "comune2@gmail.com", "comune2", "district"),
             make_user("admin", "admin@gmail.com", "admin", "admin"),
