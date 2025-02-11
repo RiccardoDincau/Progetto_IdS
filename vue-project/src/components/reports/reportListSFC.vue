@@ -71,7 +71,8 @@ const filteredReports = computed(() => {
         return reports.value;
     }
     return reports.value.filter(report =>
-        report.content.toLowerCase().includes(props.text.toLowerCase())
+        report.content.toLowerCase().includes(props.text.toLowerCase()) ||
+        report.title.toLowerCase().includes(props.text.toLowerCase())
     );
 });
 
