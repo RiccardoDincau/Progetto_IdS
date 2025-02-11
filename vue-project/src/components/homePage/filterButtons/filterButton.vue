@@ -4,10 +4,11 @@
             @click="showMenu = !showMenu">FILTRI</button>
 
         <div class="filter-menu-container" v-if="showMenu">
-            <div class="position-filter-container">
+            <!-- <div class="position-filter-container">
                 <p>Google maps</p>
-            </div>
+            </div> -->
             <div class="kind-filter-container filter-cosntainer">
+                Tipo
                 <ul class="filter-list">
                     <li v-for="kind in kinds" :key="kind.type" class="filter-item"
                         :class="{ 'filter-item-pressed': kind.pressed }" @click="filterButtonPressed(true, kind.type)">
@@ -16,6 +17,7 @@
                 </ul>
             </div>
             <div class="category-filter-container filter-container">
+                Categoria
                 <ul class="filter-list">
                     <li v-for="category in categories" :key="category.type" class="filter-item"
                         :class="{ 'filter-item-pressed': category.pressed }"

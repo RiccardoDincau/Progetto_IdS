@@ -179,7 +179,7 @@ function changeState(newState) {
 
 function changeUpvote() {
     if (localStorage.getItem("JWT")) {
-        fetch(SERVERURL + "/api/reports/" + props.reportId + '/votes',
+        fetch(SERVERURL + "/api/reports/" + reportId.value + '/votes',
             {
                 method: "PUT",
                 headers: {
