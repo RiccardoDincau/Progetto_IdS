@@ -12,7 +12,7 @@ const SERVERURL = "/";
 
 let reports = ref([]);
 
-let props = defineProps(["state", "kind", "category", "text"]);
+let props = defineProps(["state", "kind", "category", "text", "order"]);
 
 async function fetchReports(stateFilter, kind, category) {
     let queries = "?";
@@ -32,7 +32,38 @@ async function fetchReports(stateFilter, kind, category) {
         }
         const resData = await res.json();
         reports.value = resData;
+        console.log(reports.value);
+        reports.value = sortReports(reports.value);
     });
+}
+
+watch(() => props.order, (newOrder, oldOrder) => {
+    console.log("🔄 Ordinamento selezionato:", newOrder);
+    reports.value = [...sortReports(reports.value)];
+});
+
+
+function sortReports(reportsArray) {
+    if (!Array.isArray(reportsArray)) return []; // Evita errori se non è un array
+    
+    console.log("SortReports -> Ordinamento attuale:", props.order); // Debug
+
+    if (props.order === 'votes-up') {
+        return [...reportsArray].sort(compareReportsByVotesUp); // Crescente
+    } else if (props.order === 'votes-down') {
+        return [...reportsArray].sort(compareReportsByVotesDown); // Decrescente
+    }
+
+    return reportsArray; // Se non ci sono cambiamenti, restituisci l'array originale
+}
+
+
+function compareReportsByVotesUp(reportA, reportB) {
+    return reportB.votes - reportA.votes;
+}
+
+function compareReportsByVotesDown(reportA, reportB) {
+    return reportA.votes - reportB.votes;
 }
 
 const filteredReports = computed(() => {
@@ -45,11 +76,16 @@ const filteredReports = computed(() => {
 });
 
 watch(props, async () => {
-    await fetchReports(props.state, props.kind, props.category);
-})
+    await fetchReports(props.state, props.kind, props.category, props.text, props.order);
+});
+
+watch(reports.value, async () => {
+    await fetchReports(props.state, props.kind, props.category, props.text, props.order);
+});
 
 onMounted(async () => {
     await fetchReports(props.state, props.kind, props.category);
+    reports.value = sortReports(reports.value);
 });
 
 </script>

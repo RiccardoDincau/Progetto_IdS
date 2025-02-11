@@ -5,12 +5,13 @@
         </div>
         <div class="filter-buttons-container">
             <FilterButtonSCC @filter-changed="filterChanged" />
-            <button class="filter-button shaded">ORDINA PER</button>
+            <!-- <button class="filter-button shaded">ORDINA PER</button> -->
+            <OrderButtonSFC @order-changed="orderChanged"></OrderButtonSFC>
         </div>
     </div>
 
     <ReportList v-if="currentSelectedState" :state="currentSelectedState" :kind="currentFilters.kind"
-        :category="currentFilters.category" :text="currentSearchedText" />
+        :category="currentFilters.category" :text="currentSearchedText" :order="currentOrder" />
 
     <div @click="goToNewReport" class="new-report-button">
         <h3>+</h3>
@@ -22,6 +23,7 @@
 import ReportList from "../reports/reportListSFC.vue"
 import FilterButtonSCC from "../filterButtons/filterButtonSCC.vue"
 import SearchBarSCC from "../filterButtons/searchBarSCC.vue";
+import OrderButtonSFC from "../filterButtons/orderButtonSFC.vue";
 
 import { ref } from "vue";
 
@@ -33,6 +35,7 @@ let currentFilters = ref({
 const props = defineProps(["currentSelectedState", "currentFilters"]);
 
 let currentSearchedText = ref("");
+let currentOrder = ref("votes-up")
 
 function searchedTextChanged(newText) {
     currentSearchedText.value = newText;
@@ -42,13 +45,13 @@ function filterChanged(newFilters) {
     currentFilters.value = newFilters;
 }
 
+function orderChanged(newOrder) {
+    console.log("newORder in main page: ", newOrder);
+    currentOrder.value = newOrder;
+}
+
 function goToNewReport() {
     window.location.hash = "#/new-report";
-    // if (localStorage.getItem("JWT")) {
-    //     window.location.hash = "#/new-report";
-    // } else {
-    //     window.location.hash = "#/required-login";
-    // }
 }
 </script>
 
@@ -56,7 +59,6 @@ function goToNewReport() {
 .filter-options-bar {
     position: sticky;
     top: 20px;
-    /* width: 80%; */
     max-width: 1000px;
     margin: auto;
     display: flex;
