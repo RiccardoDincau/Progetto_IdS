@@ -6,7 +6,6 @@
 
         <div class="central-bar">
             <goBackButton @go-back-pressed="$emit('goToLastPage')" />
-            <!-- <MainPage :currentSelectedState="currentSelectedState"/> -->
             <bigReport :id="props.id"></bigReport>
         </div>
         <div class="right-bar">
@@ -37,12 +36,7 @@ let currentSelectedState = ref("");
 
 const username = ref("");
 
-function searchedTextChanged(newText){
-    currentSearchedText.value = newText;
-}
-
 function stateChanged(newState) {
-    // console.log("State changed", newState);
     currentSelectedState.value = newState;
 }
 

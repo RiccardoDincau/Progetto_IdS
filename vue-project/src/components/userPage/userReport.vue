@@ -77,16 +77,10 @@ const fetchRep = async () => {
         }
         report.value.image = SERVERURL + "api/reports/" + props.reportId + "/image";
 
-        // await fetch(SERVERURL + "api/reports/" + props.reportId + "/image").then((res) => {
-        //     if (!res.ok) isImg.value = false;
-        //     else isImg.value = true;
-        // })
-
         await fetch(SERVERURL + "api/reports/" + props.reportId + "/comments").then(async (res) => {
             if (!res.ok) report.value.commentsNum = 0;
             else report.value.commentsNum = (await res.json()).length;
         })
-        // console.log(report.value.image);
     } catch (error) {
         console.log(error);
     }
@@ -201,7 +195,6 @@ onBeforeMount(async () => {
 }
 
 
-/* Vote icon style*/
 .interaction-container {
     display: flex;
     align-items: center;
@@ -250,7 +243,6 @@ onBeforeMount(async () => {
     }
 }
 
-/* Image style */
 .report-image-container {
     max-width: 30%;
     max-height: 200px;

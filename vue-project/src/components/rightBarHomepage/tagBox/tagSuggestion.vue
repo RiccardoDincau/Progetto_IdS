@@ -18,14 +18,10 @@ const tagClass = ref(props.category + '-suggestion-type-tag');
     font-weight: bold;
     width: fit-content;
     margin: auto;
-    /* margin-left: 10px; */
     color: black;
     padding: 5px 20px 5px 20px;
     background-color: red;
     border-radius: 10px 10px 10px 10px;
-    /* margin-top: 5px; */
-    /* transition-duration: 0.2s; */
-    /* box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.2); */
 }
 
 .suggestion-report-tag:hover {

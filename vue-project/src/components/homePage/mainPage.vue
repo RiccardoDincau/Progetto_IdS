@@ -5,7 +5,6 @@
         </div>
         <div class="filter-buttons-container">
             <filterButton @filter-changed="filterChanged" />
-            <!-- <button class="filter-button shaded">ORDINA PER</button> -->
             <orderButton @order-changed="orderChanged"></orderButton>
         </div>
     </div>
@@ -46,7 +45,6 @@ function filterChanged(newFilters) {
 }
 
 function orderChanged(newOrder) {
-    // console.log("newORder in main page: ", newOrder);
     currentOrder.value = newOrder;
 }
 

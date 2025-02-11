@@ -29,7 +29,6 @@ function changePage() {
     border-radius: 20px;
     box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.2);
     border: none;
-    /* max-width: 300px; */
     max-height: 100px;
     padding: 10px;
     margin-bottom: 10px;

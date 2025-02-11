@@ -24,7 +24,6 @@ async function fetchUsr() {
 
         if (res.status == 200) {
             const resJSON = await res.json();
-            // console.log("Console log notificationBox, riga 25", resJSON);
             for (let el of resJSON) {
                 notificationList.value.push(el);
             }

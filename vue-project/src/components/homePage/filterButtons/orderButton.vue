@@ -4,8 +4,8 @@
       ORDINA PER
     </button>
     <ul v-if="isDropdownOpen" class="dropdown-menu">
-      <li @click="selectOrder('votes-up')" class="dropdown-item">Voti Ascendente</li>
-      <li @click="selectOrder('votes-down')" class="dropdown-item">Voti Discendente</li>
+      <li @click="selectOrder('votes-up')" class="dropdown-item">Voti Decrescente</li>
+      <li @click="selectOrder('votes-down')" class="dropdown-item">Voti Crescente</li>
     </ul>
   </div>
 </template>

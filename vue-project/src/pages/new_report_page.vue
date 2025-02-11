@@ -31,21 +31,12 @@ import leftBar from '@/components/leftBarHomepage/leftBar.vue';
 import goBackButton from '@/components/navigationButtons/goBackButton.vue';
 
 let currentSelectedState = ref("");
-let currentFilters = ref({
-    kind: null,
-    category: null
-});
 
 const username = ref("");
 
 function stateChanged(newState) {
     // console.log("State changed", newState);
     currentSelectedState.value = newState;
-}
-
-function filterChanged(newFilters) {
-    // console.log("Filters changed", newFilters);
-    currentFilters.value = newFilters;
 }
 
 onMounted(() => {

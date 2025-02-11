@@ -32,29 +32,20 @@ async function fetchReports(stateFilter, kind, category) {
         }
         const resData = await res.json();
         reports.value = resData;
-        // console.log(reports.value);
         reports.value = sortReports(reports.value);
     });
 }
 
-watch(() => props.order, (newOrder, oldOrder) => {
-    // console.log("🔄 Ordinamento selezionato:", newOrder);
-    reports.value = [...sortReports(reports.value)];
-});
-
-
 function sortReports(reportsArray) {
-    if (!Array.isArray(reportsArray)) return []; // Evita errori se non è un array
+    if (!Array.isArray(reportsArray)) return [];
     
-    // console.log("SortReports -> Ordinamento attuale:", props.order); // Debug
-
     if (props.order === 'votes-up') {
-        return [...reportsArray].sort(compareReportsByVotesUp); // Crescente
+        return [...reportsArray].sort(compareReportsByVotesUp);
     } else if (props.order === 'votes-down') {
-        return [...reportsArray].sort(compareReportsByVotesDown); // Decrescente
+        return [...reportsArray].sort(compareReportsByVotesDown);
     }
 
-    return reportsArray; // Se non ci sono cambiamenti, restituisci l'array originale
+    return reportsArray;
 }
 
 
@@ -77,10 +68,6 @@ const filteredReports = computed(() => {
 });
 
 watch(props, async () => {
-    await fetchReports(props.state, props.kind, props.category, props.text, props.order);
-});
-
-watch(reports.value, async () => {
     await fetchReports(props.state, props.kind, props.category, props.text, props.order);
 });
 

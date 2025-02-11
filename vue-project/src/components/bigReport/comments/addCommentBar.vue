@@ -18,12 +18,11 @@ const comment = ref({
 });
 
 const emit = defineEmits(["hasContent", 'commentAdded']);
-
 const sendCommentTrigger = inject('sendCommentTrigger');
+
 watch(sendCommentTrigger, () => {
     submitComment();
 });
-
 
 function emitChanges() {
     let hasContent = true;
@@ -64,7 +63,7 @@ const getUserFromToken = () => {
     if (!token) return null;
 
     try {
-        const payload = JSON.parse(atob(token.split(".")[1])); // Decodifica il payload
+        const payload = JSON.parse(atob(token.split(".")[1]));
         return payload;
     } catch (error) {
         console.error("Errore nel decoding del token:", error);

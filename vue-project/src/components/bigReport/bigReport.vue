@@ -222,7 +222,6 @@ const fetchRep = async () => {
         }
         res = await res.json();
         report.value = res;
-        // console.log(report.value);
 
         report.value.image = SERVERURL + "api/reports/" + reportId.value + "/image";
 
@@ -233,7 +232,6 @@ const fetchRep = async () => {
 
         updateUpVoteIcon();
 
-        // console.log(report.value.image);
     } catch (error) {
         console.log(error);
     }
@@ -257,7 +255,7 @@ const getUserFromToken = () => {
     if (!token) return null;
 
     try {
-        const payload = JSON.parse(atob(token.split(".")[1])); // Decodifica il payload
+        const payload = JSON.parse(atob(token.split(".")[1]));
         return payload;
     } catch (error) {
         console.error("Errore nel decoding del token:", error);
@@ -362,8 +360,6 @@ onBeforeMount(async () => {
     display: flex;
 }
 
-
-/* Vote icon style*/
 .interaction-container {
     display: flex;
     align-items: center;
@@ -412,7 +408,6 @@ onBeforeMount(async () => {
     }
 }
 
-/* Image style */
 .report-image-container {
     max-width: 30%;
     max-height: 200px;
@@ -450,7 +445,6 @@ onBeforeMount(async () => {
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-/* Menu a tendina */
 .stateList {
     position: absolute;
     top: 100%;
@@ -463,7 +457,6 @@ onBeforeMount(async () => {
     animation: fadeIn 0.2s ease-in-out;
 }
 
-/* Animazione di apertura */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -476,7 +469,6 @@ onBeforeMount(async () => {
     }
 }
 
-/* Stile delle opzioni */
 .stateList li {
     list-style: none;
     padding: 10px;
@@ -487,7 +479,6 @@ onBeforeMount(async () => {
     border-radius: 8px;
 }
 
-/* Stati specifici nel menu */
 .change-state-active {
     border: 2px solid #2DB432;
     color: black;
@@ -506,7 +497,6 @@ onBeforeMount(async () => {
     background-color: #d97272;
 }
 
-/* Effetto hover sulle opzioni */
 .stateList li:hover {
     transform: scale(1.02);
 }

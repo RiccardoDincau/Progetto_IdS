@@ -22,10 +22,9 @@ import addCommentBar from './addCommentBar.vue';
 const SERVERURL = "/";
 
 let props = defineProps(['reportId']);
-
 let commentList = ref([]);
-
 let emits = defineEmits(["thereIsContent", "commentSent"]);
+
 function updateThereIsContent(hasContent) {
     emits("thereIsContent", hasContent);
 }

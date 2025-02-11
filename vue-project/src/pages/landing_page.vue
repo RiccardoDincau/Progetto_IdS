@@ -34,10 +34,6 @@ let currentSelectedState = ref("");
 
 const username = ref("");
 
-function searchedTextChanged(newText) {
-    currentSearchedText.value = newText;
-}
-
 function stateChanged(newState) {
     // console.log("State changed", newState);
     currentSelectedState.value = newState;
