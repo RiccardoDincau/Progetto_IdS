@@ -35,7 +35,7 @@
                 </div>
 
                 <div class="report-content-container">
-                    <p class="report-content">{{ report.content }}.</p>
+                    <p class="report-content">{{ report.content }}</p>
                 </div>
                 <div class="report-interactions-container">
                     <div class="interaction-container">
@@ -222,6 +222,7 @@ const fetchRep = async () => {
         }
         res = await res.json();
         report.value = res;
+        console.log(report.value);
 
         report.value.image = SERVERURL + "api/reports/" + reportId.value + "/image";
 

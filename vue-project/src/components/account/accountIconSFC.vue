@@ -1,8 +1,9 @@
 <template>
-    <div class="user-info-container shaded">
-        <p class="username">{{ prop.username }}</p>
-        <button @click="clearJWT" class="logout-button">esci</button>
-    </div>
+    <a class="user-page-anchor" href="#/user-page">
+        <div class="user-info-container shaded">
+            <p class="username">{{ prop.username }}</p>
+        </div>
+    </a>
 </template>
 
 <script setup>
@@ -11,15 +12,15 @@ import { defineProps, defineEmits } from "vue";
 const prop = defineProps(["username"]);
 const emit = defineEmits(["logout"]);
 
-function clearJWT() {
-    emit("logout");
-    localStorage.removeItem("JWT");
-    localStorage.removeItem("userId");
-    location.reload()
-}
+
 </script>
 
-<style>
+<style scoped>
+.user-page-anchor {
+    text-decoration: none;
+    color: #00483A;
+}
+
 .user-info-container {
     width: 75%;
     min-width: 100px;

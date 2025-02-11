@@ -6,6 +6,7 @@ import SignupPage from './pages/signup_page.vue'
 import NewReportPage from './pages/new_report_page.vue'
 import big_report_page from './pages/big_report_page.vue'
 import requiredLoginPage from './pages/required_login_page.vue'
+import user_page from './pages/user_page.vue'
 
 const routes = {
     '/': LandingPage,
@@ -14,6 +15,7 @@ const routes = {
     "/new-report": NewReportPage,
     "/big-report": big_report_page,
     "/required-login": requiredLoginPage,
+    "/user-page": user_page,
 }
 
 const currentPath = ref(window.location.hash);
@@ -24,7 +26,7 @@ window.addEventListener('hashchange', () => {
 
 let currentViewURL = "/";
 
-let URLHistory = ["/"];
+let URLHistory = ["/", "/"];
 
 const currentView = computed(() => {
     URLHistory.unshift(currentPath.value);
