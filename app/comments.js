@@ -145,8 +145,7 @@ router.post("/:id/comments", tokenChecker, async (req, res) => {
         });
 
     if (comment == null) return;
-    // TODO
-    // da aggiungere il commento nello user
+    
     let commentID = comment.id;
 
     res.location(req.path + commentID)
@@ -154,7 +153,11 @@ router.post("/:id/comments", tokenChecker, async (req, res) => {
         .send();
 });
 
-router.delete("/:reportID/comments/:commentID", async (req, res) => {
+router.delete("/:reportID/comments/:commentID", tokenChecker, async (req, res) => {
+    if(req.loggedUser.user_level == 'citizen'){
+        errResp.unauthorizedAction(res, 'User is not allowed to perform the comment removal');
+        return;
+    }
     let report = await Report.findById(req.params.reportID)
         .exec()
         .catch(() => {

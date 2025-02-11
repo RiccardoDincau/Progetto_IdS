@@ -66,7 +66,7 @@ router.get("/:id", async (req, res) => {
 
 //POST methods
 router.post("", async (req, res) => {
-    let requiredAttributes = ["name", "email", "user_level", "password"];
+    let requiredAttributes = ["name", "email", "password"];
 
     //req.body is an object (like a dictionary) which contains the parameters passed
     let body = req.body;
@@ -75,10 +75,6 @@ router.post("", async (req, res) => {
             errResp.missingAttribute(res, el);
             return;
         }
-    }
-    if (req.body.user_level != 'citizen') {
-        errResp.unauthorizedAction(res, "Unauthorized creation of the account");
-        return;
     }
 
     //Check if the email is already used by a user
@@ -92,6 +88,7 @@ router.post("", async (req, res) => {
     //Add the user in the database
     let user = new User(body);
     user.notifications = [];
+    user.user_level = 'citizen';
     user = await user.save().catch(() => errResp.userMalformed(res));
 
     if (!user) {
@@ -101,26 +98,4 @@ router.post("", async (req, res) => {
     res.location(req.path + user.id)
         .status(201)
         .send();
-});
-
-//DELETE methods
-router.delete("/:id", tokenChecker, async (req, res) => {
-    if (req.loggedUser.user_level == "citizen") {
-        errResp.unauthorizedAction(res, "This user can not delete a user");
-        return;
-    }
-    let userID = req.params.id;
-    let interrupt = false;
-
-    //Searching and deletion of the user based on the id
-    let user = await User.findById(userID)
-        .exec()
-        .catch(() => errResp.idNotValid(res));
-
-    if (!user) {
-        errResp.userNotFound(res);
-        return;
-    }
-    User.deleteOne({ _id: user._id });
-    res.status(201).send("Deletion completed");
 });

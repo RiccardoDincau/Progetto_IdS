@@ -260,8 +260,4 @@ function make_report(
     };
 }
 
-// function nameToId(name) {
-// let user = await User.find({ name }).exec();
-// console.log("name:", name, "user:", user);
-// return user[0]._id;
-// }
+

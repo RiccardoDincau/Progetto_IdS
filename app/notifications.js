@@ -31,7 +31,6 @@ function newUserDelete(oldUser, notifications) {
 //GET methods
 router.get("/:userID/notifications", tokenChecker, async (req, res) => {
     if (
-        req.loggedUser.user_level != "district" &&
         req.params.userID != req.loggedUser.id
     ) {
         errResp.unauthorizedAction(
@@ -96,56 +95,5 @@ router.get("/:userID/notifications/:notID", tokenChecker, async (req, res) => {
 
     res.status(200).json(displayedNotification(notification));
 });
-
-//DELETE methods
-router.delete(
-    "/:userID/notifications/:notID",
-    tokenChecker,
-    async (req, res) => {
-        if (
-            req.loggedUser.user_level != "district" &&
-            req.params.userID != req.loggedUser.id
-        ) {
-            errResp.unauthorizedAction(
-                res,
-                "Cannot access another user notifications."
-            );
-        }
-
-        let notificationID = req.params.notID;
-        let userId = req.params.userID;
-
-        //Search of the user to whom was sent the request
-        let user = await User.findById(req.params.userID)
-            .exec()
-            .catch(() => {
-                errResp.idNotValid(res);
-            });
-
-        if(!user){
-            errResp.userNotFound(res);
-            return;
-        }
-
-        let userNotification = user.notifications;
-        let index = userNotification.indexOf(notificationID);
-
-        if (index == -1) {
-            errResp.notificationNotFound(res);
-            return;
-        }
-
-        //The element associated to "index" is removed from the list
-        userNotification.splice(index, 1);
-
-        //The user is updated with the deleted notification
-        User.findByIdAndUpdate(
-            userId,
-            newUserDelete(user, userNotification)
-        ).exec();
-
-        res.status(204).send();
-    }
-);
 
 module.exports = router;

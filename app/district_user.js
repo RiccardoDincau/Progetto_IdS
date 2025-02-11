@@ -7,10 +7,6 @@ const tokenChecker = require("./tokenChecker.js");
 const errResp = require("./errors/errorResponse.js");
 
 router.post('', tokenChecker, async (req, res) => {
-    if (req.body.user_level != 'district'){
-        errResp.invalidContent(res);
-        return;
-    }
     if (req.loggedUser.user_level != 'admin'){
         errResp.unauthorizedAction(res);
         return;
@@ -37,6 +33,7 @@ router.post('', tokenChecker, async (req, res) => {
     //Add the user in the database
     let user = new User(body);
     user.notifications = [];
+    user.user_level = 'district';
     user = await user.save().catch(() => errResp.userMalformed(res));
 
     if (!user) {
