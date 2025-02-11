@@ -11,8 +11,6 @@ import { defineProps, defineEmits } from "vue";
 
 const prop = defineProps(["username"]);
 const emit = defineEmits(["logout"]);
-
-
 </script>
 
 <style scoped>

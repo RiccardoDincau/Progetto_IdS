@@ -18,8 +18,8 @@
 <script setup>
 import { ref } from "vue"
 
-const email = ref("riccardo@gmail.com");
-const password = ref("riccardo1");
+const email = ref("");
+const password = ref("");
 
 const emit = defineEmits(["successfullLogin"]);
 

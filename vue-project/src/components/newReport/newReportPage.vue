@@ -103,7 +103,6 @@ function selectedCategory(type) {
 
 
 async function saveReport() {
-
     let valid = true;
     if (reportTitle.value == "") {
         valid = false;
@@ -147,6 +146,13 @@ async function saveReport() {
             method: "POST",
             headers: { "x-access-token": localStorage.getItem("JWT"), "Content-type": "application/json" },
             body: JSON.stringify(report)
+        }).then((res) => {
+            if (res.ok) {
+                alert("Segnalazione pubblicata correttamente!");
+                window.location.hash = "/";
+            } else {
+                alert("La segnalazione non è stata pubblicata, c'è stato un errore");
+            }
         });
 }
 
