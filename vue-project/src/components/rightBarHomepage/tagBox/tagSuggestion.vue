@@ -1,14 +1,50 @@
 <template>
     <div :class="tagClass" class="suggestion-report-tag">
-        <p>{{ props.category }}</p>
+        <p>{{ tagName }}</p>
     </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 
 const props = defineProps(['category']);
+
 const tagClass = ref(props.category + '-suggestion-type-tag');
+let tagName = ref("");
+
+function translateTagName(){
+    switch (props.category) {
+        case 'lights':
+            tagName.value = 'Illuminazione';
+            break;
+        case 'road':
+            tagName.value = 'Strada';
+            break;
+        case 'trash':
+            tagName.value = 'Immondizia';
+            break;
+        case 'green_areas':
+            tagName.value = 'Area verde';
+            break;
+        case 'report':
+            tagName.value = 'Segnalazione';
+            break;
+        case 'suggestion':
+            tagName.value = 'Suggerimento';
+            break;
+        case 'complaint':
+            tagName.value = 'Reclamo';
+            break;
+        default:
+            break;
+    }
+}
+
+onBeforeMount(() => {
+    tagName.value = props.category;
+    translateTagName();
+})
+
 </script>
 
 

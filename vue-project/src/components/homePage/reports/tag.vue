@@ -1,6 +1,6 @@
 <template>
     <div :class="tagClass" class="report-tag">
-        <p>{{ props.fieldValue }}</p>
+        <p>{{ tagName }}</p>
     </div>
 </template>
 
@@ -9,9 +9,40 @@ import { onBeforeMount, ref } from 'vue';
 
 const props = defineProps(['fieldValue']);
 const tagClass = ref("");
+let tagName = ref("");
+
+function translateTagName(){
+    switch (props.fieldValue) {
+        case 'lights':
+            tagName.value = 'Illuminazione';
+            break;
+        case 'road':
+            tagName.value = 'Strada';
+            break;
+        case 'trash':
+            tagName.value = 'Immondizia';
+            break;
+        case 'green_areas':
+            tagName.value = 'Area verde';
+            break;
+        case 'report':
+            tagName.value = 'Segnalazione';
+            break;
+        case 'suggestion':
+            tagName.value = 'Suggerimento';
+            break;
+        case 'complaint':
+            tagName.value = 'Reclamo';
+            break;
+        default:
+            break;
+    }
+}
 
 onBeforeMount(async () => {
     tagClass.value = props.fieldValue + '-type-tag';
+    tagName.value = props.fieldValue;
+    translateTagName();
 });
 </script>
 
