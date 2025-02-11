@@ -51,7 +51,6 @@ onBeforeMount(() => {
 <style>
 .suggestion-report-tag {
     text-align: center;
-    font-weight: bold;
     width: fit-content;
     margin: auto;
     color: black;
@@ -67,7 +66,7 @@ onBeforeMount(() => {
 }
 
 .report-suggestion-type-tag {
-    background-color: #CA4B2E;
+    background-color: #e11717;
 }
 
 .lights-suggestion-type-tag {
@@ -75,10 +74,10 @@ onBeforeMount(() => {
 }
 
 .complaint-suggestion-type-tag {
-    background-color: #d84f05;
+    background-color: #f26417;
 }
 
 .road-suggestion-type-tag {
-    background-color: #8490F9;
+    background-color: #2fc3e8;
 }
 </style>
