@@ -1,12 +1,13 @@
 <template>
     <div class="comment-input-container">
-        <textarea v-model="comment.content" placeholder="Scrivi un commento..." class="comment-input"></textarea>
+        <textarea @change="emitChanges" v-model="comment.content" placeholder="Scrivi un commento..."
+            class="comment-input"></textarea>
         <button @click="submitComment" class="submit-button">Invia</button>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, inject, watch } from "vue";
 
 let props = defineProps(['reportId']);
 
@@ -16,7 +17,19 @@ const comment = ref({
     user: ''
 });
 
-const emit = defineEmits();
+const emit = defineEmits(["hasContent", 'commentAdded']);
+
+const sendCommentTrigger = inject('sendCommentTrigger');
+watch(sendCommentTrigger, () => {
+    submitComment();
+});
+
+
+function emitChanges() {
+    let hasContent = true;
+    if (!comment.value.content.trim()) hasContent = false;
+    emit("hasContent", hasContent);
+}
 
 const submitComment = async () => {
     if (!comment.value.content.trim()) return; // Per non permettere commenti vuoti
