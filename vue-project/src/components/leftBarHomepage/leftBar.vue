@@ -1,9 +1,9 @@
 <template>
     <div class="logo-title-container">
-        <div class="logo-container">
-            <!-- <img src="resources/logo.png" class="logo"> -->
-        </div>
         <a href="#/" class="logo-title-anchor">
+            <div class="logo-container">
+                <img src="../../assets/imgs/logo_treport.png" class="logo">
+            </div>
             <div class="logo-title">
                 <h1 class="title">Treport</h1>
             </div>

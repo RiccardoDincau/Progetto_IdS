@@ -1,11 +1,14 @@
 <template>
     <div class="page-container">
         <div class="login-container">
+            <div class="image-container">
+                <img src="../assets/imgs/logo_treport.png" class="logo-login">
+            </div>
             <h1 class="login-title">Treport</h1>
             <div class="form-container">
                 <input class="login-input shaded" v-model="email" type="email" placeholder="Email">
                 <input class="login-input shaded" v-model="password" type="password" placeholder="Password">
-                <button class= "confirm-login" @click="login">Accedi</button>
+                <button class="confirm-login" @click="login">Accedi</button>
             </div>
             <div class="links-container">
                 <a class="link" href="#/">Torna indietro</a>
@@ -76,6 +79,19 @@ function loginFailed() {
     display: flex;
 }
 
+.image-container {
+    margin: auto;
+    width: 200px;
+    height: 200px;
+}
+
+
+.logo-login {
+    width: 100%;
+    height: 100%;
+}
+
+
 .shaded {
     box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.2);
 }
@@ -84,6 +100,8 @@ function loginFailed() {
     width: 50%;
     margin: auto;
 }
+
+
 
 .login-title {
     text-align: center;

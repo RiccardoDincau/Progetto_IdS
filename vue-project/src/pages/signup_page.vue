@@ -1,6 +1,9 @@
 <template>
     <div class="page-container">
         <div class="signup-container">
+            <div class="image-container">
+                <img src="../assets/imgs/logo_treport.png" class="logo-login">
+            </div>
             <h1 class="signup-title">Treport</h1>
             <div class="form-container">
                 <input :class="{ 'red-border': emptyFields.name }" v-model="signupName" class="signup-input shaded"
@@ -127,6 +130,18 @@ function successfullLogin(userID, token) {
 
 .shaded {
     box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.2);
+}
+
+.image-container {
+    margin: auto;
+    width: 200px;
+    height: 200px;
+}
+
+
+.logo-login {
+    width: 100%;
+    height: 100%;
 }
 
 .signup-container {
