@@ -449,27 +449,31 @@ paths:
                 "404":
                     description: User not found.
     /district_user:
-        description: Add new user.
-        requestBody:
-            content:
-                application/json:
-                    schema:
-                        type: object
-                        $ref: "#/components/schemas/User_POST"
-            required: true
-
-        responses:
-            "201":
-                description: New user added.
-                headers:
-                    "Location":
-                        description: Link to the newly created user.
+        post: 
+            description: Add new user.
+            requestBody:
+                content:
+                    application/json:
                         schema:
-                            type: string
-            "400":
-                description: Id may be wrong, attribute may be missing, email may be already used.
-            "403":
-                description: Unauthorized district user's registration
+                            type: object
+                            $ref: "#/components/schemas/User_POST"
+                required: true
+
+            responses:
+                "201":
+                    description: New user added.
+                    headers:
+                        "Location":
+                            description: Link to the newly created user.
+                            schema:
+                                type: string
+                "400":
+                    description: Id may be wrong, attribute may be missing, email may be already used.
+                "403":
+                    description: Unauthorized district user's registration
+                    
+            security:
+                - authToken: []
     
 
 components:
