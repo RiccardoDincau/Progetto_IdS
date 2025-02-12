@@ -42,6 +42,12 @@ function stateChanged(newState) {
 
 onMounted(() => {
     let userId = localStorage.getItem("userId");
+    if(!localStorage.getItem("JWT") || !userId){
+        localStorage.removeItem("JWT");
+        localStorage.removeItem("userId");
+        window.location.hash = "#/";
+        return;
+    }
 
     if (userId && userId !== "") {
         fetch("/api" + userId).then(async (res) => {

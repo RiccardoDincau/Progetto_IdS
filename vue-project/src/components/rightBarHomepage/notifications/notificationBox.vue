@@ -1,14 +1,14 @@
 <template>
     <div class="notification-container" v-if="notificationList.length > 0">
         <h1 class="notification-title">Notifiche</h1>
-        <notification v-for="notification in notificationList" :title="notification.title"
-            :content="notification.content" :id="notification.report" :key="notification.id" />
+        <Notification v-for="notification in notificationList" :title="notification.title"
+            :content="notification.content" :id="notification.report" :key="notification._id" />
     </div>
 </template>
 
 <script setup>
 import { onBeforeMount, ref } from 'vue';
-import notification from './notification.vue';
+import Notification from './notification.vue';
 
 const userId = localStorage.getItem("userId");
 const notificationList = ref([]);
@@ -21,7 +21,6 @@ async function fetchUsr() {
                 "x-access-token": localStorage.getItem("JWT"),
             }
         });
-
         if (res.status == 200) {
             const resJSON = await res.json();
             for (let el of resJSON) {

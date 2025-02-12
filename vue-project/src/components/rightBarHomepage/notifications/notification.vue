@@ -10,6 +10,7 @@
 </template>
 
 <script setup>
+
 const props = defineProps(['title', 'content', 'id']);
 
 function changePage() {
